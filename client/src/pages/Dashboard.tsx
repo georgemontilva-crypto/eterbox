@@ -64,6 +64,68 @@ export default function Dashboard() {
   const maxKeys = userPlan?.maxKeys || 3;
   const maxFolders = userPlan?.maxFolders || 1;
 
+  // Group credentials by folder
+  const credentialsByFolder: { [key: number]: any[] } = {};
+  const credentialsWithoutFolder: any[] = [];
+
+  credentials.forEach((cred: any) => {
+    if (cred.folderId) {
+      if (!credentialsByFolder[cred.folderId]) {
+        credentialsByFolder[cred.folderId] = [];
+      }
+      credentialsByFolder[cred.folderId].push(cred);
+    } else {
+      credentialsWithoutFolder.push(cred);
+    }
+  });
+
+  const renderCredentialCard = (cred: any) => (
+    <Card key={cred.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <p className="font-semibold">{cred.platformName}</p>
+          <p className="text-sm text-muted-foreground">
+            {cred.username && `Username: ${cred.username}`}
+            {cred.email && cred.username && " • "}
+            {cred.email && `Email: ${cred.email}`}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => togglePasswordVisibility(cred.id)}
+          >
+            {visiblePasswords.has(cred.id) ? (
+              <EyeOff className="w-4 h-4" />
+            ) : (
+              <Eye className="w-4 h-4" />
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => copyToClipboard(cred.encryptedPassword || "")}
+          >
+            <Copy className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleDeleteCredential(cred.id)}
+          >
+            <Trash2 className="w-4 h-4 text-destructive" />
+          </Button>
+        </div>
+      </div>
+      {visiblePasswords.has(cred.id) && (
+        <div className="mt-3 pt-3 border-t border-border/20">
+          <p className="text-sm">Password: <span className="font-mono text-accent">{cred.encryptedPassword}</span></p>
+        </div>
+      )}
+    </Card>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -135,93 +197,60 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Folders Section */}
+        {/* Folders Section with Credentials */}
         {folders && folders.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-bold mb-4">Your Folders</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {folders.map((folder: any) => (
-                <Card key={folder.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 flex-1">
-                      <Folder className="w-5 h-5 text-accent" />
-                      <div>
-                        <p className="font-semibold">{folder.name}</p>
-                        <p className="text-sm text-muted-foreground">{folder.description || "No description"}</p>
+            <div className="space-y-6">
+              {folders.map((folder: any) => {
+                const folderCreds = credentialsByFolder[folder.id] || [];
+                return (
+                  <div key={folder.id}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <Folder className="w-5 h-5 text-accent" />
+                        <div>
+                          <p className="font-semibold">{folder.name}</p>
+                          <p className="text-sm text-muted-foreground">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
+                        </div>
                       </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteFolder(folder.id)}
-                    >
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Credentials List */}
-        <div>
-          <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
-          {credentials && credentials.length > 0 ? (
-            <div className="space-y-3">
-              {credentials.map((cred: any) => (
-                <Card key={cred.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="font-semibold">{cred.platformName}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {cred.username && `Username: ${cred.username}`}
-                        {cred.email && cred.username && " • "}
-                        {cred.email && `Email: ${cred.email}`}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => togglePasswordVisibility(cred.id)}
-                      >
-                        {visiblePasswords.has(cred.id) ? (
-                          <EyeOff className="w-4 h-4" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => copyToClipboard(cred.encryptedPassword || "")}
-                      >
-                        <Copy className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteCredential(cred.id)}
+                        onClick={() => handleDeleteFolder(folder.id)}
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
                     </div>
+                    {folderCreds.length > 0 ? (
+                      <div className="space-y-3 ml-8">
+                        {folderCreds.map(renderCredentialCard)}
+                      </div>
+                    ) : (
+                      <div className="ml-8 p-4 rounded-[15px] bg-card/50 border border-border/20 text-center">
+                        <p className="text-sm text-muted-foreground">No credentials in this folder</p>
+                      </div>
+                    )}
                   </div>
-                  {visiblePasswords.has(cred.id) && (
-                    <div className="mt-3 pt-3 border-t border-border/20">
-                      <p className="text-sm">Password: <span className="font-mono text-accent">{cred.encryptedPassword}</span></p>
-                    </div>
-                  )}
-                </Card>
-              ))}
+                );
+              })}
             </div>
-          ) : (
+          </div>
+        )}
+
+        {/* Credentials Without Folder */}
+        <div>
+          <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
+          {credentialsWithoutFolder && credentialsWithoutFolder.length > 0 ? (
+            <div className="space-y-3">
+              {credentialsWithoutFolder.map(renderCredentialCard)}
+            </div>
+          ) : credentials && credentials.length === 0 ? (
             <Card className="p-12 border border-border/20 text-center">
               <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
               <p className="text-muted-foreground">No credentials yet. Create your first one!</p>
             </Card>
-          )}
+          ) : null}
         </div>
       </main>
 

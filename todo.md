@@ -127,3 +127,8 @@
 - [x] Modal de crear credenciales no muestra selector de carpetas
 - [x] Dashboard no muestra lista de carpetas creadas
 - [x] Botón de mostrar contraseña (ojito) no desencripta y muestra la contraseña
+
+
+## Nuevas Funcionalidades Solicitadas
+- [x] Popup de límite de carpetas alcanzado con botón para ir a planes
+- [x] Guardar credenciales en carpetas seleccionadas correctamente
