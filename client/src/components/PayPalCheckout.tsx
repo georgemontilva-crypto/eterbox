@@ -1,6 +1,5 @@
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { PayPalScriptProvider, PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
@@ -29,11 +28,12 @@ export function PayPalCheckout({
   const { t } = useLanguage();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
+  const [sdkReady, setSdkReady] = useState(false);
 
   const createOrderMutation = trpc.paypal.createOrder.useMutation();
   const captureOrderMutation = trpc.paypal.captureOrder.useMutation();
 
-  const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || "test";
+  const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || "";
 
   const createOrder = async () => {
     try {
@@ -74,6 +74,7 @@ export function PayPalCheckout({
   const onError = (err: any) => {
     console.error("PayPal error:", err);
     toast.error(t("checkout.paymentError"));
+    setIsProcessing(false);
   };
 
   if (paymentComplete) {
@@ -108,6 +109,7 @@ export function PayPalCheckout({
           <button 
             onClick={onCancel}
             className="text-muted-foreground hover:text-foreground transition-colors"
+            disabled={isProcessing}
           >
             <X className="w-5 h-5" />
           </button>
@@ -141,41 +143,42 @@ export function PayPalCheckout({
               <Loader2 className="w-8 h-8 animate-spin text-accent mb-4" />
               <p className="text-sm text-muted-foreground">{t("checkout.processing")}</p>
             </div>
+          ) : !paypalClientId ? (
+            <div className="text-center py-8">
+              <p className="text-sm text-destructive">{t("checkout.paypalNotConfigured")}</p>
+            </div>
           ) : (
             <PayPalScriptProvider 
               options={{ 
                 clientId: paypalClientId,
                 currency: "USD",
                 intent: "capture",
-                components: "buttons",
               }}
             >
               <div className="space-y-3">
-                {/* PayPal Button */}
+                {/* Combined PayPal Buttons - shows PayPal and Card options */}
                 <PayPalButtons
                   style={{
                     layout: "vertical",
-                    color: "gold",
                     shape: "rect",
-                    label: "paypal",
-                    height: 45,
+                    height: 50,
                   }}
+                  fundingSource={FUNDING.PAYPAL}
                   createOrder={createOrder}
                   onApprove={onApprove}
                   onError={onError}
                   onCancel={() => toast.info(t("checkout.cancelled"))}
                 />
-
-                {/* Debit/Credit Card Button */}
+                
+                {/* Card Button - separate for debit/credit cards */}
                 <PayPalButtons
                   style={{
                     layout: "vertical",
                     color: "black",
                     shape: "rect",
-                    label: "pay",
-                    height: 45,
+                    height: 50,
                   }}
-                  fundingSource="card"
+                  fundingSource={FUNDING.CARD}
                   createOrder={createOrder}
                   onApprove={onApprove}
                   onError={onError}

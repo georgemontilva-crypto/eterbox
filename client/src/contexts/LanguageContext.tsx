@@ -184,7 +184,6 @@ export const translations: Translations = {
   "pricing.processing": { en: "Processing...", es: "Procesando..." },
   "pricing.paymentSuccess": { en: "Payment successful! Your plan has been upgraded.", es: "¡Pago exitoso! Tu plan ha sido mejorado." },
   "pricing.paymentCancelled": { en: "Payment was cancelled.", es: "El pago fue cancelado." },
-  "pricing.securePayment": { en: "Secure payment powered by PayPal", es: "Pago seguro con PayPal" },
   "pricing.faq": { en: "Frequently Asked Questions", es: "Preguntas Frecuentes" },
   "pricing.faq1Title": { en: "Can I upgrade or downgrade my plan?", es: "¿Puedo mejorar o reducir mi plan?" },
   "pricing.faq1Answer": { en: "Yes, you can change your plan at any time. Changes take effect immediately.", es: "Sí, puedes cambiar tu plan en cualquier momento. Los cambios se aplican inmediatamente." },
@@ -223,6 +222,7 @@ export const translations: Translations = {
   "checkout.paymentError": { en: "An error occurred during payment.", es: "Ocurrió un error durante el pago." },
   "checkout.cancelled": { en: "Payment cancelled", es: "Pago cancelado" },
   "checkout.securePayment": { en: "Secured by PayPal encryption", es: "Protegido por encriptación de PayPal" },
+  "checkout.paypalNotConfigured": { en: "PayPal is not configured. Please contact support.", es: "PayPal no está configurado. Por favor contacta a soporte." },
   "checkout.payWithCard": { en: "Pay with Debit or Credit Card", es: "Pagar con Tarjeta de Débito o Crédito" },
 
   // Renewal Banner

@@ -233,3 +233,8 @@
 ## Mejora - Crear credencial desde generador
 - [x] Agregar botón para crear credencial con la contraseña generada
 - [x] Abrir formulario con la contraseña pre-llenada
+
+
+## Bug - Checkout PayPal duplicado y cargando infinito
+- [x] Eliminar botón duplicado de tarjeta de débito/crédito
+- [x] Corregir el cargando infinito al hacer click en pagar con tarjeta
