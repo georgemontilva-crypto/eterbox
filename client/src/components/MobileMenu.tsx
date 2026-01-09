@@ -287,7 +287,7 @@ export function MobileMenu({ planName, onLogout }: MobileMenuProps) {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent 
           side="left" 
-          className="w-full sm:w-full max-w-full bg-background border-r-0 p-0"
+          className="w-full sm:w-[400px] sm:max-w-[400px] bg-background border-r border-border/20 p-0"
         >
           <div className="flex flex-col h-full">
             {/* Persistent Header with Menu */}

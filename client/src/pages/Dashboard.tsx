@@ -298,31 +298,15 @@ export default function Dashboard() {
       <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container py-4">
           <div className="flex items-center justify-between">
-            {/* Mobile: Menu left, Logo right */}
-            <div className="md:hidden">
+            {/* Menu hamburguesa - visible en todas las pantallas */}
+            <div>
               <MobileMenu planName={planName} onLogout={logout} />
             </div>
             
-            {/* Desktop: Logo left */}
-            <div className="hidden md:flex items-center gap-3">
-              <Lock className="w-6 h-6 text-accent" />
-              <span className="text-xl font-bold">EterBox</span>
-            </div>
-            
-            {/* Mobile: Logo right */}
-            <div className="flex md:hidden items-center gap-2">
-              <Lock className="w-5 h-5 text-accent" />
-              <span className="text-lg font-bold">EterBox</span>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={() => setLocation("/settings")}>
-                <Settings className="w-4 h-4 mr-2" />Settings
-              </Button>
-              <Button variant="ghost" size="sm" onClick={logout}>
-                <LogOut className="w-4 h-4 mr-2" />Logout
-              </Button>
+            {/* Logo - siempre a la derecha */}
+            <div className="flex items-center gap-2">
+              <Lock className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+              <span className="text-lg md:text-xl font-bold">EterBox</span>
             </div>
           </div>
         </div>

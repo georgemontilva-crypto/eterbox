@@ -183,3 +183,8 @@
 - [x] Logo a la derecha en vista móvil
 - [x] Opciones se abren en pantalla completa
 - [x] Header con menú persistente para seguir navegando
+
+
+## Unificar Menú PC y Móvil
+- [x] Hacer que el menú en PC sea igual que en móvil (hamburguesa)
+- [x] Opciones se despliegan en pantalla completa en ambos dispositivos
