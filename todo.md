@@ -188,3 +188,7 @@
 ## Unificar Menú PC y Móvil
 - [x] Hacer que el menú en PC sea igual que en móvil (hamburguesa)
 - [x] Opciones se despliegan en pantalla completa en ambos dispositivos
+
+
+## Bug - Accesibilidad
+- [x] Agregar DialogTitle oculto al SheetContent para accesibilidad

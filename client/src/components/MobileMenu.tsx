@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -289,6 +290,9 @@ export function MobileMenu({ planName, onLogout }: MobileMenuProps) {
           side="left" 
           className="w-full sm:w-[400px] sm:max-w-[400px] bg-background border-r border-border/20 p-0"
         >
+          <VisuallyHidden.Root>
+            <SheetTitle>EterBox Menu</SheetTitle>
+          </VisuallyHidden.Root>
           <div className="flex flex-col h-full">
             {/* Persistent Header with Menu */}
             <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-border/20">
