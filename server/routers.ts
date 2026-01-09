@@ -520,6 +520,13 @@ export const appRouter = router({
           if (capture.status === "COMPLETED") {
             // Extract plan ID and period from custom_id (format: userId_planId_period)
             const customId = capture.purchase_units?.[0]?.custom_id;
+            const purchaseUnit = capture.purchase_units?.[0];
+            const captureDetails = purchaseUnit?.payments?.captures?.[0];
+            const transactionId = captureDetails?.id || input.orderId;
+            const amount = captureDetails?.amount?.value || purchaseUnit?.amount?.value || "0";
+            const payerEmail = capture.payer?.email_address;
+            const payerName = capture.payer?.name?.given_name + " " + (capture.payer?.name?.surname || "");
+            
             if (customId) {
               const parts = customId.split("_");
               const userId = parts[0];
@@ -528,6 +535,10 @@ export const appRouter = router({
               const subscriptionPeriod: "monthly" | "yearly" = period === "yearly" ? "yearly" : "monthly";
               
               if (parseInt(userId) === ctx.user.id) {
+                // Get plan details
+                const plan = await db.getPlanById(parseInt(planId));
+                const planName = plan?.name || "Unknown";
+                
                 // Calculate subscription end date
                 const endDate = new Date();
                 if (subscriptionPeriod === "yearly") {
@@ -536,8 +547,41 @@ export const appRouter = router({
                   endDate.setMonth(endDate.getMonth() + 1);
                 }
 
+                // Update user subscription
                 await db.updateUserSubscription(ctx.user.id, parseInt(planId), subscriptionPeriod, endDate);
                 await db.recordActivity(ctx.user.id, "plan_upgraded", "subscription", parseInt(planId));
+                
+                // Record payment in history
+                await db.createPaymentRecord({
+                  userId: ctx.user.id,
+                  planId: parseInt(planId),
+                  planName,
+                  amount,
+                  currency: "USD",
+                  period: subscriptionPeriod,
+                  paymentMethod: "paypal",
+                  paypalOrderId: input.orderId,
+                  paypalTransactionId: transactionId,
+                  status: "completed",
+                  payerEmail: payerEmail || ctx.user.email || undefined,
+                  payerName: payerName?.trim() || ctx.user.name || undefined,
+                  description: `${planName} Plan - ${subscriptionPeriod === "yearly" ? "Annual" : "Monthly"} subscription`,
+                });
+                
+                // Send confirmation email
+                const user = await db.getUserById(ctx.user.id);
+                if (user?.email) {
+                  const emailService = await import("./email-service");
+                  await emailService.sendSubscriptionConfirmation(
+                    user.email,
+                    user.name || "Customer",
+                    planName,
+                    amount,
+                    subscriptionPeriod,
+                    endDate,
+                    transactionId
+                  );
+                }
               }
             }
             return { success: true, status: capture.status };
@@ -562,6 +606,18 @@ export const appRouter = router({
           console.error("Failed to get PayPal order status:", error);
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to get order status" });
         }
+      }),
+  }),
+
+  // ============ PAYMENT HISTORY ============
+  payments: router({
+    getHistory: protectedProcedure
+      .input(z.object({
+        limit: z.number().min(1).max(100).default(50),
+      }).optional())
+      .query(async ({ ctx, input }) => {
+        const limit = input?.limit || 50;
+        return await db.getUserPaymentHistory(ctx.user.id, limit);
       }),
   }),
 });

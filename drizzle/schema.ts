@@ -209,3 +209,29 @@ export const stripeEvents = mysqlTable("stripeEvents", {
 
 export type StripeEvent = typeof stripeEvents.$inferSelect;
 export type InsertStripeEvent = typeof stripeEvents.$inferInsert;
+
+
+/**
+ * Payment history for tracking all transactions
+ */
+export const paymentHistory = mysqlTable("paymentHistory", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  planId: int("planId").notNull(),
+  planName: varchar("planName", { length: 100 }).notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency", { length: 10 }).default("USD").notNull(),
+  period: mysqlEnum("period", ["monthly", "yearly"]).notNull(),
+  paymentMethod: varchar("paymentMethod", { length: 50 }).notNull(), // "paypal", "card"
+  paypalOrderId: varchar("paypalOrderId", { length: 255 }),
+  paypalTransactionId: varchar("paypalTransactionId", { length: 255 }),
+  status: mysqlEnum("status", ["pending", "completed", "failed", "refunded"]).default("pending").notNull(),
+  payerEmail: varchar("payerEmail", { length: 320 }),
+  payerName: varchar("payerName", { length: 255 }),
+  description: text("description"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PaymentHistory = typeof paymentHistory.$inferSelect;
+export type InsertPaymentHistory = typeof paymentHistory.$inferInsert;

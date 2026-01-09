@@ -11,7 +11,9 @@ import {
   activityLogs,
   supportTickets,
   emailNotifications,
-  stripeEvents
+  stripeEvents,
+  paymentHistory,
+  InsertPaymentHistory
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -440,4 +442,52 @@ export async function markStripeEventAsProcessed(eventId: string) {
   if (!db) return;
 
   await db.update(stripeEvents).set({ processed: true }).where(eq(stripeEvents.eventId, eventId));
+}
+
+
+// ============ PAYMENT HISTORY QUERIES ============
+
+export async function createPaymentRecord(data: InsertPaymentHistory) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.insert(paymentHistory).values(data);
+  return { insertId: (result as any).insertId };
+}
+
+export async function updatePaymentStatus(
+  id: number, 
+  status: "pending" | "completed" | "failed" | "refunded",
+  transactionId?: string
+) {
+  const db = await getDb();
+  if (!db) return;
+
+  const updates: any = { status };
+  if (transactionId) updates.paypalTransactionId = transactionId;
+
+  await db.update(paymentHistory).set(updates).where(eq(paymentHistory.id, id));
+}
+
+export async function getUserPaymentHistory(userId: number, limit: number = 50) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select()
+    .from(paymentHistory)
+    .where(eq(paymentHistory.userId, userId))
+    .orderBy(desc(paymentHistory.createdAt))
+    .limit(limit);
+}
+
+export async function getPaymentByOrderId(orderId: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select()
+    .from(paymentHistory)
+    .where(eq(paymentHistory.paypalOrderId, orderId))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
 }

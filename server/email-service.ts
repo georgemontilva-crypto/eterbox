@@ -356,3 +356,107 @@ export async function sendWelcomeEmail(
 
   return sendEmail(email, "Welcome to EterBox - Your Secure Password Vault", htmlContent);
 }
+
+
+/**
+ * Send subscription confirmation email
+ */
+export async function sendSubscriptionConfirmation(
+  email: string,
+  userName: string,
+  planName: string,
+  amount: string,
+  period: "monthly" | "yearly",
+  renewalDate: Date,
+  transactionId: string
+): Promise<boolean> {
+  const periodText = period === "yearly" ? "year" : "month";
+  const periodTextEs = period === "yearly" ? "año" : "mes";
+  
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>
+          body { font-family: 'Montserrat', sans-serif; background-color: #0a0a0f; color: #ffffff; margin: 0; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background-color: #111118; padding: 30px; border-radius: 20px; border: 1px solid #1e1e2e; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .logo { font-size: 28px; font-weight: bold; color: #3b82f6; }
+          .success-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+          .success-icon svg { width: 40px; height: 40px; fill: white; }
+          h1 { color: #ffffff; font-size: 24px; margin: 0 0 10px; }
+          .subtitle { color: #9ca3af; font-size: 16px; margin: 0; }
+          .plan-card { background: linear-gradient(135deg, #1e1e2e 0%, #252532 100%); border-radius: 15px; padding: 25px; margin: 25px 0; border: 1px solid #3b82f6; }
+          .plan-name { font-size: 22px; font-weight: bold; color: #3b82f6; margin-bottom: 15px; }
+          .plan-details { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+          .plan-price { font-size: 28px; font-weight: bold; color: #ffffff; }
+          .plan-period { color: #9ca3af; font-size: 14px; }
+          .details-grid { margin-top: 20px; }
+          .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #2e2e3e; }
+          .detail-row:last-child { border-bottom: none; }
+          .detail-label { color: #9ca3af; }
+          .detail-value { color: #ffffff; font-weight: 500; }
+          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #2e2e3e; }
+          .footer p { color: #6b7280; font-size: 12px; margin: 5px 0; }
+          .button { display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; margin-top: 20px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo">🔒 EterBox</div>
+          </div>
+          
+          <div style="text-align: center;">
+            <div class="success-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <h1>¡Pago Confirmado!</h1>
+            <p class="subtitle">Gracias por tu suscripción, ${userName}</p>
+          </div>
+          
+          <div class="plan-card">
+            <div class="plan-name">${planName} Plan</div>
+            <div class="plan-details">
+              <div>
+                <div class="plan-price">$${amount}</div>
+                <div class="plan-period">por ${periodTextEs}</div>
+              </div>
+            </div>
+            
+            <div class="details-grid">
+              <div class="detail-row">
+                <span class="detail-label">ID de Transacción</span>
+                <span class="detail-value">${transactionId}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Fecha de Pago</span>
+                <span class="detail-value">${new Date().toLocaleDateString()}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Próxima Renovación</span>
+                <span class="detail-value">${renewalDate.toLocaleDateString()}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Método de Pago</span>
+                <span class="detail-value">PayPal</span>
+              </div>
+            </div>
+          </div>
+          
+          <div style="text-align: center;">
+            <p style="color: #9ca3af;">Tu plan ha sido activado exitosamente. Ya puedes disfrutar de todas las características premium.</p>
+            <a href="https://eterbox.com/dashboard" class="button">Ir al Dashboard</a>
+          </div>
+          
+          <div class="footer">
+            <p>Si tienes alguna pregunta, contacta a nuestro equipo de soporte.</p>
+            <p>© ${new Date().getFullYear()} EterBox. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  return sendEmail(email, `✓ Confirmación de Pago - ${planName} Plan | EterBox`, htmlContent);
+}

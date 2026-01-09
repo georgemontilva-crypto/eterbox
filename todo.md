@@ -248,3 +248,11 @@
 - [x] Corregir scroll del modal de tarjeta para poder ver todos los campos
 - [x] Corregir monto cero en el cobro de PayPal (precios actualizados en DB)
 - [x] Crear pantalla de gracias con detalles del plan adquirido
+
+
+## Nuevas Funcionalidades - Historial y Emails
+- [x] Verificar modo de PayPal (live vs sandbox) - Está en modo LIVE
+- [x] Crear tabla de historial de pagos en base de datos
+- [x] Implementar endpoints para historial de pagos
+- [x] Enviar email de confirmación cuando el cliente se une a un plan
+- [x] Crear UI de historial de pagos en el dashboard (menú hamburguesa)

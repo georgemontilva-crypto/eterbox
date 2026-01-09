@@ -234,6 +234,23 @@ export const translations: Translations = {
   "checkout.goToDashboard": { en: "Go to Dashboard", es: "Ir al Panel" },
   "checkout.emailConfirmation": { en: "A confirmation email has been sent to your email address.", es: "Se ha enviado un correo de confirmación a tu dirección de email." },
 
+  // Payment History
+  "payments.history": { en: "Payment History", es: "Historial de Pagos" },
+  "payments.historyDesc": { en: "View all your past transactions", es: "Ver todas tus transacciones anteriores" },
+  "payments.noPayments": { en: "No payments yet", es: "Sin pagos aún" },
+  "payments.noPaymentsDesc": { en: "Your payment history will appear here once you make a purchase.", es: "Tu historial de pagos aparecerá aquí una vez que realices una compra." },
+  "payments.completed": { en: "Completed", es: "Completado" },
+  "payments.pending": { en: "Pending", es: "Pendiente" },
+  "payments.failed": { en: "Failed", es: "Fallido" },
+  "payments.refunded": { en: "Refunded", es: "Reembolsado" },
+  "payments.transactionId": { en: "Transaction ID", es: "ID de Transacción" },
+  "payments.paymentMethod": { en: "Payment Method", es: "Método de Pago" },
+  "payments.period": { en: "Billing Period", es: "Período de Facturación" },
+  "payments.currency": { en: "Currency", es: "Moneda" },
+  "payments.payerEmail": { en: "Payer Email", es: "Email del Pagador" },
+  "payments.description": { en: "Description", es: "Descripción" },
+  "payments.viewHistory": { en: "View Payment History", es: "Ver Historial de Pagos" },
+
   // Renewal Banner
   "renewal.upcoming": { en: "Subscription Renewal Coming Up", es: "Renovación de Suscripción Próxima" },
   "renewal.upcomingDesc": { en: "Your {plan} plan will renew in {days} days on {date}. Make sure your payment method is up to date.", es: "Tu plan {plan} se renovará en {days} días el {date}. Asegúrate de que tu método de pago esté actualizado." },

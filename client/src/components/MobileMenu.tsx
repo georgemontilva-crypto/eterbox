@@ -1,12 +1,99 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus } from "lucide-react";
+import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+
+// Inline Payment History Component
+function PaymentHistoryInline() {
+  const { t } = useLanguage();
+  const { data: payments, isLoading } = trpc.payments.getHistory.useQuery({ limit: 50 });
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <Check className="w-4 h-4 text-green-500" />;
+      case "pending":
+        return <Loader2 className="w-4 h-4 text-yellow-500 animate-spin" />;
+      case "failed":
+        return <span className="w-4 h-4 text-red-500">✗</span>;
+      case "refunded":
+        return <RefreshCw className="w-4 h-4 text-blue-500" />;
+      default:
+        return <Loader2 className="w-4 h-4 text-gray-500" />;
+    }
+  };
+
+  const formatDate = (date: string | Date) => {
+    return new Date(date).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
+  if (!payments || payments.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Receipt className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+        <h3 className="text-lg font-medium mb-2">{t("payments.noPayments")}</h3>
+        <p className="text-sm text-muted-foreground">{t("payments.noPaymentsDesc")}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {payments.map((payment: any) => (
+        <div 
+          key={payment.id}
+          className="p-4 border border-border/20 rounded-[15px] bg-card/50"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-medium">{payment.planName} Plan</span>
+            <span className="font-bold">${payment.amount}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>{formatDate(payment.createdAt)}</span>
+            <div className="flex items-center gap-1">
+              {getStatusIcon(payment.status)}
+              <span className={
+                payment.status === "completed" ? "text-green-500" :
+                payment.status === "pending" ? "text-yellow-500" :
+                payment.status === "failed" ? "text-red-500" :
+                "text-blue-500"
+              }>
+                {payment.status === "completed" ? t("payments.completed") :
+                 payment.status === "pending" ? t("payments.pending") :
+                 payment.status === "failed" ? t("payments.failed") :
+                 t("payments.refunded")}
+              </span>
+            </div>
+          </div>
+          {payment.paypalTransactionId && (
+            <div className="mt-2 pt-2 border-t border-border/20">
+              <p className="text-xs text-muted-foreground truncate">
+                ID: {payment.paypalTransactionId}
+              </p>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // Inline Password Generator Component
 interface PasswordGeneratorInlineProps {
@@ -131,7 +218,7 @@ interface MobileMenuProps {
   onAddCredentialWithPassword?: (password: string) => void;
 }
 
-type ActiveView = "menu" | "2fa" | "password" | "plan" | "settings" | "language" | "generator" | null;
+type ActiveView = "menu" | "2fa" | "password" | "plan" | "settings" | "language" | "generator" | "payments" | null;
 
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -225,6 +312,12 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
       icon: Wand2,
       label: t("generator.title"),
       description: t("generator.secureKeys"),
+    },
+    {
+      id: "payments" as ActiveView,
+      icon: Receipt,
+      label: t("payments.history"),
+      description: t("payments.historyDesc"),
     },
   ];
 
@@ -609,6 +702,29 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
             <p className="text-sm text-muted-foreground">{t("generator.secureKeys")}</p>
           </div>
           <PasswordGeneratorInline onAddCredential={handleAddCredential} />
+        </div>
+      );
+    }
+
+    if (activeView === "payments") {
+      return (
+        <div className="flex flex-col h-full">
+          <div className="p-6 border-b border-border/20">
+            <button onClick={handleBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">{t("common.back")}</span>
+            </button>
+            <div className="text-center space-y-2">
+              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
+                <Receipt className="w-8 h-8 text-accent" />
+              </div>
+              <h2 className="text-xl font-bold">{t("payments.history")}</h2>
+              <p className="text-sm text-muted-foreground">{t("payments.historyDesc")}</p>
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <PaymentHistoryInline />
+          </div>
         </div>
       );
     }
