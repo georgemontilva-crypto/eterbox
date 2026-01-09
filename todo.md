@@ -97,3 +97,22 @@
 - [ ] Configurar variables de entorno
 - [ ] Crear guía de instalación en Hostinger
 - [ ] Realizar pruebas finales
+
+
+## Bugs Encontrados y Fixes
+- [x] Error NOT_FOUND en dashboard - planes no inicializados en BD
+- [x] Necesario script de seeding para planes iniciales
+- [x] Errores de tipos de TypeScript en componentes
+- [x] Estructura de datos de credenciales y planes
+
+
+## Implementación UI Interactiva
+- [x] Modal para crear credenciales
+- [x] Modal para crear carpetas
+- [x] Página de gestión de planes con cambio de plan
+- [x] Integración PayPal en UI
+- [x] CRUD completo de credenciales
+- [x] CRUD completo de carpetas
+- [x] Mostrar/ocultar contraseñas
+- [x] Copiar contraseñas al portapapeles
+- [ ] Búsqueda y filtrado

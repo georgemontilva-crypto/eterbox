@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO plans (name, description, maxKeys, maxFolders, price, stripePriceId, features, isActive) VALUES \n('Free', 'Perfect for getting started', 3, 1, '0', 'price_free', JSON_ARRAY('3 Credentials', '1 Folder', 'AES-256 Encryption'), true),\n('Basic', 'For individuals and small teams', 25, 5, '15', 'price_basic', JSON_ARRAY('25 Credentials', '5 Folders', 'AES-256 Encryption', '2FA Support'), true),\n('Corporate', 'For enterprises and large teams', 999999, 999999, '25', 'price_corporate', JSON_ARRAY('Unlimited Credentials', 'Unlimited Folders', 'AES-256 Encryption', '2FA Support', 'Priority Support'), true);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute INSERT INTO plans (name, description, maxKeys, maxFolders, price, stripePriceId, features, isActive) VALUES \n('Free', 'Perfect for getting started', 3, 1, '0', 'price_free', JSON_ARRAY('3 Credentials', '1 Folder', 'AES-256 Encryption'), true),\n('Basic', 'For individuals and small teams', 25, 5, '15', 'price_basic', JSON_ARRAY('25 Credentials', '5 Folders', 'AES-256 Encryption', '2FA Support'), true),\n('Corporate', 'For enterprises and large teams', 999999, 999999, '25', 'price_corporate', JSON_ARRAY('Unlimited Credentials', 'Unlimited Folders', 'AES-256 Encryption', '2FA Support', 'Priority Support'), true);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 123
+}
