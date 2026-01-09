@@ -297,3 +297,12 @@
 - [x] Actualizar package.json con scripts correctos para Hostinger
 - [x] Crear documento de instrucciones para otra IA (INSTRUCCIONES_PARA_IA.md)
 - [x] Analizar el problema de Hostinger Node.js Apps
+
+
+## Reestructuración completa para Hostinger (Opción 2)
+- [x] Crear nuevo entry point server.js en la raíz
+- [x] Simplificar servidor Express para solo servir estáticos y API (ya estaba correcto)
+- [x] Modificar package.json con scripts optimizados para Hostinger
+- [x] Configurar PORT dinámico para Hostinger (ya estaba implementado)
+- [x] Probar build completo localmente - ✅ Exitoso
+- [x] Crear guía de despliegue actualizada (GUIA_DESPLIEGUE_HOSTINGER_FINAL.md)
