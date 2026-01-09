@@ -5,7 +5,7 @@ import { CreateFolderModal } from "@/components/CreateFolderModal";
 import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronDown, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -20,6 +20,17 @@ export default function Dashboard() {
   const [showMoveDialog, setShowMoveDialog] = useState(false);
   const [selectedCredentialForMove, setSelectedCredentialForMove] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
+
+  const toggleFolderExpanded = (folderId: number) => {
+    const newSet = new Set(expandedFolders);
+    if (newSet.has(folderId)) {
+      newSet.delete(folderId);
+    } else {
+      newSet.add(folderId);
+    }
+    setExpandedFolders(newSet);
+  };
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -262,6 +273,17 @@ export default function Dashboard() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          onClick={() => toggleFolderExpanded(folder.id)}
+                        >
+                          {expandedFolders.has(folder.id) ? (
+                            <ChevronDown className="w-4 h-4" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => {
                             setSelectedFolderId(folder.id);
                             setShowCredentialModal(true);
@@ -278,14 +300,18 @@ export default function Dashboard() {
                         </Button>
                       </div>
                     </div>
-                    {folderCreds.length > 0 ? (
-                      <div className="space-y-3 ml-8">
-                        {folderCreds.map(renderCredentialCard)}
-                      </div>
-                    ) : (
-                      <div className="ml-8 p-4 rounded-[15px] bg-card/50 border border-border/20 text-center">
-                        <p className="text-sm text-muted-foreground">No credentials in this folder</p>
-                      </div>
+                    {expandedFolders.has(folder.id) && (
+                      <>
+                        {folderCreds.length > 0 ? (
+                          <div className="space-y-3 ml-8">
+                            {folderCreds.map(renderCredentialCard)}
+                          </div>
+                        ) : (
+                          <div className="ml-8 p-4 rounded-[15px] bg-card/50 border border-border/20 text-center">
+                            <p className="text-sm text-muted-foreground">No credentials in this folder</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 );

@@ -138,3 +138,6 @@
 - [x] Agregar botón "Add Credential" en cada carpeta para crear credenciales directamente
 - [x] Agregar opción de mover credencial existente a una carpeta
 - [x] Agregar barra de búsqueda para filtrar carpetas y credenciales
+
+- [x] Mejorar búsqueda para mostrar resultados en tiempo real
+- [x] Agregar botón para expandir/contraer carpetas y ocultar credenciales
