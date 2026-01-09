@@ -232,6 +232,104 @@ export async function verifyPayPalWebhookSignature(
 }
 
 /**
+ * Create a PayPal order for one-time payment
+ */
+export async function createPayPalOrder(
+  planName: string,
+  amount: string,
+  userId: string,
+  planId: string
+) {
+  const accessToken = await getPayPalAccessToken();
+
+  try {
+    const response = await axios.post(
+      `${PAYPAL_BASE_URL}/v2/checkout/orders`,
+      {
+        intent: "CAPTURE",
+        purchase_units: [
+          {
+            reference_id: `eterbox_plan_${planId}`,
+            custom_id: `${userId}_${planId}`,
+            description: `EterBox ${planName} Plan - Monthly Subscription`,
+            amount: {
+              currency_code: "USD",
+              value: amount,
+            },
+          },
+        ],
+        application_context: {
+          brand_name: "EterBox",
+          landing_page: "LOGIN",
+          user_action: "PAY_NOW",
+          return_url: `${process.env.VITE_APP_URL || "http://localhost:3000"}/dashboard?payment=success`,
+          cancel_url: `${process.env.VITE_APP_URL || "http://localhost:3000"}/pricing?payment=cancelled`,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Failed to create PayPal order:", error.response?.data || error.message);
+    throw new Error("Failed to create order");
+  }
+}
+
+/**
+ * Capture a PayPal order after approval
+ */
+export async function capturePayPalOrder(orderId: string) {
+  const accessToken = await getPayPalAccessToken();
+
+  try {
+    const response = await axios.post(
+      `${PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Failed to capture PayPal order:", error.response?.data || error.message);
+    throw new Error("Failed to capture order");
+  }
+}
+
+/**
+ * Get PayPal order details
+ */
+export async function getPayPalOrder(orderId: string) {
+  const accessToken = await getPayPalAccessToken();
+
+  try {
+    const response = await axios.get(
+      `${PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Failed to get PayPal order:", error.response?.data || error.message);
+    throw new Error("Failed to get order");
+  }
+}
+
+/**
  * Create PayPal billing plans
  */
 export async function createPayPalBillingPlan(

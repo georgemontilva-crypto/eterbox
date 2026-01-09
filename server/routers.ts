@@ -397,37 +397,78 @@ export const appRouter = router({
 
   // ============ PAYPAL ============
   paypal: router({
-    createSubscription: protectedProcedure
+    createOrder: protectedProcedure
       .input(z.object({
-        planId: z.string(),
-        stripePriceId: z.string(),
+        planId: z.number(),
       }))
       .mutation(async ({ ctx, input }) => {
         const user = await db.getUserById(ctx.user.id);
         if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
-        const plan = await db.getPlanByStripePriceId(input.stripePriceId);
-        if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
+        const plan = await db.getPlanById(input.planId);
+        if (!plan) throw new TRPCError({ code: "NOT_FOUND", message: "Plan not found" });
+
+        if (plan.name === "Free") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot purchase free plan" });
+        }
 
         try {
-          const returnUrl = `${process.env.VITE_APP_URL || "http://localhost:3000"}/dashboard?subscription=success`;
-          const cancelUrl = `${process.env.VITE_APP_URL || "http://localhost:3000"}/pricing?subscription=cancelled`;
-
-          const subscription = await paypalUtils.createPayPalSubscription(
-            input.planId,
-            returnUrl,
-            cancelUrl,
-            user.email || "",
-            ctx.user.id.toString()
+          const order = await paypalUtils.createPayPalOrder(
+            plan.name,
+            plan.price.toString(),
+            ctx.user.id.toString(),
+            input.planId.toString()
           );
 
           return {
-            approvalUrl: subscription.links.find((link: any) => link.rel === "approve")?.href,
-            subscriptionId: subscription.id,
+            orderId: order.id,
+            approvalUrl: order.links.find((link: any) => link.rel === "approve")?.href,
           };
         } catch (error) {
-          console.error("Failed to create PayPal subscription:", error);
-          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create subscription" });
+          console.error("Failed to create PayPal order:", error);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create order" });
+        }
+      }),
+
+    captureOrder: protectedProcedure
+      .input(z.object({
+        orderId: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          const capture = await paypalUtils.capturePayPalOrder(input.orderId);
+          
+          if (capture.status === "COMPLETED") {
+            // Extract plan ID from custom_id
+            const customId = capture.purchase_units?.[0]?.custom_id;
+            if (customId) {
+              const [userId, planId] = customId.split("_");
+              if (parseInt(userId) === ctx.user.id) {
+                await db.updateUserPlan(ctx.user.id, parseInt(planId));
+                await db.recordActivity(ctx.user.id, "plan_upgraded", "subscription", parseInt(planId));
+              }
+            }
+            return { success: true, status: capture.status };
+          }
+
+          return { success: false, status: capture.status };
+        } catch (error) {
+          console.error("Failed to capture PayPal order:", error);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to capture payment" });
+        }
+      }),
+
+    getOrderStatus: protectedProcedure
+      .input(z.object({
+        orderId: z.string(),
+      }))
+      .query(async ({ input }) => {
+        try {
+          const order = await paypalUtils.getPayPalOrder(input.orderId);
+          return { status: order.status };
+        } catch (error) {
+          console.error("Failed to get PayPal order status:", error);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to get order status" });
         }
       }),
   }),

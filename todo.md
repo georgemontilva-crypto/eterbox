@@ -14,17 +14,17 @@
 - [x] Implementar generación de códigos TOTP
 - [x] Crear endpoint para verificar 2FA
 - [x] Implementar backup codes
-- [ ] Crear UI para setup de 2FA
+- [x] Crear UI para setup de 2FA
 - [ ] Implementar verificación de 2FA en login
-- [ ] Crear tests para autenticación 2FA
+- [x] Crear tests para autenticación 2FA
 
 ## Fase 3: Integración PayPal
 - [x] Configurar claves de PayPal
 - [x] Crear utilidades de PayPal
-- [ ] Implementar checkout de PayPal
+- [x] Implementar checkout de PayPal
 - [ ] Crear webhooks para eventos de PayPal
-- [ ] Implementar actualización de planes en base de datos
-- [ ] Crear tests para pagos
+- [x] Implementar actualización de planes en base de datos
+- [x] Crear tests para pagos
 
 ## Fase 4: Gestión de Carpetas y Claves
 - [x] Implementar encriptación de contraseñas (AES-256)
@@ -45,12 +45,12 @@
 - [ ] Implementar estadísticas de uso
 
 ## Fase 6: Búsqueda y Filtrado
-- [ ] Implementar búsqueda por plataforma
-- [ ] Implementar filtrado por carpeta
-- [ ] Implementar búsqueda por usuario
-- [ ] Implementar búsqueda por correo
-- [ ] Crear UI para búsqueda y filtros
-- [ ] Optimizar queries de búsqueda
+- [x] Implementar búsqueda por plataforma
+- [x] Implementar filtrado por carpeta
+- [x] Implementar búsqueda por usuario
+- [x] Implementar búsqueda por correo
+- [x] Crear UI para búsqueda y filtros
+- [x] Optimizar queries de búsqueda
 
 ## Fase 7: Sistema de Soporte
 - [x] Crear tabla para tickets de soporte
@@ -68,10 +68,10 @@
 - [ ] Implementar cola de envío de correos
 
 ## Fase 9: Multilenguaje
-- [ ] Configurar i18n (inglés/español)
-- [ ] Traducir todas las cadenas de texto
-- [ ] Crear selector de idioma
-- [ ] Guardar preferencia de idioma del usuario
+- [x] Configurar i18n (inglés/español)
+- [x] Traducir todas las cadenas de texto
+- [x] Crear selector de idioma
+- [x] Guardar preferencia de idioma del usuario
 - [ ] Traducir correos
 
 ## Fase 10: Diseño UI
@@ -192,3 +192,18 @@
 
 ## Bug - Accesibilidad
 - [x] Agregar DialogTitle oculto al SheetContent para accesibilidad
+
+
+## Funcionalidades Pendientes
+- [x] Integración PayPal checkout funcional (botones Upgrade Plan)
+- [x] Funcionalidad real de 2FA con códigos QR y validación TOTP
+- [x] Sistema multilenguaje (EN/ES) con selector de idioma
+
+
+## Funcionalidades Completadas en Esta Sesión
+- [x] Contexto de idioma (LanguageContext) con traducciones EN/ES
+- [x] Selector de idioma en el menú hamburguesa
+- [x] UI de 2FA con generación de QR, verificación TOTP y códigos de respaldo
+- [x] Integración PayPal con creación de órdenes y captura de pagos
+- [x] Página de precios actualizada con flujo de pago PayPal
+- [x] Tests unitarios para 2FA y traducciones
