@@ -145,3 +145,8 @@
 - [x] Mostrar resultados de búsqueda combinados (carpetas + credenciales)
 - [x] Agregar animación de loading mientras se busca
 - [x] Incluir platformName en búsqueda de credenciales
+
+
+## Bugs Reportados - Búsqueda
+- [x] Contador de items incorrecto en resultados de búsqueda
+- [x] Carpeta no se expande al hacer clic en resultado de búsqueda

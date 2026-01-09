@@ -95,11 +95,11 @@ export default function Dashboard() {
     return folder.name?.toLowerCase().includes(query);
   });
 
-  // Group credentials by folder
+  // Group ALL credentials by folder for accurate counts
   const credentialsByFolder: { [key: number]: any[] } = {};
   const credentialsWithoutFolder: any[] = [];
 
-  filteredCredentials.forEach((cred: any) => {
+  credentials.forEach((cred: any) => {
     if (cred.folderId) {
       if (!credentialsByFolder[cred.folderId]) {
         credentialsByFolder[cred.folderId] = [];
@@ -107,6 +107,21 @@ export default function Dashboard() {
       credentialsByFolder[cred.folderId].push(cred);
     } else {
       credentialsWithoutFolder.push(cred);
+    }
+  });
+
+  // Group filtered credentials by folder for display
+  const filteredCredentialsByFolder: { [key: number]: any[] } = {};
+  const filteredCredentialsWithoutFolder: any[] = [];
+
+  filteredCredentials.forEach((cred: any) => {
+    if (cred.folderId) {
+      if (!filteredCredentialsByFolder[cred.folderId]) {
+        filteredCredentialsByFolder[cred.folderId] = [];
+      }
+      filteredCredentialsByFolder[cred.folderId].push(cred);
+    } else {
+      filteredCredentialsWithoutFolder.push(cred);
     }
   });
 
@@ -311,7 +326,9 @@ export default function Dashboard() {
             <h3 className="text-xl font-bold mb-4">Your Folders</h3>
             <div className="space-y-6">
               {filteredFolders.map((folder: any) => {
-                const folderCreds = credentialsByFolder[folder.id] || [];
+                const folderCreds = searchQuery.length > 0 
+                  ? (filteredCredentialsByFolder[folder.id] || [])
+                  : (credentialsByFolder[folder.id] || []);
                 return (
                   <div key={folder.id}>
                     <div className="flex items-center justify-between mb-3">
@@ -374,6 +391,7 @@ export default function Dashboard() {
         )}
 
         {/* Credentials Without Folder */}
+        {searchQuery.length === 0 && (
         <div>
           <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
           {credentialsWithoutFolder && credentialsWithoutFolder.length > 0 ? (
@@ -387,6 +405,7 @@ export default function Dashboard() {
             </Card>
           ) : null}
         </div>
+        )}
       </main>
 
       {/* Modals */}
