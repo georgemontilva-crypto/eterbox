@@ -285,11 +285,11 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false }: Mob
               </div>
               <p className="text-sm text-center text-muted-foreground">{t("twoFactor.scanQR")}</p>
               {secret && (
-                <div className="bg-card border border-border/20 rounded-[15px] p-3">
+                <div className="bg-card border border-border/20 rounded-[15px] p-3 overflow-hidden">
                   <p className="text-xs text-muted-foreground mb-1">Manual entry code:</p>
-                  <div className="flex items-center justify-between">
-                    <code className="text-sm font-mono">{secret}</code>
-                    <Button variant="ghost" size="icon" onClick={() => copyToClipboard(secret)}>
+                  <div className="flex items-center gap-2">
+                    <code className="text-xs font-mono break-all flex-1 select-all">{secret}</code>
+                    <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={() => copyToClipboard(secret)}>
                       <Copy className="w-4 h-4" />
                     </Button>
                   </div>

@@ -207,3 +207,7 @@
 - [x] Integración PayPal con creación de órdenes y captura de pagos
 - [x] Página de precios actualizada con flujo de pago PayPal
 - [x] Tests unitarios para 2FA y traducciones
+
+
+## Bug - Desbordamiento 2FA
+- [x] Corregir desbordamiento del código de entrada manual en la vista de 2FA
