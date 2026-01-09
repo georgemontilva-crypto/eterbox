@@ -243,10 +243,10 @@ export const translations: Translations = {
   "generator.numbers": { en: "Numbers", es: "Números" },
   "generator.symbols": { en: "Symbols", es: "Símbolos" },
   "generator.generate": { en: "Generate Password", es: "Generar Contraseña" },
-  "generator.addAsCredential": { en: "Add as Credential", es: "Añadir como Credencial" },
   "generator.copied": { en: "Password copied!", es: "¡Contraseña copiada!" },
   "generator.limitReached": { en: "You have reached your password generation limit. Upgrade your plan for more.", es: "Has alcanzado tu límite de generación. Mejora tu plan para más." },
   "generator.secureKeys": { en: "Secure Keys", es: "Claves Seguras" },
+  "generator.addAsCredential": { en: "Add as New Credential", es: "Agregar como Nueva Credencial" },
   "generator.generated": { en: "generated", es: "generadas" },
 
   // Common

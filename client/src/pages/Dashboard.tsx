@@ -28,6 +28,7 @@ export default function Dashboard() {
   const [showAddExistingModal, setShowAddExistingModal] = useState(false);
   const [showDeleteFolderDialog, setShowDeleteFolderDialog] = useState(false);
   const [folderToDelete, setFolderToDelete] = useState<{ id: number; name: string; credentialCount: number } | null>(null);
+  const [defaultPassword, setDefaultPassword] = useState<string | undefined>(undefined);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -288,7 +289,16 @@ export default function Dashboard() {
           </div>
         )}
 
-        <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} folders={folders} defaultFolderId={selectedFolderId} />
+        <CreateCredentialModal 
+          open={showCredentialModal} 
+          onOpenChange={(open) => {
+            setShowCredentialModal(open);
+            if (!open) setDefaultPassword(undefined);
+          }} 
+          folders={folders} 
+          defaultFolderId={selectedFolderId}
+          defaultPassword={defaultPassword}
+        />
       </div>
     );
   }
@@ -301,7 +311,15 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             {/* Menu hamburguesa - visible en todas las pantallas */}
             <div>
-              <MobileMenu planName={planName} onLogout={logout} />
+              <MobileMenu 
+                planName={planName} 
+                onLogout={logout} 
+                onAddCredentialWithPassword={(password) => {
+                  setDefaultPassword(password);
+                  setSelectedFolderId(undefined);
+                  setShowCredentialModal(true);
+                }}
+              />
             </div>
             
             {/* Logo - siempre a la derecha */}
@@ -466,7 +484,16 @@ export default function Dashboard() {
         )}
       </main>
 
-      <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} folders={folders} defaultFolderId={selectedFolderId} />
+      <CreateCredentialModal 
+          open={showCredentialModal} 
+          onOpenChange={(open) => {
+            setShowCredentialModal(open);
+            if (!open) setDefaultPassword(undefined);
+          }} 
+          folders={folders} 
+          defaultFolderId={selectedFolderId}
+          defaultPassword={defaultPassword}
+        />
       <CreateFolderModal open={showFolderModal} onOpenChange={setShowFolderModal} />
       <MoveToFolderDialog open={showMoveDialog} onOpenChange={setShowMoveDialog} credentialId={selectedCredentialForMove?.id || 0} currentFolderId={selectedCredentialForMove?.folderId} folders={folders} />
       {folderToDelete && (

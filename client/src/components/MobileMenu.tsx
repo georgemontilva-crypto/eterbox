@@ -9,7 +9,11 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 // Inline Password Generator Component
-function PasswordGeneratorInline() {
+interface PasswordGeneratorInlineProps {
+  onAddCredential?: (password: string) => void;
+}
+
+function PasswordGeneratorInline({ onAddCredential }: PasswordGeneratorInlineProps) {
   const { t } = useLanguage();
   const [password, setPassword] = useState("");
   const [copied, setCopied] = useState(false);
@@ -35,6 +39,12 @@ function PasswordGeneratorInline() {
     setCopied(true);
     toast.success(t("generator.copied"));
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAddCredential = () => {
+    if (password && onAddCredential) {
+      onAddCredential(password);
+    }
   };
 
   const canGenerate = usage?.unlimited || (usage?.used || 0) < (usage?.max || 0);
@@ -96,6 +106,17 @@ function PasswordGeneratorInline() {
         {t("generator.generate")}
       </Button>
 
+      {password && onAddCredential && (
+        <Button 
+          variant="outline" 
+          className="w-full h-12 rounded-[15px] border-accent/50 text-accent hover:bg-accent/10" 
+          onClick={handleAddCredential}
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          {t("generator.addAsCredential")}
+        </Button>
+      )}
+
       {!canGenerate && (
         <p className="text-sm text-destructive text-center">{t("generator.limitReached")}</p>
       )}
@@ -107,11 +128,12 @@ interface MobileMenuProps {
   planName: string;
   onLogout: () => void;
   twoFactorEnabled?: boolean;
+  onAddCredentialWithPassword?: (password: string) => void;
 }
 
 type ActiveView = "menu" | "2fa" | "password" | "plan" | "settings" | "language" | "generator" | null;
 
-export function MobileMenu({ planName, onLogout, twoFactorEnabled = false }: MobileMenuProps) {
+export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [, setLocation] = useLocation();
@@ -569,6 +591,14 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false }: Mob
     }
 
     if (activeView === "generator") {
+      const handleAddCredential = (password: string) => {
+        if (onAddCredentialWithPassword) {
+          setOpen(false);
+          setActiveView(null);
+          onAddCredentialWithPassword(password);
+        }
+      };
+
       return (
         <div className="p-6 space-y-6">
           <div className="text-center space-y-2">
@@ -578,7 +608,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false }: Mob
             <h2 className="text-xl font-bold">{t("generator.title")}</h2>
             <p className="text-sm text-muted-foreground">{t("generator.secureKeys")}</p>
           </div>
-          <PasswordGeneratorInline />
+          <PasswordGeneratorInline onAddCredential={handleAddCredential} />
         </div>
       );
     }

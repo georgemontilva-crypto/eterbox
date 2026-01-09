@@ -228,3 +228,8 @@
 
 ## Bug - Error require is not defined
 - [x] Corregir error "require is not defined" en el dashboard (problema de CommonJS en navegador)
+
+
+## Mejora - Crear credencial desde generador
+- [x] Agregar botón para crear credencial con la contraseña generada
+- [x] Abrir formulario con la contraseña pre-llenada

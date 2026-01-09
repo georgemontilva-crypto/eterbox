@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
+import * as React from "react";
 import { toast } from "sonner";
 
 interface CreateCredentialModalProps {
@@ -10,17 +11,25 @@ interface CreateCredentialModalProps {
   folderId?: number | null;
   folders: any[];
   defaultFolderId?: number;
+  defaultPassword?: string;
 }
 
-export function CreateCredentialModal({ open, onOpenChange, folderId, folders, defaultFolderId }: CreateCredentialModalProps) {
+export function CreateCredentialModal({ open, onOpenChange, folderId, folders, defaultFolderId, defaultPassword }: CreateCredentialModalProps) {
   const [formData, setFormData] = useState({
     platformName: "",
     username: "",
     email: "",
-    password: "",
+    password: defaultPassword || "",
     notes: "",
     selectedFolderId: defaultFolderId || folderId || "",
   });
+
+  // Update password when defaultPassword changes
+  React.useEffect(() => {
+    if (defaultPassword) {
+      setFormData(prev => ({ ...prev, password: defaultPassword }));
+    }
+  }, [defaultPassword]);
 
   const createMutation = trpc.credentials.create.useMutation();
   const utils = trpc.useUtils();
