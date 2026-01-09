@@ -1,22 +1,35 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, decimal, json } from "drizzle-orm/mysql-core";
 
 /**
- * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
+ * Core user table backing auth flow with 2FA support
  */
 export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
   id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  
+  // 2FA fields
+  twoFactorEnabled: boolean("twoFactorEnabled").default(false).notNull(),
+  twoFactorSecret: text("twoFactorSecret"), // TOTP secret (encrypted)
+  backupCodes: text("backupCodes"), // JSON array of backup codes (encrypted)
+  
+  // Plan information
+  planId: int("planId").notNull().default(1), // References plans table
+  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
+  subscriptionStatus: mysqlEnum("subscriptionStatus", ["active", "canceled", "past_due", "unpaid"]).default("active"),
+  
+  // Usage tracking
+  keysUsed: int("keysUsed").default(0).notNull(),
+  foldersUsed: int("foldersUsed").default(0).notNull(),
+  
+  // Preferences
+  language: varchar("language", { length: 10 }).default("en").notNull(),
+  emailNotifications: boolean("emailNotifications").default(true).notNull(),
+  
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -25,4 +38,160 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Plans table defining subscription tiers
+ */
+export const plans = mysqlTable("plans", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(), // "Free", "Basic", "Corporate"
+  description: text("description"),
+  maxKeys: int("maxKeys").notNull(), // Maximum credentials allowed
+  maxFolders: int("maxFolders").notNull(), // Maximum folders allowed
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(), // Monthly price in USD
+  stripePriceId: varchar("stripePriceId", { length: 255 }), // Stripe price ID
+  features: text("features"), // JSON array of features
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Plan = typeof plans.$inferSelect;
+export type InsertPlan = typeof plans.$inferInsert;
+
+/**
+ * Folders for organizing credentials
+ */
+export const folders = mysqlTable("folders", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  color: varchar("color", { length: 7 }).default("#3B82F6"), // Hex color
+  icon: varchar("icon", { length: 50 }), // Icon name
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Folder = typeof folders.$inferSelect;
+export type InsertFolder = typeof folders.$inferInsert;
+
+/**
+ * Credentials/Keys stored with encryption
+ */
+export const credentials = mysqlTable("credentials", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  folderId: int("folderId"), // Optional folder reference
+  
+  // Credential details
+  platformName: varchar("platformName", { length: 255 }).notNull(), // e.g., "Gmail", "Shopify"
+  category: varchar("category", { length: 100 }).notNull(), // Auto-generated from platformName
+  username: varchar("username", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }),
+  
+  // Encrypted password
+  encryptedPassword: text("encryptedPassword").notNull(), // AES-256 encrypted
+  
+  // Additional fields
+  url: varchar("url", { length: 2048 }), // Website URL
+  notes: text("notes"), // Additional notes
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  lastUsed: timestamp("lastUsed"),
+});
+
+export type Credential = typeof credentials.$inferSelect;
+export type InsertCredential = typeof credentials.$inferInsert;
+
+/**
+ * Login attempts for security tracking
+ */
+export const loginAttempts = mysqlTable("loginAttempts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  ipAddress: varchar("ipAddress", { length: 45 }).notNull(),
+  userAgent: text("userAgent"),
+  success: boolean("success").notNull(),
+  reason: varchar("reason", { length: 255 }), // "invalid_password", "2fa_failed", etc.
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type LoginAttempt = typeof loginAttempts.$inferSelect;
+export type InsertLoginAttempt = typeof loginAttempts.$inferInsert;
+
+/**
+ * Activity logs for audit trail
+ */
+export const activityLogs = mysqlTable("activityLogs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  action: varchar("action", { length: 100 }).notNull(), // "credential_created", "credential_deleted", etc.
+  resourceType: varchar("resourceType", { length: 50 }), // "credential", "folder", "account"
+  resourceId: int("resourceId"),
+  ipAddress: varchar("ipAddress", { length: 45 }),
+  userAgent: text("userAgent"),
+  details: text("details"), // JSON with additional context
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ActivityLog = typeof activityLogs.$inferSelect;
+export type InsertActivityLog = typeof activityLogs.$inferInsert;
+
+/**
+ * Support tickets
+ */
+export const supportTickets = mysqlTable("supportTickets", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),
+  email: varchar("email", { length: 320 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  category: varchar("category", { length: 50 }), // "bug", "feature", "support", etc.
+  status: mysqlEnum("status", ["open", "in_progress", "resolved", "closed"]).default("open").notNull(),
+  priority: mysqlEnum("priority", ["low", "medium", "high"]).default("medium").notNull(),
+  response: text("response"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  resolvedAt: timestamp("resolvedAt"),
+});
+
+export type SupportTicket = typeof supportTickets.$inferSelect;
+export type InsertSupportTicket = typeof supportTickets.$inferInsert;
+
+/**
+ * Email notifications queue
+ */
+export const emailNotifications = mysqlTable("emailNotifications", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),
+  email: varchar("email", { length: 320 }).notNull(),
+  type: varchar("type", { length: 100 }).notNull(), // "suspicious_login", "failed_attempts", "password_changed", "plan_renewal", etc.
+  subject: varchar("subject", { length: 255 }).notNull(),
+  htmlContent: text("htmlContent").notNull(),
+  status: mysqlEnum("status", ["pending", "sent", "failed"]).default("pending").notNull(),
+  failureReason: text("failureReason"),
+  sentAt: timestamp("sentAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EmailNotification = typeof emailNotifications.$inferSelect;
+export type InsertEmailNotification = typeof emailNotifications.$inferInsert;
+
+/**
+ * Stripe events log for webhook tracking
+ */
+export const stripeEvents = mysqlTable("stripeEvents", {
+  id: int("id").autoincrement().primaryKey(),
+  eventId: varchar("eventId", { length: 255 }).notNull().unique(),
+  eventType: varchar("eventType", { length: 100 }).notNull(),
+  userId: int("userId"),
+  data: text("data").notNull(), // JSON event data
+  processed: boolean("processed").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type StripeEvent = typeof stripeEvents.$inferSelect;
+export type InsertStripeEvent = typeof stripeEvents.$inferInsert;

@@ -7,4 +7,13 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
+  paypalClientId: process.env.PAYPAL_CLIENT_ID ?? "",
+  paypalSecretKey: process.env.PAYPAL_SECRET_KEY ?? "",
+  paypalMode: process.env.PAYPAL_MODE ?? "sandbox",
+  smtpHost: process.env.SMTP_HOST ?? "",
+  smtpPort: parseInt(process.env.SMTP_PORT ?? "587"),
+  smtpUser: process.env.SMTP_USER ?? "",
+  smtpPassword: process.env.SMTP_PASSWORD ?? "",
+  supportEmail: process.env.SUPPORT_EMAIL ?? "support@eterbox.com",
 };
+
