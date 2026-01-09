@@ -21,14 +21,15 @@ export function CreateFolderModal({ open, onOpenChange }: CreateFolderModalProps
 
   const createMutation = trpc.folders.create.useMutation();
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
+  const { data: folders = [] } = trpc.folders.list.useQuery();
   const utils = trpc.useUtils();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if user has reached folder limit
+    // Check if user has reached folder limit - count actual folders, not stored counter
     const maxFolders = userPlan?.maxFolders || 1;
-    const currentFolders = userPlan?.foldersUsed || 0;
+    const currentFolders = folders.length;
     
     if (currentFolders >= maxFolders) {
       setShowLimitAlert(true);

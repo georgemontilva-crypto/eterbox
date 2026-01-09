@@ -166,3 +166,8 @@
 - [x] Contador de credenciales no se actualiza después de eliminar
 - [x] Agregar popup de confirmación con opciones: eliminar solo carpeta o carpeta + credenciales
 - [x] Si se elimina solo carpeta, mover credenciales a "Your Credentials" (sin carpeta)
+
+
+## Bug - Contador de Carpetas
+- [x] El contador foldersUsed no se decrementa al eliminar una carpeta
+- [x] Corregir lógica para actualizar contador al crear/eliminar carpetas
