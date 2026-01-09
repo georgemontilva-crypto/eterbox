@@ -5,7 +5,7 @@ import { CreateFolderModal } from "@/components/CreateFolderModal";
 import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search } from "lucide-react";
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ export default function Dashboard() {
   const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
   const [showMoveDialog, setShowMoveDialog] = useState(false);
   const [selectedCredentialForMove, setSelectedCredentialForMove] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -68,11 +69,26 @@ export default function Dashboard() {
   const maxKeys = userPlan?.maxKeys || 3;
   const maxFolders = userPlan?.maxFolders || 1;
 
+  // Filter credentials and folders based on search query
+  const filteredCredentials = credentials.filter((cred: any) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      cred.platformName?.toLowerCase().includes(query) ||
+      cred.username?.toLowerCase().includes(query) ||
+      cred.email?.toLowerCase().includes(query)
+    );
+  });
+
+  const filteredFolders = folders.filter((folder: any) => {
+    const query = searchQuery.toLowerCase();
+    return folder.name?.toLowerCase().includes(query);
+  });
+
   // Group credentials by folder
   const credentialsByFolder: { [key: number]: any[] } = {};
   const credentialsWithoutFolder: any[] = [];
 
-  credentials.forEach((cred: any) => {
+  filteredCredentials.forEach((cred: any) => {
     if (cred.folderId) {
       if (!credentialsByFolder[cred.folderId]) {
         credentialsByFolder[cred.folderId] = [];
@@ -198,6 +214,20 @@ export default function Dashboard() {
           </Button>
         </div>
 
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search folders, platforms, users, or emails..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-[15px] border border-border/30 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/30 transition-colors"
+            />
+          </div>
+        </div>
+
         {/* Upgrade Plan Button */}
         {planName !== "Corporate" && (
           <div className="mb-8 p-4 rounded-[15px] bg-accent/10 border border-accent/30">
@@ -212,11 +242,11 @@ export default function Dashboard() {
         )}
 
         {/* Folders Section with Credentials */}
-        {folders && folders.length > 0 && (
+        {filteredFolders && filteredFolders.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-bold mb-4">Your Folders</h3>
             <div className="space-y-6">
-              {folders.map((folder: any) => {
+              {filteredFolders.map((folder: any) => {
                 const folderCreds = credentialsByFolder[folder.id] || [];
                 return (
                   <div key={folder.id}>
