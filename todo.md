@@ -171,3 +171,9 @@
 ## Bug - Contador de Carpetas
 - [x] El contador foldersUsed no se decrementa al eliminar una carpeta
 - [x] Corregir lógica para actualizar contador al crear/eliminar carpetas
+
+
+## Menú Móvil Hamburguesa
+- [x] Crear menú hamburguesa para vista móvil
+- [x] Despliegue desde izquierda a derecha
+- [x] Opciones: activar 2FA, cambiar contraseña, cerrar sesión, ver plan, settings

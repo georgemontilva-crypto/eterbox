@@ -7,6 +7,7 @@ import { DeleteFolderDialog } from "@/components/DeleteFolderDialog";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus } from "lucide-react";
+import { MobileMenu } from "@/components/MobileMenu";
 import { useLocation } from "wouter";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
@@ -298,10 +299,13 @@ export default function Dashboard() {
         <div className="container py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              {/* Mobile Menu */}
+              <MobileMenu planName={planName} onLogout={logout} />
               <Lock className="w-6 h-6 text-accent" />
               <span className="text-xl font-bold">EterBox</span>
             </div>
-            <div className="flex items-center gap-4">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => setLocation("/settings")}>
                 <Settings className="w-4 h-4 mr-2" />Settings
               </Button>
