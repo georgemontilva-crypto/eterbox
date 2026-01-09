@@ -270,3 +270,9 @@
 - [x] Crear archivo de configuración para Hostinger
 - [x] Documentar variables de entorno necesarias
 - [x] Crear guía paso a paso de despliegue
+
+
+## Corrección para Hostinger
+- [x] Verificar y corregir script start en package.json
+- [x] Asegurar compatibilidad con despliegue en Hostinger
+- [x] Agregar script especial 'hostinger' que combina install + build + start
