@@ -298,12 +298,23 @@ export default function Dashboard() {
       <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* Mobile Menu */}
+            {/* Mobile: Menu left, Logo right */}
+            <div className="md:hidden">
               <MobileMenu planName={planName} onLogout={logout} />
+            </div>
+            
+            {/* Desktop: Logo left */}
+            <div className="hidden md:flex items-center gap-3">
               <Lock className="w-6 h-6 text-accent" />
               <span className="text-xl font-bold">EterBox</span>
             </div>
+            
+            {/* Mobile: Logo right */}
+            <div className="flex md:hidden items-center gap-2">
+              <Lock className="w-5 h-5 text-accent" />
+              <span className="text-lg font-bold">EterBox</span>
+            </div>
+            
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => setLocation("/settings")}>

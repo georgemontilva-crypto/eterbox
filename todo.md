@@ -177,3 +177,9 @@
 - [x] Crear menú hamburguesa para vista móvil
 - [x] Despliegue desde izquierda a derecha
 - [x] Opciones: activar 2FA, cambiar contraseña, cerrar sesión, ver plan, settings
+
+
+## Mejoras Menú Móvil
+- [x] Logo a la derecha en vista móvil
+- [x] Opciones se abren en pantalla completa
+- [x] Header con menú persistente para seguir navegando
