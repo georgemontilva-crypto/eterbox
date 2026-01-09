@@ -256,3 +256,11 @@
 - [x] Implementar endpoints para historial de pagos
 - [x] Enviar email de confirmación cuando el cliente se une a un plan
 - [x] Crear UI de historial de pagos en el dashboard (menú hamburguesa)
+
+
+## Verificación 2FA en Login
+- [x] Analizar flujo de autenticación actual (OAuth)
+- [x] Implementar verificación 2FA en el backend después del login
+- [x] Crear UI de verificación 2FA (pantalla de código TOTP)
+- [x] Permitir usar códigos de respaldo si no tiene acceso al autenticador
+- [x] Crear tests para la verificación 2FA en login

@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Pricing from "./pages/Pricing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
+import Verify2FA from "./pages/Verify2FA";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
@@ -39,6 +40,7 @@ function Router() {
       <Route path={"/pricing"} component={Pricing} />
       <Route path={"/support"} component={Support} />
       <Route path={"/settings"} component={() => <ProtectedRoute component={Settings} />} />
+      <Route path={"/verify-2fa"} component={Verify2FA} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

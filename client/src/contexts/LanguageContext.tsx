@@ -104,6 +104,27 @@ export const translations: Translations = {
   "twoFactor.enabled": { en: "2FA is enabled", es: "2FA está activado" },
   "twoFactor.disabled": { en: "2FA is disabled", es: "2FA está desactivado" },
   
+  // Verify 2FA Page (Login)
+  "verify2fa.title": { en: "Two-Factor Authentication", es: "Autenticación de Dos Factores" },
+  "verify2fa.welcomeBack": { en: "Welcome back", es: "Bienvenido de nuevo" },
+  "verify2fa.enterCodeDesc": { en: "Enter the 6-digit code from your authenticator app", es: "Ingresa el código de 6 dígitos de tu aplicación de autenticación" },
+  "verify2fa.enterBackupCodeDesc": { en: "Enter one of your backup codes", es: "Ingresa uno de tus códigos de respaldo" },
+  "verify2fa.verify": { en: "Verify", es: "Verificar" },
+  "verify2fa.verifyBackup": { en: "Verify Backup Code", es: "Verificar Código de Respaldo" },
+  "verify2fa.verifying": { en: "Verifying...", es: "Verificando..." },
+  "verify2fa.useBackupCode": { en: "Use a backup code instead", es: "Usar un código de respaldo" },
+  "verify2fa.useTOTP": { en: "Use authenticator app", es: "Usar aplicación de autenticación" },
+  "verify2fa.backupCodeLabel": { en: "Backup Code", es: "Código de Respaldo" },
+  "verify2fa.enterCode": { en: "Please enter the 6-digit code", es: "Por favor ingresa el código de 6 dígitos" },
+  "verify2fa.enterBackupCode": { en: "Please enter a backup code", es: "Por favor ingresa un código de respaldo" },
+  "verify2fa.invalidCode": { en: "Invalid verification code", es: "Código de verificación inválido" },
+  "verify2fa.verificationFailed": { en: "Verification failed. Please try again.", es: "La verificación falló. Por favor inténtalo de nuevo." },
+  "verify2fa.tokenExpired": { en: "Your verification session has expired. Please log in again.", es: "Tu sesión de verificación ha expirado. Por favor inicia sesión de nuevo." },
+  "verify2fa.tokenError": { en: "Error validating session. Please try again.", es: "Error al validar la sesión. Por favor inténtalo de nuevo." },
+  "verify2fa.validating": { en: "Validating session...", es: "Validando sesión..." },
+  "verify2fa.redirecting": { en: "Redirecting to login...", es: "Redirigiendo al inicio de sesión..." },
+  "verify2fa.securityNote": { en: "This additional security step helps protect your account from unauthorized access.", es: "Este paso de seguridad adicional ayuda a proteger tu cuenta de accesos no autorizados." },
+
   // Password Change
   "password.title": { en: "Change Password", es: "Cambiar Contraseña" },
   "password.subtitle": { en: "Update your account password", es: "Actualiza la contraseña de tu cuenta" },
