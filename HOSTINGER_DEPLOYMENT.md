@@ -48,8 +48,11 @@
 5. Selecciona el repositorio `eterbox`
 6. Configura:
    - **Branch:** `main`
-   - **Build command:** `pnpm run hostinger`
-   - **Start command:** (No es necesario, el comando `hostinger` ya incluye el start)
+   - **Build command:** `pnpm run build`
+   - **Package manager:** `pnpm`
+   - **Framework preset:** `Vite`
+   - **Output directory:** `dist`
+   - **IMPORTANTE:** El comando `build` ahora incluye el inicio automático del servidor mediante el script `start-server.sh`
    - **Node version:** `22.x`
 
 ### Si descargaste el ZIP:
@@ -58,8 +61,11 @@
 3. Sube el archivo ZIP
 4. Hostinger lo descomprimirá automáticamente
 5. Configura:
-   - **Build command:** `pnpm run hostinger`
-   - **Start command:** (No es necesario, el comando `hostinger` ya incluye el start)
+   - **Build command:** `pnpm run build`
+   - **Package manager:** `pnpm`
+   - **Framework preset:** `Vite`
+   - **Output directory:** `dist`
+   - **IMPORTANTE:** El comando `build` ahora incluye el inicio automático del servidor mediante el script `start-server.sh`
    - **Node version:** `22.x`
 
 ## Paso 4: Configurar Variables de Entorno

@@ -276,3 +276,24 @@
 - [x] Verificar y corregir script start en package.json
 - [x] Asegurar compatibilidad con despliegue en Hostinger
 - [x] Agregar script especial 'hostinger' que combina install + build + start
+
+
+## Corrección para limitación de Hostinger (Build Command único)
+- [x] Modificar package.json para que el comando build también inicie el servidor
+- [x] Crear script de inicio automático post-build (start-server.sh)
+- [x] Actualizar documentación HOSTINGER_DEPLOYMENT.md con la nueva solución
+
+
+## Corrección de error de build en Hostinger
+- [ ] Revertir cambios en package.json que causan error durante build
+- [ ] Investigar método correcto para que Hostinger ejecute start después de build
+- [ ] Aplicar solución compatible con infraestructura de Hostinger
+- [ ] Actualizar documentación con método correcto
+
+
+## Reestructuración para compatibilidad con Hostinger Node.js Apps
+- [x] Modificar servidor para usar solo Express.js (sin Vite dev server) - Ya estaba configurado correctamente
+- [x] Configurar Express para servir archivos estáticos del build de Vite - Ya estaba configurado correctamente
+- [x] Actualizar package.json con scripts correctos para Hostinger
+- [x] Crear documento de instrucciones para otra IA (INSTRUCCIONES_PARA_IA.md)
+- [x] Analizar el problema de Hostinger Node.js Apps
