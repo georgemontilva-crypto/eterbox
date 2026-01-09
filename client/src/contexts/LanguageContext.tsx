@@ -224,6 +224,15 @@ export const translations: Translations = {
   "checkout.securePayment": { en: "Secured by PayPal encryption", es: "Protegido por encriptación de PayPal" },
   "checkout.paypalNotConfigured": { en: "PayPal is not configured. Please contact support.", es: "PayPal no está configurado. Por favor contacta a soporte." },
   "checkout.payWithCard": { en: "Pay with Debit or Credit Card", es: "Pagar con Tarjeta de Débito o Crédito" },
+  "checkout.thankYou": { en: "Thank You!", es: "¡Gracias!" },
+  "checkout.paymentConfirmed": { en: "Your payment has been confirmed successfully.", es: "Tu pago ha sido confirmado exitosamente." },
+  "checkout.yourPlan": { en: "Your Plan Details", es: "Detalles de tu Plan" },
+  "checkout.credentials": { en: "credentials", es: "credenciales" },
+  "checkout.folders": { en: "folders", es: "carpetas" },
+  "checkout.generatedKeys": { en: "generated passwords", es: "contraseñas generadas" },
+  "checkout.renewalDate": { en: "Next renewal", es: "Próxima renovación" },
+  "checkout.goToDashboard": { en: "Go to Dashboard", es: "Ir al Panel" },
+  "checkout.emailConfirmation": { en: "A confirmation email has been sent to your email address.", es: "Se ha enviado un correo de confirmación a tu dirección de email." },
 
   // Renewal Banner
   "renewal.upcoming": { en: "Subscription Renewal Coming Up", es: "Renovación de Suscripción Próxima" },

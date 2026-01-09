@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE plans SET \n  price = 15.00, \n  yearlyPrice = 160.00, \n  yearlyDiscount = 11,\n  maxGeneratedKeys = 300\nWHERE name = 'Basic';\n\nUPDATE plans SET \n  price = 25.00, \n  yearlyPrice = 280.00, \n  yearlyDiscount = 7,\n  maxKeys = 2500,\n  maxFolders = 1500,\n  maxGeneratedKeys = -1\nWHERE name = 'Corporate';\n\nUPDATE plans SET \n  maxGeneratedKeys = 10\nWHERE name = 'Free';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute UPDATE plans SET \n  price = 15.00, \n  yearlyPrice = 160.00, \n  yearlyDiscount = 11,\n  maxGeneratedKeys = 300\nWHERE name = 'Basic';\n\nUPDATE plans SET \n  price = 25.00, \n  yearlyPrice = 280.00, \n  yearlyDiscount = 7,\n  maxKeys = 2500,\n  maxFolders = 1500,\n  maxGeneratedKeys = -1\nWHERE name = 'Corporate';\n\nUPDATE plans SET \n  maxGeneratedKeys = 10\nWHERE name = 'Free';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 66
+}

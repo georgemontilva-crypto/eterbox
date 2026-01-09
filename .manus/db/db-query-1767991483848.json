@@ -1,0 +1,61 @@
+{
+  "query": "SELECT * FROM plans;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute SELECT * FROM plans;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Free",
+      "description": "Perfect for getting started",
+      "maxKeys": "3",
+      "maxFolders": "1",
+      "price": "0.00",
+      "stripePriceId": "price_free",
+      "features": "[\"3 Credentials\", \"1 Folder\", \"AES-256 Encryption\"]",
+      "isActive": "1",
+      "createdAt": "2026-01-09 17:21:05",
+      "updatedAt": "2026-01-09 20:06:33",
+      "maxGeneratedKeys": "10",
+      "yearlyPrice": "0.00",
+      "yearlyDiscount": "0",
+      "stripeYearlyPriceId": "NULL"
+    },
+    {
+      "id": "2",
+      "name": "Basic",
+      "description": "For individuals and small teams",
+      "maxKeys": "25",
+      "maxFolders": "5",
+      "price": "15.00",
+      "stripePriceId": "price_basic",
+      "features": "[\"25 Credentials\", \"5 Folders\", \"AES-256 Encryption\", \"2FA Support\"]",
+      "isActive": "1",
+      "createdAt": "2026-01-09 17:21:05",
+      "updatedAt": "2026-01-09 20:06:33",
+      "maxGeneratedKeys": "300",
+      "yearlyPrice": "160.00",
+      "yearlyDiscount": "11",
+      "stripeYearlyPriceId": "NULL"
+    },
+    {
+      "id": "3",
+      "name": "Corporate",
+      "description": "For enterprises and large teams",
+      "maxKeys": "2500",
+      "maxFolders": "1500",
+      "price": "25.00",
+      "stripePriceId": "price_corporate",
+      "features": "[\"Unlimited Credentials\", \"Unlimited Folders\", \"AES-256 Encryption\", \"2FA Support\", \"Priority Support\"]",
+      "isActive": "1",
+      "createdAt": "2026-01-09 17:21:05",
+      "updatedAt": "2026-01-09 20:06:33",
+      "maxGeneratedKeys": "-1",
+      "yearlyPrice": "280.00",
+      "yearlyDiscount": "7",
+      "stripeYearlyPriceId": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tmaxKeys\tmaxFolders\tprice\tstripePriceId\tfeatures\tisActive\tcreatedAt\tupdatedAt\tmaxGeneratedKeys\tyearlyPrice\tyearlyDiscount\tstripeYearlyPriceId\n1\tFree\tPerfect for getting started\t3\t1\t0.00\tprice_free\t[\"3 Credentials\", \"1 Folder\", \"AES-256 Encryption\"]\t1\t2026-01-09 17:21:05\t2026-01-09 20:06:33\t10\t0.00\t0\tNULL\n2\tBasic\tFor individuals and small teams\t25\t5\t15.00\tprice_basic\t[\"25 Credentials\", \"5 Folders\", \"AES-256 Encryption\", \"2FA Support\"]\t1\t2026-01-09 17:21:05\t2026-01-09 20:06:33\t300\t160.00\t11\tNULL\n3\tCorporate\tFor enterprises and large teams\t2500\t1500\t25.00\tprice_corporate\t[\"Unlimited Credentials\", \"Unlimited Folders\", \"AES-256 Encryption\", \"2FA Support\", \"Priority Support\"]\t1\t2026-01-09 17:21:05\t2026-01-09 20:06:33\t-1\t280.00\t7\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

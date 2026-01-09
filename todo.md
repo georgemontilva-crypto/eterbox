@@ -242,3 +242,9 @@
 
 ## Bug - PayPal Client ID no configurado en frontend
 - [x] Verificar y corregir la variable VITE_PAYPAL_CLIENT_ID
+
+
+## Bug - Problemas en checkout de PayPal
+- [x] Corregir scroll del modal de tarjeta para poder ver todos los campos
+- [x] Corregir monto cero en el cobro de PayPal (precios actualizados en DB)
+- [x] Crear pantalla de gracias con detalles del plan adquirido
