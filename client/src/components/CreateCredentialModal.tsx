@@ -8,15 +8,17 @@ interface CreateCredentialModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   folderId?: number | null;
+  folders: any[];
 }
 
-export function CreateCredentialModal({ open, onOpenChange, folderId }: CreateCredentialModalProps) {
+export function CreateCredentialModal({ open, onOpenChange, folderId, folders }: CreateCredentialModalProps) {
   const [formData, setFormData] = useState({
     platformName: "",
     username: "",
     email: "",
     password: "",
     notes: "",
+    selectedFolderId: folderId || "",
   });
 
   const createMutation = trpc.credentials.create.useMutation();
@@ -31,10 +33,10 @@ export function CreateCredentialModal({ open, onOpenChange, folderId }: CreateCr
         email: formData.email,
         password: formData.password,
         notes: formData.notes,
-        folderId: folderId || undefined,
+        folderId: formData.selectedFolderId ? Number(formData.selectedFolderId) : undefined,
       });
       toast.success("Credential created successfully!");
-      setFormData({ platformName: "", username: "", email: "", password: "", notes: "" });
+      setFormData({ platformName: "", username: "", email: "", password: "", notes: "", selectedFolderId: folderId || "" });
       onOpenChange(false);
       utils.credentials.list.invalidate();
     } catch (error) {
@@ -90,6 +92,21 @@ export function CreateCredentialModal({ open, onOpenChange, folderId }: CreateCr
               className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
               required
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Folder (Optional)</label>
+            <select
+              value={formData.selectedFolderId}
+              onChange={(e) => setFormData({ ...formData, selectedFolderId: e.target.value })}
+              className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="">No folder</option>
+              {folders && folders.map((folder: any) => (
+                <option key={folder.id} value={folder.id}>
+                  {folder.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Notes (Optional)</label>

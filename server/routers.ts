@@ -143,10 +143,13 @@ export const appRouter = router({
   credentials: router({
     list: protectedProcedure.query(async ({ ctx }) => {
       const credentials = await db.getUserCredentials(ctx.user.id);
-      return credentials.map(cred => ({
-        ...cred,
-        encryptedPassword: undefined, // Don't send encrypted password in list
-      }));
+      return credentials.map(cred => {
+        const decryptedPassword = cred.encryptedPassword ? crypto.decryptPassword(cred.encryptedPassword, ctx.user.openId) : "";
+        return {
+          ...cred,
+          encryptedPassword: decryptedPassword,
+        };
+      });
     }),
 
     get: protectedProcedure
@@ -155,9 +158,12 @@ export const appRouter = router({
         const credential = await db.getCredentialById(input.id, ctx.user.id);
         if (!credential) throw new TRPCError({ code: "NOT_FOUND" });
 
-        // Get master password from user session (would be stored securely in real app)
-        // For now, we'll need to decrypt on demand with a user-provided key
-        return credential;
+        // Decrypt password before returning
+        const decryptedPassword = credential.encryptedPassword ? crypto.decryptPassword(credential.encryptedPassword, ctx.user.openId) : "";
+        return {
+          ...credential,
+          encryptedPassword: decryptedPassword,
+        };
       }),
 
     create: protectedProcedure

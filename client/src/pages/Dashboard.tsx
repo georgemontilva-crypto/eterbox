@@ -4,7 +4,7 @@ import { CreateCredentialModal } from "@/components/CreateCredentialModal";
 import { CreateFolderModal } from "@/components/CreateFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder } from "lucide-react";
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ export default function Dashboard() {
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
   const { data: folders = [] } = trpc.folders.list.useQuery();
   const deleteCredentialMutation = trpc.credentials.delete.useMutation();
+  const deleteFolderMutation = trpc.folders.delete.useMutation();
   const utils = trpc.useUtils();
 
   const togglePasswordVisibility = (id: number) => {
@@ -45,6 +46,17 @@ export default function Dashboard() {
       utils.credentials.list.invalidate();
     } catch (error) {
       toast.error("Failed to delete credential");
+    }
+  };
+
+  const handleDeleteFolder = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this folder?")) return;
+    try {
+      await deleteFolderMutation.mutateAsync({ id });
+      toast.success("Folder deleted!");
+      utils.folders.list.invalidate();
+    } catch (error) {
+      toast.error("Failed to delete folder");
     }
   };
 
@@ -123,6 +135,35 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Folders Section */}
+        {folders && folders.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-xl font-bold mb-4">Your Folders</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {folders.map((folder: any) => (
+                <Card key={folder.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <Folder className="w-5 h-5 text-accent" />
+                      <div>
+                        <p className="font-semibold">{folder.name}</p>
+                        <p className="text-sm text-muted-foreground">{folder.description || "No description"}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteFolder(folder.id)}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Credentials List */}
         <div>
           <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
@@ -169,7 +210,7 @@ export default function Dashboard() {
                   </div>
                   {visiblePasswords.has(cred.id) && (
                     <div className="mt-3 pt-3 border-t border-border/20">
-                      <p className="text-sm">Password: <span className="font-mono">{cred.encryptedPassword}</span></p>
+                      <p className="text-sm">Password: <span className="font-mono text-accent">{cred.encryptedPassword}</span></p>
                     </div>
                   )}
                 </Card>
@@ -185,7 +226,7 @@ export default function Dashboard() {
       </main>
 
       {/* Modals */}
-      <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} />
+      <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} folders={folders || []} />
       <CreateFolderModal open={showFolderModal} onOpenChange={setShowFolderModal} />
     </div>
   );

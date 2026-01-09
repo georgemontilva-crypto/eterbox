@@ -116,3 +116,14 @@
 - [x] Mostrar/ocultar contraseñas
 - [x] Copiar contraseñas al portapapeles
 - [ ] Búsqueda y filtrado
+
+
+## Bugs Críticos a Resolver
+- [ ] Error de React: setLocation() durante render en Home.tsx
+- [ ] Error NOT_FOUND: credentials.create mutation no encontrada
+
+
+## Bugs Nuevos Reportados
+- [x] Modal de crear credenciales no muestra selector de carpetas
+- [x] Dashboard no muestra lista de carpetas creadas
+- [x] Botón de mostrar contraseña (ojito) no desencripta y muestra la contraseña
