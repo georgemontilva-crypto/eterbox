@@ -224,3 +224,7 @@
 - [x] Anuncio de renovación próxima en dashboard
 - [x] Checkout de PayPal integrado con estética de la web
 - [x] Opción de pagar con tarjeta mediante PayPal
+
+
+## Bug - Error require is not defined
+- [x] Corregir error "require is not defined" en el dashboard (problema de CommonJS en navegador)

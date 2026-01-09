@@ -8,6 +8,7 @@ import * as crypto from "./crypto";
 import * as twoFactorService from "./2fa-service";
 import * as emailService from "./email-service";
 import * as paypalUtils from "./paypal-utils";
+import { randomBytes } from "crypto";
 import { TRPCError } from "@trpc/server";
 
 export const appRouter = router({
@@ -441,9 +442,9 @@ export const appRouter = router({
         }
 
         let password = "";
-        const randomBytes = require("crypto").randomBytes(input.length);
+        const bytes = randomBytes(input.length);
         for (let i = 0; i < input.length; i++) {
-          password += charset[randomBytes[i] % charset.length];
+          password += charset[bytes[i] % charset.length];
         }
 
         // Increment usage counter

@@ -1,5 +1,6 @@
 import { eq, and, or, like, desc, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import { gte } from "drizzle-orm";
 import { 
   InsertUser, 
   users, 
@@ -328,7 +329,7 @@ export async function getRecentFailedAttempts(userId: number, minutes: number = 
     and(
       eq(loginAttempts.userId, userId),
       eq(loginAttempts.success, false),
-      require('drizzle-orm').gte(loginAttempts.createdAt, since as any)
+      gte(loginAttempts.createdAt, since as any)
     )
   );
 }
