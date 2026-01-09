@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CreateCredentialModal } from "@/components/CreateCredentialModal";
 import { CreateFolderModal } from "@/components/CreateFolderModal";
+import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder } from "lucide-react";
@@ -16,6 +17,8 @@ export default function Dashboard() {
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(new Set());
   const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
+  const [showMoveDialog, setShowMoveDialog] = useState(false);
+  const [selectedCredentialForMove, setSelectedCredentialForMove] = useState<any>(null);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -109,6 +112,16 @@ export default function Dashboard() {
             onClick={() => copyToClipboard(cred.encryptedPassword || "")}
           >
             <Copy className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setSelectedCredentialForMove(cred);
+              setShowMoveDialog(true);
+            }}
+          >
+            <Folder className="w-4 h-4" />
           </Button>
           <Button
             variant="ghost"
@@ -278,6 +291,15 @@ export default function Dashboard() {
         defaultFolderId={selectedFolderId || undefined}
       />
       <CreateFolderModal open={showFolderModal} onOpenChange={setShowFolderModal} />
+      {selectedCredentialForMove && (
+        <MoveToFolderDialog
+          open={showMoveDialog}
+          onOpenChange={setShowMoveDialog}
+          credentialId={selectedCredentialForMove.id}
+          currentFolderId={selectedCredentialForMove.folderId}
+          folders={folders || []}
+        />
+      )}
     </div>
   );
 }

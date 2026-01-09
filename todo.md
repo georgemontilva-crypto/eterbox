@@ -134,5 +134,6 @@
 - [x] Guardar credenciales en carpetas seleccionadas correctamente
 
 
-## Nuevas Solicitudes del Usuario
+### Nuevas Solicitudes del Usuario
 - [x] Agregar botón "Add Credential" en cada carpeta para crear credenciales directamente
+- [x] Agregar opción de mover credencial existente a una carpeta
