@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { CreateCredentialModal } from "@/components/CreateCredentialModal";
 import { CreateFolderModal } from "@/components/CreateFolderModal";
 import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
+import { DeleteFolderDialog } from "@/components/DeleteFolderDialog";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus } from "lucide-react";
@@ -23,6 +24,8 @@ export default function Dashboard() {
   const [activeFolderView, setActiveFolderView] = useState<number | null>(null);
   const [folderSearchQuery, setFolderSearchQuery] = useState("");
   const [showAddExistingModal, setShowAddExistingModal] = useState(false);
+  const [showDeleteFolderDialog, setShowDeleteFolderDialog] = useState(false);
+  const [folderToDelete, setFolderToDelete] = useState<{ id: number; name: string; credentialCount: number } | null>(null);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -57,17 +60,17 @@ export default function Dashboard() {
     }
   };
 
-  const handleDeleteFolder = async (id: number) => {
-    try {
-      await deleteFolderMutation.mutateAsync({ id });
-      toast.success("Folder deleted");
-      utils.folders.list.invalidate();
-      if (activeFolderView === id) {
-        setActiveFolderView(null);
-      }
-    } catch (error) {
-      toast.error("Failed to delete folder");
+  const openDeleteFolderDialog = (folder: any) => {
+    const credCount = credentialsByFolder[folder.id]?.length || 0;
+    setFolderToDelete({ id: folder.id, name: folder.name, credentialCount: credCount });
+    setShowDeleteFolderDialog(true);
+  };
+
+  const handleFolderDeleted = () => {
+    if (folderToDelete && activeFolderView === folderToDelete.id) {
+      setActiveFolderView(null);
     }
+    setFolderToDelete(null);
   };
 
   const handleAddExistingToFolder = async (credentialId: number) => {
@@ -427,7 +430,7 @@ export default function Dashboard() {
                         <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}>
                           <Plus className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handleDeleteFolder(folder.id); }}>
+                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}>
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -458,6 +461,16 @@ export default function Dashboard() {
       <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} folders={folders} defaultFolderId={selectedFolderId} />
       <CreateFolderModal open={showFolderModal} onOpenChange={setShowFolderModal} />
       <MoveToFolderDialog open={showMoveDialog} onOpenChange={setShowMoveDialog} credentialId={selectedCredentialForMove?.id || 0} currentFolderId={selectedCredentialForMove?.folderId} folders={folders} />
+      {folderToDelete && (
+        <DeleteFolderDialog
+          open={showDeleteFolderDialog}
+          onOpenChange={setShowDeleteFolderDialog}
+          folderId={folderToDelete.id}
+          folderName={folderToDelete.name}
+          credentialCount={folderToDelete.credentialCount}
+          onDeleted={handleFolderDeleted}
+        />
+      )}
     </div>
   );
 }

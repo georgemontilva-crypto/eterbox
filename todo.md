@@ -159,3 +159,10 @@
 - [x] Lista completa de credenciales de la carpeta
 - [x] Opción de añadir credenciales existentes a la carpeta
 - [x] Filtro interno por título de credencial dentro de cada carpeta
+
+
+## Bugs - Eliminación de Carpetas
+- [x] Eliminar carpeta no debe eliminar credenciales automáticamente
+- [x] Contador de credenciales no se actualiza después de eliminar
+- [x] Agregar popup de confirmación con opciones: eliminar solo carpeta o carpeta + credenciales
+- [x] Si se elimina solo carpeta, mover credenciales a "Your Credentials" (sin carpeta)

@@ -121,21 +121,33 @@ export const appRouter = router({
       }),
 
     delete: protectedProcedure
-      .input(z.object({ id: z.number() }))
+      .input(z.object({ 
+        id: z.number(),
+        deleteCredentials: z.boolean().default(false)
+      }))
       .mutation(async ({ ctx, input }) => {
         const folder = await db.getFolderById(input.id, ctx.user.id);
         if (!folder) throw new TRPCError({ code: "NOT_FOUND" });
 
-        // Delete all credentials in this folder
+        // Get all credentials in this folder
         const credentials = await db.getCredentialsByFolder(ctx.user.id, input.id);
-        for (const cred of credentials) {
-          await db.deleteCredential(cred.id, ctx.user.id);
+        
+        if (input.deleteCredentials) {
+          // Delete all credentials in this folder
+          for (const cred of credentials) {
+            await db.deleteCredential(cred.id, ctx.user.id);
+          }
+        } else {
+          // Move credentials to no folder (set folderId to null)
+          for (const cred of credentials) {
+            await db.updateCredential(cred.id, ctx.user.id, { folderId: null });
+          }
         }
 
         await db.deleteFolder(input.id, ctx.user.id);
         await db.recordActivity(ctx.user.id, "folder_deleted", "folder", input.id);
 
-        return { success: true };
+        return { success: true, movedCredentials: input.deleteCredentials ? 0 : credentials.length };
       }),
   }),
 
