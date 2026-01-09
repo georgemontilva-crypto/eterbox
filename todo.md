@@ -264,3 +264,9 @@
 - [x] Crear UI de verificación 2FA (pantalla de código TOTP)
 - [x] Permitir usar códigos de respaldo si no tiene acceso al autenticador
 - [x] Crear tests para la verificación 2FA en login
+
+
+## Preparación para Despliegue en Hostinger
+- [x] Crear archivo de configuración para Hostinger
+- [x] Documentar variables de entorno necesarias
+- [x] Crear guía paso a paso de despliegue
