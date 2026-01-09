@@ -5,9 +5,9 @@ import { CreateFolderModal } from "@/components/CreateFolderModal";
 import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronDown, ChevronRight } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus } from "lucide-react";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -16,27 +16,20 @@ export default function Dashboard() {
   const [showCredentialModal, setShowCredentialModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(new Set());
-  const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
+  const [selectedFolderId, setSelectedFolderId] = useState<number | undefined>(undefined);
   const [showMoveDialog, setShowMoveDialog] = useState(false);
   const [selectedCredentialForMove, setSelectedCredentialForMove] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
-
-  const toggleFolderExpanded = (folderId: number) => {
-    const newSet = new Set(expandedFolders);
-    if (newSet.has(folderId)) {
-      newSet.delete(folderId);
-    } else {
-      newSet.add(folderId);
-    }
-    setExpandedFolders(newSet);
-  };
+  const [activeFolderView, setActiveFolderView] = useState<number | null>(null);
+  const [folderSearchQuery, setFolderSearchQuery] = useState("");
+  const [showAddExistingModal, setShowAddExistingModal] = useState(false);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
   const { data: folders = [] } = trpc.folders.list.useQuery();
   const deleteCredentialMutation = trpc.credentials.delete.useMutation();
   const deleteFolderMutation = trpc.folders.delete.useMutation();
+  const updateCredentialMutation = trpc.credentials.update.useMutation();
   const utils = trpc.useUtils();
 
   const togglePasswordVisibility = (id: number) => {
@@ -49,16 +42,15 @@ export default function Dashboard() {
     setVisiblePasswords(newSet);
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboard = async (text: string) => {
+    await navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard!");
   };
 
   const handleDeleteCredential = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this credential?")) return;
     try {
       await deleteCredentialMutation.mutateAsync({ id });
-      toast.success("Credential deleted!");
+      toast.success("Credential deleted");
       utils.credentials.list.invalidate();
     } catch (error) {
       toast.error("Failed to delete credential");
@@ -66,13 +58,30 @@ export default function Dashboard() {
   };
 
   const handleDeleteFolder = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this folder?")) return;
     try {
       await deleteFolderMutation.mutateAsync({ id });
-      toast.success("Folder deleted!");
+      toast.success("Folder deleted");
       utils.folders.list.invalidate();
+      if (activeFolderView === id) {
+        setActiveFolderView(null);
+      }
     } catch (error) {
       toast.error("Failed to delete folder");
+    }
+  };
+
+  const handleAddExistingToFolder = async (credentialId: number) => {
+    if (!activeFolderView) return;
+    try {
+      await updateCredentialMutation.mutateAsync({ 
+        id: credentialId, 
+        folderId: activeFolderView 
+      });
+      toast.success("Credential added to folder");
+      utils.credentials.list.invalidate();
+      setShowAddExistingModal(false);
+    } catch (error) {
+      toast.error("Failed to add credential to folder");
     }
   };
 
@@ -110,22 +119,31 @@ export default function Dashboard() {
     }
   });
 
-  // Group filtered credentials by folder for display
-  const filteredCredentialsByFolder: { [key: number]: any[] } = {};
-  const filteredCredentialsWithoutFolder: any[] = [];
+  // Get active folder data
+  const activeFolder = activeFolderView ? folders.find((f: any) => f.id === activeFolderView) : null;
+  const activeFolderCredentials = activeFolderView ? (credentialsByFolder[activeFolderView] || []) : [];
+  
+  // Filter credentials within active folder
+  const filteredActiveFolderCredentials = useMemo(() => {
+    if (!folderSearchQuery) return activeFolderCredentials;
+    const query = folderSearchQuery.toLowerCase();
+    return activeFolderCredentials.filter((cred: any) => 
+      cred.platformName?.toLowerCase().includes(query) ||
+      cred.username?.toLowerCase().includes(query) ||
+      cred.email?.toLowerCase().includes(query)
+    );
+  }, [activeFolderCredentials, folderSearchQuery]);
 
-  filteredCredentials.forEach((cred: any) => {
-    if (cred.folderId) {
-      if (!filteredCredentialsByFolder[cred.folderId]) {
-        filteredCredentialsByFolder[cred.folderId] = [];
-      }
-      filteredCredentialsByFolder[cred.folderId].push(cred);
-    } else {
-      filteredCredentialsWithoutFolder.push(cred);
-    }
-  });
+  // Credentials not in this folder (for adding existing)
+  const availableCredentials = credentials.filter((cred: any) => cred.folderId !== activeFolderView);
 
-  const renderCredentialCard = (cred: any) => (
+  const openFolderView = (folderId: number) => {
+    setActiveFolderView(folderId);
+    setSearchQuery("");
+    setFolderSearchQuery("");
+  };
+
+  const renderCredentialCard = (cred: any, showMoveOption: boolean = true) => (
     <Card key={cred.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex-1">
@@ -135,112 +153,193 @@ export default function Dashboard() {
             {cred.email && cred.username && " • "}
             {cred.email && `Email: ${cred.email}`}
           </p>
+          <div className="flex items-center gap-2 mt-2">
+            <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20">
+              {visiblePasswords.has(cred.id) ? cred.encryptedPassword : "••••••••••••"}
+            </code>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => togglePasswordVisibility(cred.id)}
-          >
-            {visiblePasswords.has(cred.id) ? (
-              <EyeOff className="w-4 h-4" />
-            ) : (
-              <Eye className="w-4 h-4" />
-            )}
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" onClick={() => togglePasswordVisibility(cred.id)}>
+            {visiblePasswords.has(cred.id) ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => copyToClipboard(cred.encryptedPassword || "")}
-          >
+          <Button variant="ghost" size="sm" onClick={() => copyToClipboard(cred.encryptedPassword)}>
             <Copy className="w-4 h-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setSelectedCredentialForMove(cred);
-              setShowMoveDialog(true);
-            }}
-          >
-            <Folder className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleDeleteCredential(cred.id)}
-          >
+          {showMoveOption && (
+            <Button variant="ghost" size="sm" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
+              <Folder className="w-4 h-4" />
+            </Button>
+          )}
+          <Button variant="ghost" size="sm" onClick={() => handleDeleteCredential(cred.id)}>
             <Trash2 className="w-4 h-4 text-destructive" />
           </Button>
         </div>
       </div>
-      {visiblePasswords.has(cred.id) && (
-        <div className="mt-3 pt-3 border-t border-border/20">
-          <p className="text-sm">Password: <span className="font-mono text-accent">{cred.encryptedPassword}</span></p>
-        </div>
-      )}
     </Card>
   );
 
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border/20 bg-card sticky top-0 z-50">
-        <div className="container flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <Lock className="w-8 h-8 text-accent" />
-            <h1 className="text-2xl font-bold">EterBox</h1>
+  // Folder Detail View
+  if (activeFolderView && activeFolder) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+          <div className="container py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Lock className="w-6 h-6 text-accent" />
+                <span className="text-xl font-bold">EterBox</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <Button variant="ghost" size="sm" onClick={() => setLocation("/settings")}>
+                  <Settings className="w-4 h-4 mr-2" />Settings
+                </Button>
+                <Button variant="ghost" size="sm" onClick={logout}>
+                  <LogOut className="w-4 h-4 mr-2" />Logout
+                </Button>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => setLocation("/settings")}>
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
-            <Button variant="ghost" size="sm" onClick={async () => { await logout(); setLocation("/"); }}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
+        </header>
+
+        <main className="container py-8">
+          <Button variant="ghost" className="mb-6" onClick={() => setActiveFolderView(null)}>
+            <ArrowLeft className="w-4 h-4 mr-2" />Back to Dashboard
+          </Button>
+
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Folder className="w-8 h-8 text-accent" />
+              <div>
+                <h1 className="text-2xl font-bold">{activeFolder.name}</h1>
+                <p className="text-sm text-muted-foreground">{activeFolderCredentials.length} credential{activeFolderCredentials.length !== 1 ? 's' : ''}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
+                <Plus className="w-4 h-4 mr-2" />Add New Credential
+              </Button>
+              <Button variant="outline" onClick={() => setShowAddExistingModal(true)}>
+                <FolderPlus className="w-4 h-4 mr-2" />Add Existing
+              </Button>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Filter credentials by title, username, or email..."
+                value={folderSearchQuery}
+                onChange={(e) => setFolderSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-[15px] border border-border/30 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/30 transition-colors"
+              />
+            </div>
+          </div>
+
+          {filteredActiveFolderCredentials.length > 0 ? (
+            <div className="space-y-3">
+              {filteredActiveFolderCredentials.map((cred: any) => renderCredentialCard(cred, false))}
+            </div>
+          ) : folderSearchQuery ? (
+            <Card className="p-12 border border-border/20 text-center">
+              <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+              <p className="text-muted-foreground">No credentials match your filter</p>
+            </Card>
+          ) : (
+            <Card className="p-12 border border-border/20 text-center">
+              <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+              <p className="text-muted-foreground">No credentials in this folder yet</p>
+              <Button className="mt-4" onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
+                <Plus className="w-4 h-4 mr-2" />Add First Credential
+              </Button>
+            </Card>
+          )}
+        </main>
+
+        {showAddExistingModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-lg p-6 m-4 max-h-[80vh] overflow-y-auto">
+              <h2 className="text-xl font-bold mb-4">Add Existing Credentials</h2>
+              <p className="text-sm text-muted-foreground mb-4">Select credentials to add to "{activeFolder.name}"</p>
+              {availableCredentials.length > 0 ? (
+                <div className="space-y-2">
+                  {availableCredentials.map((cred: any) => (
+                    <div key={cred.id} className="p-3 rounded-[15px] border border-border/20 hover:border-accent/50 cursor-pointer transition-colors flex items-center justify-between" onClick={() => handleAddExistingToFolder(cred.id)}>
+                      <div>
+                        <p className="font-medium">{cred.platformName}</p>
+                        <p className="text-xs text-muted-foreground">{cred.username || cred.email}</p>
+                      </div>
+                      <Plus className="w-4 h-4 text-accent" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">No available credentials to add</p>
+              )}
+              <Button variant="outline" className="w-full mt-4" onClick={() => setShowAddExistingModal(false)}>Close</Button>
+            </Card>
+          </div>
+        )}
+
+        <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} folders={folders} defaultFolderId={selectedFolderId} />
+      </div>
+    );
+  }
+
+  // Main Dashboard View
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Lock className="w-6 h-6 text-accent" />
+              <span className="text-xl font-bold">EterBox</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={() => setLocation("/settings")}>
+                <Settings className="w-4 h-4 mr-2" />Settings
+              </Button>
+              <Button variant="ghost" size="sm" onClick={logout}>
+                <LogOut className="w-4 h-4 mr-2" />Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container py-8">
-        {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Welcome back, {user?.name}!</h2>
+          <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name || "User"}!</h1>
           <p className="text-muted-foreground">Manage your passwords and credentials securely</p>
         </div>
 
-        {/* Plan Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card className="p-6 border border-border/20">
-            <p className="text-sm text-muted-foreground mb-2">Current Plan</p>
+            <p className="text-sm text-muted-foreground">Current Plan</p>
             <p className="text-2xl font-bold text-accent">{planName}</p>
           </Card>
           <Card className="p-6 border border-border/20">
-            <p className="text-sm text-muted-foreground mb-2">Credentials Used</p>
-            <p className="text-2xl font-bold">{credentials.length || 0}/{maxKeys}</p>
+            <p className="text-sm text-muted-foreground">Credentials Used</p>
+            <p className="text-2xl font-bold">{credentials.length}/{maxKeys === -1 ? "∞" : maxKeys}</p>
           </Card>
           <Card className="p-6 border border-border/20">
-            <p className="text-sm text-muted-foreground mb-2">Folders Used</p>
-            <p className="text-2xl font-bold">{folders.length || 0}/{maxFolders}</p>
+            <p className="text-sm text-muted-foreground">Folders Used</p>
+            <p className="text-2xl font-bold">{folders.length}/{maxFolders === -1 ? "∞" : maxFolders}</p>
           </Card>
         </div>
 
-        {/* Action Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <Button onClick={() => setShowCredentialModal(true)} className="h-12 text-base">
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Credential
+          <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }}>
+            <Plus className="w-4 h-4 mr-2" />Add New Credential
           </Button>
-          <Button onClick={() => setShowFolderModal(true)} variant="outline" className="h-12 text-base">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Folder
+          <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)}>
+            <Plus className="w-4 h-4 mr-2" />Create Folder
           </Button>
         </div>
 
-        {/* Search Bar */}
         <div className="mb-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -254,22 +353,25 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Search Results Section */}
         {searchQuery.length > 0 && (
           <div className="mb-8">
             <h3 className="text-lg font-bold mb-4">Search Results</h3>
             <div className="space-y-4">
-              {/* Folders Results */}
               {filteredFolders.length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-muted-foreground mb-2">Folders</p>
                   <div className="space-y-2">
                     {filteredFolders.map((folder: any) => (
-                      <Card key={`folder-${folder.id}`} className="p-3 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => toggleFolderExpanded(folder.id)}>
-                        <div className="flex items-center gap-2">
-                          <Folder className="w-4 h-4 text-accent" />
-                          <p className="font-medium">{folder.name}</p>
-                          <span className="text-xs text-muted-foreground ml-auto">{credentialsByFolder[folder.id]?.length || 0} items</span>
+                      <Card key={`folder-${folder.id}`} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(folder.id)}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Folder className="w-5 h-5 text-accent" />
+                            <div>
+                              <p className="font-medium">{folder.name}</p>
+                              <p className="text-xs text-muted-foreground">{credentialsByFolder[folder.id]?.length || 0} credentials</p>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-muted-foreground" />
                         </div>
                       </Card>
                     ))}
@@ -277,27 +379,13 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Credentials Results */}
               {filteredCredentials.length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-muted-foreground mb-2">Credentials</p>
-                  <div className="space-y-2">
-                    {filteredCredentials.map((cred: any) => (
-                      <Card key={`cred-${cred.id}`} className="p-3 border border-border/20 hover:border-accent/50 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <p className="font-medium">{cred.platformName}</p>
-                            <p className="text-xs text-muted-foreground">{cred.username || cred.email}</p>
-                          </div>
-                          <Copy className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-accent" onClick={() => copyToClipboard(cred.encryptedPassword)} />
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
+                  <div className="space-y-2">{filteredCredentials.map((cred: any) => renderCredentialCard(cred))}</div>
                 </div>
               )}
 
-              {/* No Results */}
               {filteredFolders.length === 0 && filteredCredentials.length === 0 && (
                 <div className="p-4 rounded-[15px] bg-card/50 border border-border/20 text-center">
                   <p className="text-sm text-muted-foreground">No folders or credentials found</p>
@@ -307,8 +395,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Upgrade Plan Button */}
-        {planName !== "Corporate" && (
+        {searchQuery.length === 0 && planName !== "Corporate" && (
           <div className="mb-8 p-4 rounded-[15px] bg-accent/10 border border-accent/30">
             <div className="flex items-center justify-between">
               <div>
@@ -320,18 +407,15 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Folders Section with Credentials */}
-        {filteredFolders && filteredFolders.length > 0 && (
+        {searchQuery.length === 0 && folders && folders.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-bold mb-4">Your Folders</h3>
-            <div className="space-y-6">
-              {filteredFolders.map((folder: any) => {
-                const folderCreds = searchQuery.length > 0 
-                  ? (filteredCredentialsByFolder[folder.id] || [])
-                  : (credentialsByFolder[folder.id] || []);
+            <div className="space-y-4">
+              {folders.map((folder: any) => {
+                const folderCreds = credentialsByFolder[folder.id] || [];
                 return (
-                  <div key={folder.id}>
-                    <div className="flex items-center justify-between mb-3">
+                  <Card key={folder.id} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(folder.id)}>
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <Folder className="w-5 h-5 text-accent" />
                         <div>
@@ -340,94 +424,40 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleFolderExpanded(folder.id)}
-                        >
-                          {expandedFolders.has(folder.id) ? (
-                            <ChevronDown className="w-4 h-4" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4" />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedFolderId(folder.id);
-                            setShowCredentialModal(true);
-                          }}
-                        >
+                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}>
                           <Plus className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteFolder(folder.id)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handleDeleteFolder(folder.id); }}>
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
                       </div>
                     </div>
-                    {expandedFolders.has(folder.id) && (
-                      <>
-                        {folderCreds.length > 0 ? (
-                          <div className="space-y-3 ml-8">
-                            {folderCreds.map(renderCredentialCard)}
-                          </div>
-                        ) : (
-                          <div className="ml-8 p-4 rounded-[15px] bg-card/50 border border-border/20 text-center">
-                            <p className="text-sm text-muted-foreground">No credentials in this folder</p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
+                  </Card>
                 );
               })}
             </div>
           </div>
         )}
 
-        {/* Credentials Without Folder */}
         {searchQuery.length === 0 && (
-        <div>
-          <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
-          {credentialsWithoutFolder && credentialsWithoutFolder.length > 0 ? (
-            <div className="space-y-3">
-              {credentialsWithoutFolder.map(renderCredentialCard)}
-            </div>
-          ) : credentials && credentials.length === 0 ? (
-            <Card className="p-12 border border-border/20 text-center">
-              <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-              <p className="text-muted-foreground">No credentials yet. Create your first one!</p>
-            </Card>
-          ) : null}
-        </div>
+          <div>
+            <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
+            {credentialsWithoutFolder && credentialsWithoutFolder.length > 0 ? (
+              <div className="space-y-3">{credentialsWithoutFolder.map((cred: any) => renderCredentialCard(cred))}</div>
+            ) : credentials && credentials.length === 0 ? (
+              <Card className="p-12 border border-border/20 text-center">
+                <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <p className="text-muted-foreground">No credentials yet. Create your first one!</p>
+              </Card>
+            ) : null}
+          </div>
         )}
       </main>
 
-      {/* Modals */}
-      <CreateCredentialModal 
-        open={showCredentialModal} 
-        onOpenChange={(open) => {
-          setShowCredentialModal(open);
-          if (!open) setSelectedFolderId(null);
-        }} 
-        folders={folders || []} 
-        defaultFolderId={selectedFolderId || undefined}
-      />
+      <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} folders={folders} defaultFolderId={selectedFolderId} />
       <CreateFolderModal open={showFolderModal} onOpenChange={setShowFolderModal} />
-      {selectedCredentialForMove && (
-        <MoveToFolderDialog
-          open={showMoveDialog}
-          onOpenChange={setShowMoveDialog}
-          credentialId={selectedCredentialForMove.id}
-          currentFolderId={selectedCredentialForMove.folderId}
-          folders={folders || []}
-        />
-      )}
+      <MoveToFolderDialog open={showMoveDialog} onOpenChange={setShowMoveDialog} credentialId={selectedCredentialForMove?.id || 0} currentFolderId={selectedCredentialForMove?.folderId} folders={folders} />
     </div>
   );
 }

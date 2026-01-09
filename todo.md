@@ -150,3 +150,12 @@
 ## Bugs Reportados - Búsqueda
 - [x] Contador de items incorrecto en resultados de búsqueda
 - [x] Carpeta no se expande al hacer clic en resultado de búsqueda
+
+
+## Vista Detallada de Carpeta
+- [x] Vista expandida de carpeta al hacer clic en resultado de búsqueda
+- [x] Botón para volver al dashboard
+- [x] Botón para añadir nuevas credenciales a la carpeta
+- [x] Lista completa de credenciales de la carpeta
+- [x] Opción de añadir credenciales existentes a la carpeta
+- [x] Filtro interno por título de credencial dentro de cada carpeta
