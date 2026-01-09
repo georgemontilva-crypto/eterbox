@@ -115,14 +115,33 @@ export async function updateUserPlan(userId: number, planId: number) {
   await db.update(users).set({ planId }).where(eq(users.id, userId));
 }
 
-export async function updateUserSubscription(userId: number, stripeCustomerId: string, stripeSubscriptionId: string, status: string) {
+export async function updateUserSubscription(
+  userId: number, 
+  planId: number, 
+  subscriptionPeriod: "monthly" | "yearly",
+  subscriptionEndDate: Date
+) {
   const db = await getDb();
   if (!db) return;
 
   await db.update(users).set({
-    stripeCustomerId,
-    stripeSubscriptionId,
-    subscriptionStatus: status as any,
+    planId,
+    subscriptionPeriod,
+    subscriptionStartDate: new Date(),
+    subscriptionEndDate,
+    subscriptionStatus: "active",
+  }).where(eq(users.id, userId));
+}
+
+export async function incrementGeneratedKeysUsed(userId: number) {
+  const db = await getDb();
+  if (!db) return;
+
+  const user = await getUserById(userId);
+  if (!user) return;
+
+  await db.update(users).set({
+    generatedKeysUsed: (user.generatedKeysUsed || 0) + 1,
   }).where(eq(users.id, userId));
 }
 

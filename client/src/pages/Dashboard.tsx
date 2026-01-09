@@ -8,6 +8,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
+import { RenewalBanner } from "@/components/RenewalBanner";
 import { useLocation } from "wouter";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
@@ -313,6 +314,14 @@ export default function Dashboard() {
       </header>
 
       <main className="container py-8">
+        {/* Renewal Banner */}
+        {userPlan?.subscriptionEndDate && userPlan?.name !== "Free" && (
+          <RenewalBanner 
+            subscriptionEndDate={userPlan.subscriptionEndDate} 
+            planName={userPlan.name} 
+          />
+        )}
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name || "User"}!</h1>
           <p className="text-muted-foreground">Manage your passwords and credentials securely</p>

@@ -25,6 +25,16 @@ export const users = mysqlTable("users", {
   // Usage tracking
   keysUsed: int("keysUsed").default(0).notNull(),
   foldersUsed: int("foldersUsed").default(0).notNull(),
+  generatedKeysUsed: int("generatedKeysUsed").default(0).notNull(), // Secure keys generated this period
+  
+  // Subscription details
+  subscriptionPeriod: mysqlEnum("subscriptionPeriod", ["monthly", "yearly"]).default("monthly"),
+  subscriptionStartDate: timestamp("subscriptionStartDate"),
+  subscriptionEndDate: timestamp("subscriptionEndDate"),
+  paypalSubscriptionId: varchar("paypalSubscriptionId", { length: 255 }),
+  
+  // Payment method
+  savedPaymentMethod: text("savedPaymentMethod"), // JSON with card info (last 4 digits, brand, etc.)
   
   // Preferences
   language: varchar("language", { length: 10 }).default("en").notNull(),
@@ -47,8 +57,12 @@ export const plans = mysqlTable("plans", {
   description: text("description"),
   maxKeys: int("maxKeys").notNull(), // Maximum credentials allowed
   maxFolders: int("maxFolders").notNull(), // Maximum folders allowed
+  maxGeneratedKeys: int("maxGeneratedKeys").notNull().default(10), // Maximum secure keys that can be generated
   price: decimal("price", { precision: 10, scale: 2 }).notNull(), // Monthly price in USD
-  stripePriceId: varchar("stripePriceId", { length: 255 }), // Stripe price ID
+  yearlyPrice: decimal("yearlyPrice", { precision: 10, scale: 2 }), // Yearly price in USD (with discount)
+  yearlyDiscount: int("yearlyDiscount").default(0), // Percentage discount for yearly plan
+  stripePriceId: varchar("stripePriceId", { length: 255 }), // Stripe monthly price ID
+  stripeYearlyPriceId: varchar("stripeYearlyPriceId", { length: 255 }), // Stripe yearly price ID
   features: text("features"), // JSON array of features
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

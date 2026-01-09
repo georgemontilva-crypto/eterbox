@@ -34,7 +34,10 @@ export const appRouter = router({
         description: plan.description,
         maxKeys: plan.maxKeys,
         maxFolders: plan.maxFolders,
+        maxGeneratedKeys: plan.maxGeneratedKeys,
         price: plan.price,
+        yearlyPrice: plan.yearlyPrice,
+        yearlyDiscount: plan.yearlyDiscount,
         features: plan.features ? JSON.parse(plan.features) : [],
       }));
     }),
@@ -54,9 +57,15 @@ export const appRouter = router({
         name: plan.name,
         maxKeys: plan.maxKeys,
         maxFolders: plan.maxFolders,
+        maxGeneratedKeys: plan.maxGeneratedKeys,
         keysUsed: keysCount,
         foldersUsed: folders.length,
+        generatedKeysUsed: user.generatedKeysUsed || 0,
         price: plan.price,
+        yearlyPrice: plan.yearlyPrice,
+        yearlyDiscount: plan.yearlyDiscount,
+        subscriptionPeriod: user.subscriptionPeriod || "monthly",
+        subscriptionEndDate: user.subscriptionEndDate,
         features: plan.features ? JSON.parse(plan.features) : [],
       };
     }),
@@ -395,11 +404,75 @@ export const appRouter = router({
     }),
   }),
 
+  // ============ PASSWORD GENERATOR ============
+  passwordGenerator: router({
+    generate: protectedProcedure
+      .input(z.object({
+        length: z.number().min(8).max(128).default(16),
+        includeUppercase: z.boolean().default(true),
+        includeLowercase: z.boolean().default(true),
+        includeNumbers: z.boolean().default(true),
+        includeSymbols: z.boolean().default(true),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const user = await db.getUserById(ctx.user.id);
+        if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+        const plan = await db.getPlanById(user.planId);
+        if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
+
+        // Check generation limits (-1 means unlimited)
+        if (plan.maxGeneratedKeys !== -1 && (user.generatedKeysUsed || 0) >= plan.maxGeneratedKeys) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `You have reached the maximum number of generated passwords (${plan.maxGeneratedKeys}) for your plan`,
+          });
+        }
+
+        // Generate password
+        let charset = "";
+        if (input.includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (input.includeLowercase) charset += "abcdefghijklmnopqrstuvwxyz";
+        if (input.includeNumbers) charset += "0123456789";
+        if (input.includeSymbols) charset += "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+        if (charset.length === 0) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "At least one character type must be selected" });
+        }
+
+        let password = "";
+        const randomBytes = require("crypto").randomBytes(input.length);
+        for (let i = 0; i < input.length; i++) {
+          password += charset[randomBytes[i] % charset.length];
+        }
+
+        // Increment usage counter
+        await db.incrementGeneratedKeysUsed(ctx.user.id);
+
+        return { password };
+      }),
+
+    getUsage: protectedProcedure.query(async ({ ctx }) => {
+      const user = await db.getUserById(ctx.user.id);
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const plan = await db.getPlanById(user.planId);
+      if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return {
+        used: user.generatedKeysUsed || 0,
+        max: plan.maxGeneratedKeys,
+        unlimited: plan.maxGeneratedKeys === -1,
+      };
+    }),
+  }),
+
   // ============ PAYPAL ============
   paypal: router({
     createOrder: protectedProcedure
       .input(z.object({
         planId: z.number(),
+        period: z.enum(["monthly", "yearly"]).default("monthly"),
       }))
       .mutation(async ({ ctx, input }) => {
         const user = await db.getUserById(ctx.user.id);
@@ -412,12 +485,17 @@ export const appRouter = router({
           throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot purchase free plan" });
         }
 
+        // Determine price based on period
+        const price = input.period === "yearly" && plan.yearlyPrice 
+          ? plan.yearlyPrice.toString() 
+          : plan.price.toString();
+
         try {
           const order = await paypalUtils.createPayPalOrder(
             plan.name,
-            plan.price.toString(),
+            price,
             ctx.user.id.toString(),
-            input.planId.toString()
+            `${input.planId}_${input.period}`
           );
 
           return {
@@ -439,12 +517,25 @@ export const appRouter = router({
           const capture = await paypalUtils.capturePayPalOrder(input.orderId);
           
           if (capture.status === "COMPLETED") {
-            // Extract plan ID from custom_id
+            // Extract plan ID and period from custom_id (format: userId_planId_period)
             const customId = capture.purchase_units?.[0]?.custom_id;
             if (customId) {
-              const [userId, planId] = customId.split("_");
+              const parts = customId.split("_");
+              const userId = parts[0];
+              const planId = parts[1];
+              const period = parts[2] || "monthly";
+              const subscriptionPeriod: "monthly" | "yearly" = period === "yearly" ? "yearly" : "monthly";
+              
               if (parseInt(userId) === ctx.user.id) {
-                await db.updateUserPlan(ctx.user.id, parseInt(planId));
+                // Calculate subscription end date
+                const endDate = new Date();
+                if (subscriptionPeriod === "yearly") {
+                  endDate.setFullYear(endDate.getFullYear() + 1);
+                } else {
+                  endDate.setMonth(endDate.getMonth() + 1);
+                }
+
+                await db.updateUserSubscription(ctx.user.id, parseInt(planId), subscriptionPeriod, endDate);
                 await db.recordActivity(ctx.user.id, "plan_upgraded", "subscription", parseInt(planId));
               }
             }

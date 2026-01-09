@@ -211,3 +211,16 @@
 
 ## Bug - Desbordamiento 2FA
 - [x] Corregir desbordamiento del código de entrada manual en la vista de 2FA
+
+
+## Nuevas Funcionalidades Solicitadas - Enero 2025
+- [x] Corregir traducciones instantáneas en página principal (Home.tsx)
+- [x] Agregar opción de pago anual en planes (Basic: $160/año, Corporate: $280/año)
+- [x] Mostrar porcentaje de descuento en planes anuales
+- [x] Actualizar límites plan Corporate (2500 claves, 1500 carpetas)
+- [x] Implementar generador de claves seguras
+- [x] Límites de generación: Free=10, Basic=300, Corporate=ilimitado
+- [x] Opción de agregar clave generada como credencial
+- [x] Anuncio de renovación próxima en dashboard
+- [x] Checkout de PayPal integrado con estética de la web
+- [x] Opción de pagar con tarjeta mediante PayPal

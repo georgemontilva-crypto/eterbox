@@ -1,12 +1,107 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2 } from "lucide-react";
+import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+
+// Inline Password Generator Component
+function PasswordGeneratorInline() {
+  const { t } = useLanguage();
+  const [password, setPassword] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [length, setLength] = useState(16);
+  const [includeUppercase, setIncludeUppercase] = useState(true);
+  const [includeLowercase, setIncludeLowercase] = useState(true);
+  const [includeNumbers, setIncludeNumbers] = useState(true);
+  const [includeSymbols, setIncludeSymbols] = useState(true);
+
+  const { data: usage } = trpc.passwordGenerator.getUsage.useQuery();
+  const generateMutation = trpc.passwordGenerator.generate.useMutation({
+    onSuccess: (data) => setPassword(data.password),
+    onError: (error) => toast.error(error.message),
+  });
+
+  const handleGenerate = () => {
+    generateMutation.mutate({ length, includeUppercase, includeLowercase, includeNumbers, includeSymbols });
+  };
+
+  const handleCopy = async () => {
+    if (!password) return;
+    await navigator.clipboard.writeText(password);
+    setCopied(true);
+    toast.success(t("generator.copied"));
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const canGenerate = usage?.unlimited || (usage?.used || 0) < (usage?.max || 0);
+  const usageText = usage?.unlimited ? t("generator.unlimited") : `${usage?.used || 0}/${usage?.max || 0}`;
+
+  return (
+    <div className="space-y-4">
+      <div className="text-sm text-center text-muted-foreground">
+        {t("generator.usage")}: {usageText}
+      </div>
+
+      {password && (
+        <div className="p-3 bg-card/50 border border-border/20 rounded-[15px]">
+          <div className="flex items-center gap-2">
+            <code className="flex-1 text-sm font-mono break-all select-all">{password}</code>
+            <Button variant="ghost" size="icon" onClick={handleCopy}>
+              {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-sm text-muted-foreground">{t("generator.length")}</label>
+          <span className="text-sm font-medium">{length}</span>
+        </div>
+        <input
+          type="range"
+          min="8"
+          max="64"
+          value={length}
+          onChange={(e) => setLength(parseInt(e.target.value))}
+          className="w-full h-2 bg-border/30 rounded-lg appearance-none cursor-pointer accent-accent"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={includeUppercase} onChange={(e) => setIncludeUppercase(e.target.checked)} className="w-4 h-4 accent-accent" />
+          <span className="text-sm">{t("generator.uppercase")}</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={includeLowercase} onChange={(e) => setIncludeLowercase(e.target.checked)} className="w-4 h-4 accent-accent" />
+          <span className="text-sm">{t("generator.lowercase")}</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} className="w-4 h-4 accent-accent" />
+          <span className="text-sm">{t("generator.numbers")}</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} className="w-4 h-4 accent-accent" />
+          <span className="text-sm">{t("generator.symbols")}</span>
+        </label>
+      </div>
+
+      <Button className="w-full h-14 rounded-[15px]" onClick={handleGenerate} disabled={generateMutation.isPending || !canGenerate}>
+        {generateMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+        {t("generator.generate")}
+      </Button>
+
+      {!canGenerate && (
+        <p className="text-sm text-destructive text-center">{t("generator.limitReached")}</p>
+      )}
+    </div>
+  );
+}
 
 interface MobileMenuProps {
   planName: string;
@@ -14,7 +109,7 @@ interface MobileMenuProps {
   twoFactorEnabled?: boolean;
 }
 
-type ActiveView = "menu" | "2fa" | "password" | "plan" | "settings" | "language" | null;
+type ActiveView = "menu" | "2fa" | "password" | "plan" | "settings" | "language" | "generator" | null;
 
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -102,6 +197,12 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false }: Mob
       icon: Globe,
       label: t("common.language"),
       description: language === "en" ? "English" : "Español",
+    },
+    {
+      id: "generator" as ActiveView,
+      icon: Wand2,
+      label: t("generator.title"),
+      description: t("generator.secureKeys"),
     },
   ];
 
@@ -463,6 +564,21 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false }: Mob
               </div>
             </button>
           </div>
+        </div>
+      );
+    }
+
+    if (activeView === "generator") {
+      return (
+        <div className="p-6 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
+              <Wand2 className="w-8 h-8 text-accent" />
+            </div>
+            <h2 className="text-xl font-bold">{t("generator.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("generator.secureKeys")}</p>
+          </div>
+          <PasswordGeneratorInline />
         </div>
       );
     }
