@@ -141,3 +141,7 @@
 
 - [x] Mejorar búsqueda para mostrar resultados en tiempo real
 - [x] Agregar botón para expandir/contraer carpetas y ocultar credenciales
+
+- [x] Mostrar resultados de búsqueda combinados (carpetas + credenciales)
+- [x] Agregar animación de loading mientras se busca
+- [x] Incluir platformName en búsqueda de credenciales

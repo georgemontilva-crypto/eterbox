@@ -239,6 +239,59 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Search Results Section */}
+        {searchQuery.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-lg font-bold mb-4">Search Results</h3>
+            <div className="space-y-4">
+              {/* Folders Results */}
+              {filteredFolders.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Folders</p>
+                  <div className="space-y-2">
+                    {filteredFolders.map((folder: any) => (
+                      <Card key={`folder-${folder.id}`} className="p-3 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => toggleFolderExpanded(folder.id)}>
+                        <div className="flex items-center gap-2">
+                          <Folder className="w-4 h-4 text-accent" />
+                          <p className="font-medium">{folder.name}</p>
+                          <span className="text-xs text-muted-foreground ml-auto">{credentialsByFolder[folder.id]?.length || 0} items</span>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Credentials Results */}
+              {filteredCredentials.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Credentials</p>
+                  <div className="space-y-2">
+                    {filteredCredentials.map((cred: any) => (
+                      <Card key={`cred-${cred.id}`} className="p-3 border border-border/20 hover:border-accent/50 transition-colors">
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <p className="font-medium">{cred.platformName}</p>
+                            <p className="text-xs text-muted-foreground">{cred.username || cred.email}</p>
+                          </div>
+                          <Copy className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-accent" onClick={() => copyToClipboard(cred.encryptedPassword)} />
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No Results */}
+              {filteredFolders.length === 0 && filteredCredentials.length === 0 && (
+                <div className="p-4 rounded-[15px] bg-card/50 border border-border/20 text-center">
+                  <p className="text-sm text-muted-foreground">No folders or credentials found</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Upgrade Plan Button */}
         {planName !== "Corporate" && (
           <div className="mb-8 p-4 rounded-[15px] bg-accent/10 border border-accent/30">
