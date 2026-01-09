@@ -238,3 +238,7 @@
 ## Bug - Checkout PayPal duplicado y cargando infinito
 - [x] Eliminar botón duplicado de tarjeta de débito/crédito
 - [x] Corregir el cargando infinito al hacer click en pagar con tarjeta
+
+
+## Bug - PayPal Client ID no configurado en frontend
+- [x] Verificar y corregir la variable VITE_PAYPAL_CLIENT_ID
