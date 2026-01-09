@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [showCredentialModal, setShowCredentialModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(new Set());
+  const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -214,13 +215,25 @@ export default function Dashboard() {
                           <p className="text-sm text-muted-foreground">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteFolder(folder.id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedFolderId(folder.id);
+                            setShowCredentialModal(true);
+                          }}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteFolder(folder.id)}
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
                     </div>
                     {folderCreds.length > 0 ? (
                       <div className="space-y-3 ml-8">
@@ -255,7 +268,15 @@ export default function Dashboard() {
       </main>
 
       {/* Modals */}
-      <CreateCredentialModal open={showCredentialModal} onOpenChange={setShowCredentialModal} folders={folders || []} />
+      <CreateCredentialModal 
+        open={showCredentialModal} 
+        onOpenChange={(open) => {
+          setShowCredentialModal(open);
+          if (!open) setSelectedFolderId(null);
+        }} 
+        folders={folders || []} 
+        defaultFolderId={selectedFolderId || undefined}
+      />
       <CreateFolderModal open={showFolderModal} onOpenChange={setShowFolderModal} />
     </div>
   );

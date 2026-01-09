@@ -9,16 +9,17 @@ interface CreateCredentialModalProps {
   onOpenChange: (open: boolean) => void;
   folderId?: number | null;
   folders: any[];
+  defaultFolderId?: number;
 }
 
-export function CreateCredentialModal({ open, onOpenChange, folderId, folders }: CreateCredentialModalProps) {
+export function CreateCredentialModal({ open, onOpenChange, folderId, folders, defaultFolderId }: CreateCredentialModalProps) {
   const [formData, setFormData] = useState({
     platformName: "",
     username: "",
     email: "",
     password: "",
     notes: "",
-    selectedFolderId: folderId || "",
+    selectedFolderId: defaultFolderId || folderId || "",
   });
 
   const createMutation = trpc.credentials.create.useMutation();

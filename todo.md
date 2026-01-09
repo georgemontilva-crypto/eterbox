@@ -132,3 +132,7 @@
 ## Nuevas Funcionalidades Solicitadas
 - [x] Popup de límite de carpetas alcanzado con botón para ir a planes
 - [x] Guardar credenciales en carpetas seleccionadas correctamente
+
+
+## Nuevas Solicitudes del Usuario
+- [x] Agregar botón "Add Credential" en cada carpeta para crear credenciales directamente
