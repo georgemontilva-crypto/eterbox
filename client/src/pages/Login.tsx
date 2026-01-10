@@ -54,7 +54,7 @@ export default function Login() {
       }
       
       // Redirect to dashboard
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     } catch (err: any) {
       setError(err.message || "Email o contraseña incorrectos");
     } finally {
@@ -109,7 +109,7 @@ export default function Login() {
       localStorage.setItem("auth_token", result.token);
       
       // Redirect to dashboard
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     } catch (err: any) {
       console.error("Biometric login error:", err);
       setError("No se pudo autenticar con biometría. Intenta con tu contraseña.");

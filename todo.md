@@ -222,6 +222,20 @@
 - [x] Crear página/modal de verificación 2FA durante login (Verify2FALogin)
 - [x] Validar token 2FA antes de permitir acceso
 - [x] Agregar opción de usar backup codes en login
-- [ ] Probar flujo completo de registro → popup → activación 2FA
-- [ ] Probar flujo de login con 2FA activado
-- [ ] Desplegar cambios
+- [x] Probar flujo completo de registro → popup → activación 2FA
+- [x] Probar flujo de login con 2FA activado
+- [x] Checkpoint guardado (24d55016)
+- [ ] Desplegar cambios a producción (Railway)
+
+
+## 🔧 Correcciones de Navegación y Logout
+- [x] Verificar que el botón de logout funcione correctamente
+- [x] Cambiar redirección después del login: `/` → `/dashboard`
+- [x] Cambiar redirección después del registro: `/login` → `/dashboard`
+- [x] Cambiar redirección después del logout: implementado en useAuth (redirige a `/`)
+- [x] Verificar que logout limpie el token correctamente (localStorage.removeItem)
+- [x] Actualizar login biométrico para redirigir a dashboard
+- [x] Actualizar registro biométrico para mostrar popup 2FA
+- [x] Probar flujo completo de login → dashboard → logout → home
+- [x] Verificar que el servidor funcione correctamente
+- [ ] Desplegar a producción (push a GitHub)

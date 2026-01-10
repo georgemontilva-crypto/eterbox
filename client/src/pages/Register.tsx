@@ -63,7 +63,7 @@ export default function Register() {
       // Check if WebAuthn is supported
       if (!window.PublicKeyCredential) {
         alert("Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID.");
-        setLocation("/login");
+        setLocation("/dashboard");
         return;
       }
 
@@ -82,11 +82,11 @@ export default function Register() {
       console.log("[Biometric] Registration verified successfully!");
 
       alert("¡Face ID activado exitosamente!");
-      setLocation("/login");
+      setShow2FAWelcome(true);
     } catch (err: any) {
       console.error("[Biometric] Registration failed:", err);
       alert(`Error al activar biometría: ${err.message || 'Error desconocido'}`);
-      setLocation("/login");
+      setShow2FAWelcome(true);
     }
   };
 
