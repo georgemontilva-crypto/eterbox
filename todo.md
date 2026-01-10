@@ -675,6 +675,7 @@
 
 ## 🚂 Railway Deployment Configuration Fix
 - [x] Identificar problema: archivos dist no se copian entre build y deploy phases
-- [x] Crear nixpacks.toml con configuración explícita
+- [x] Descubrir que Railway usa Railpack, no Nixpacks
+- [x] Crear railway.toml con configuración para Railpack
 - [ ] Push a GitHub y redeploy en Railway
 - [ ] Verificar que eterbox.com carga correctamente
