@@ -325,4 +325,16 @@
 ## 🔧 Fix Sign In Button Navigation
 - [x] Corregir botón "Login" en Home para redirigir a /login (antes iba a /)
 - [x] Actualizado en desktop y mobile
-- [ ] Push a GitHub para deploy
+- [x] Push a GitHub para deploy
+
+
+## 💰 Actualizar Planes de Precios
+- [x] Actualizar base de datos local:
+  - Free: 10 credenciales, 2 carpetas
+  - Basic: $15, 100 credenciales, 20 carpetas
+  - Corporate: $25, 500 credenciales, 200 carpetas
+- [x] Actualizar página de Pricing con nuevos límites
+- [x] Actualizar descripciones de planes
+- [x] Crear script para actualizar producción (update-plans-production.mjs)
+- [x] Probar flujo de upgrade de planes
+- [ ] Deploy a producción

@@ -1,0 +1,31 @@
+{
+  "query": "-- Update Free plan\nUPDATE plans \nSET maxKeys = 10, maxFolders = 2 \nWHERE name = 'Free';\n\n-- Update Basic plan\nUPDATE plans \nSET price = 15.00, maxKeys = 100, maxFolders = 20 \nWHERE name = 'Basic';\n\n-- Update Corporate plan\nUPDATE plans \nSET price = 25.00, maxKeys = 500, maxFolders = 200 \nWHERE name = 'Corporate';\n\n-- Verify changes\nSELECT id, name, price, maxKeys, maxFolders FROM plans ORDER BY price;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute -- Update Free plan\nUPDATE plans \nSET maxKeys = 10, maxFolders = 2 \nWHERE name = 'Free';\n\n-- Update Basic plan\nUPDATE plans \nSET price = 15.00, maxKeys = 100, maxFolders = 20 \nWHERE name = 'Basic';\n\n-- Update Corporate plan\nUPDATE plans \nSET price = 25.00, maxKeys = 500, maxFolders = 200 \nWHERE name = 'Corporate';\n\n-- Verify changes\nSELECT id, name, price, maxKeys, maxFolders FROM plans ORDER BY price;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Free",
+      "price": "0.00",
+      "maxKeys": "10",
+      "maxFolders": "2"
+    },
+    {
+      "id": "2",
+      "name": "Basic",
+      "price": "15.00",
+      "maxKeys": "100",
+      "maxFolders": "20"
+    },
+    {
+      "id": "3",
+      "name": "Corporate",
+      "price": "25.00",
+      "maxKeys": "500",
+      "maxFolders": "200"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tprice\tmaxKeys\tmaxFolders\n1\tFree\t0.00\t10\t2\n2\tBasic\t15.00\t100\t20\n3\tCorporate\t25.00\t500\t200\n",
+  "stderr": "",
+  "execution_time_ms": 92
+}

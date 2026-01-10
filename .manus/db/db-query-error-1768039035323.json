@@ -1,0 +1,8 @@
+{
+  "query": "-- Update Free plan (keep same)\nUPDATE plans \nSET maxCredentials = 10, maxFolders = 2 \nWHERE name = 'Free';\n\n-- Update Basic plan\nUPDATE plans \nSET price = 15.00, maxCredentials = 100, maxFolders = 20 \nWHERE name = 'Basic';\n\n-- Update Corporate plan\nUPDATE plans \nSET price = 25.00, maxCredentials = 500, maxFolders = 200 \nWHERE name = 'Corporate';\n\n-- Verify changes\nSELECT id, name, price, maxCredentials, maxFolders FROM plans ORDER BY price;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute -- Update Free plan (keep same)\nUPDATE plans \nSET maxCredentials = 10, maxFolders = 2 \nWHERE name = 'Free';\n\n-- Update Basic plan\nUPDATE plans \nSET price = 15.00, maxCredentials = 100, maxFolders = 20 \nWHERE name = 'Basic';\n\n-- Update Corporate plan\nUPDATE plans \nSET price = 25.00, maxCredentials = 500, maxFolders = 200 \nWHERE name = 'Corporate';\n\n-- Verify changes\nSELECT id, name, price, maxCredentials, maxFolders FROM plans ORDER BY price;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 2: Unknown column 'maxCredentials' in 'field list'"
+  ]
+}
