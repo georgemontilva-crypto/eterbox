@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { trpc } from "../lib/trpc";
 import { useLanguage } from "../contexts/LanguageContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "wouter";
 import {
   Users,
   Shield,
@@ -17,7 +17,7 @@ import {
 
 export default function Admin() {
   const { t } = useLanguage();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<"all" | "user" | "admin">("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,7 +129,7 @@ export default function Admin() {
               <h1 className="text-2xl font-bold">Admin Panel</h1>
             </div>
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => setLocation("/dashboard")}
               className="px-4 py-2 bg-[#00f0ff]/10 border border-[#00f0ff] text-[#00f0ff] rounded-[15px] hover:bg-[#00f0ff]/20 transition-all"
             >
               Back to Dashboard

@@ -599,3 +599,20 @@
 - [ ] Revisar el servicio de autenticación (auth.service.ts)
 - [ ] Probar el flujo de login completo
 - [ ] Corregir cualquier problema encontrado
+
+
+## Bug - Login admin falla después del deployment
+- [ ] Verificar que Railway completó el deployment exitosamente
+- [ ] Verificar que el código del panel admin está en la versión desplegada
+- [ ] Revisar logs de Railway para ver errores de autenticación
+- [ ] Probar login localmente para comparar comportamiento
+- [ ] Verificar que la base de datos en Railway tiene el usuario admin correcto
+
+
+## Bug Crítico - Error de React Router en producción
+- [x] Error: useNavigate() may be used only in the context of a Router component
+- [x] Revisar App.tsx y estructura de rutas
+- [x] Verificar que AdminRoute esté dentro del Router
+- [x] Corregir configuración de rutas (cambiar react-router-dom a wouter)
+- [x] Probar localmente
+- [ ] Desplegar corrección a producción
