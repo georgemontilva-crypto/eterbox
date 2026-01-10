@@ -408,4 +408,10 @@
 - [x] Revisar drizzle.config.ts y asegurar que use MYSQL_PUBLIC_URL o construya URL correctamente
 - [x] Actualizar drizzle.config.ts para usar DATABASE_URL || MYSQL_URL || MYSQL_PUBLIC_URL
 - [x] Actualizar server/db.ts getDb() para usar las mismas variables de fallback
-- [ ] Push a GitHub y verificar deployment
+- [x] Push a GitHub y verificar deployment
+
+
+## Bug - Railway sigue crasheando por migraciones automáticas
+- [ ] Revisar package.json y deshabilitar migraciones automáticas en start
+- [ ] Asegurar que la app pueda iniciar sin base de datos configurada
+- [ ] Push a GitHub y verificar deployment exitoso
