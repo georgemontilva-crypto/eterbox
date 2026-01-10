@@ -218,7 +218,7 @@ interface MobileMenuProps {
   onAddCredentialWithPassword?: (password: string) => void;
 }
 
-type ActiveView = "menu" | "2fa" | "password" | "plan" | "settings" | "language" | "generator" | "payments" | null;
+type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "language" | "generator" | "payments" | null;
 
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -290,12 +290,30 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
     },
   });
 
+  // Biometric hooks (must be called unconditionally)
+  const { data: biometricStatus } = trpc.webauthn.checkBiometricStatus.useQuery();
+  const disableBiometric = trpc.webauthn.disableBiometric.useMutation({
+    onSuccess: () => {
+      toast.success(t("biometric.disabled") || "Biometric authentication disabled");
+      setActiveView(null);
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to disable biometric");
+    },
+  });
+
   const menuItems = [
     {
       id: "2fa" as ActiveView,
       icon: Shield,
       label: t("menu.twoFactor"),
       description: t("menu.twoFactorDesc"),
+    },
+    {
+      id: "biometric" as ActiveView,
+      icon: Lock,
+      label: t("biometric.title"),
+      description: t("biometric.subtitle"),
     },
     {
       id: "password" as ActiveView,
@@ -581,6 +599,84 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
               <p className="text-xs text-center text-muted-foreground">
                 {t("twoFactor.appHint")}
               </p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (activeView === "biometric") {
+      const webauthnEnabled = biometricStatus?.enabled || false;
+
+      const handleDisableBiometric = () => {
+        if (window.confirm("Are you sure you want to disable biometric authentication?")) {
+          disableBiometric.mutate();
+        }
+      };
+
+      const handleEnableBiometric = () => {
+        setActiveView(null);
+        setLocation("/dashboard");
+        // Trigger biometric setup modal
+        setTimeout(() => {
+          const event = new CustomEvent("show-biometric-setup");
+          window.dispatchEvent(event);
+        }, 500);
+      };
+
+      return (
+        <div className="p-6 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
+              <Lock className="w-8 h-8 text-accent" />
+            </div>
+            <h2 className="text-xl font-bold">{t("biometric.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("biometric.subtitle")}</p>
+          </div>
+
+          {webauthnEnabled ? (
+            <div className="space-y-4">
+              <div className="bg-green-500/20 border border-green-500/30 rounded-[15px] p-4 text-center">
+                <Check className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                <p className="font-medium text-green-400">{t("biometric.enabled")}</p>
+              </div>
+              <div className="space-y-2 bg-card border border-border/20 rounded-[15px] p-4">
+                <p className="text-sm font-medium">{t("biometric.benefits")}</p>
+                <ul className="space-y-1 text-sm text-muted-foreground">
+                  <li>• {t("biometric.benefit1")}</li>
+                  <li>• {t("biometric.benefit2")}</li>
+                  <li>• {t("biometric.benefit3")}</li>
+                </ul>
+              </div>
+              <Button 
+                className="w-full h-14 rounded-[15px] bg-red-500 hover:bg-red-600"
+                onClick={handleDisableBiometric}
+                disabled={disableBiometric.isPending}
+              >
+                {disableBiometric.isPending ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                {t("biometric.disable")}
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-[15px] p-4 text-center">
+                <Lock className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                <p className="font-medium text-yellow-400">{t("biometric.disabled")}</p>
+              </div>
+              <div className="space-y-2 bg-card border border-border/20 rounded-[15px] p-4">
+                <p className="text-sm font-medium">{t("biometric.benefits")}</p>
+                <ul className="space-y-1 text-sm text-muted-foreground">
+                  <li>• {t("biometric.benefit1")}</li>
+                  <li>• {t("biometric.benefit2")}</li>
+                  <li>• {t("biometric.benefit3")}</li>
+                </ul>
+              </div>
+              <Button 
+                className="w-full h-14 rounded-[15px] bg-accent hover:bg-accent/90"
+                onClick={handleEnableBiometric}
+              >
+                {t("biometric.enable")}
+              </Button>
             </div>
           )}
         </div>

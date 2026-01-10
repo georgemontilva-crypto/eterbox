@@ -236,6 +236,12 @@ export const translations: Translations = {
   "biometric.enableNow": { en: "Enable Now", es: "Habilitar Ahora" },
   "biometric.maybeLater": { en: "Maybe Later", es: "Quizás Luego" },
   "biometric.canEnableLater": { en: "You can enable this feature anytime from Settings", es: "Puedes habilitar esta función en cualquier momento desde Configuración" },
+  "biometric.title": { en: "Biometric Authentication", es: "Autenticación Biométrica" },
+  "biometric.subtitle": { en: "Use Face ID or fingerprint to login", es: "Usa Face ID o huella digital para iniciar sesión" },
+  "biometric.enabled": { en: "Biometric authentication is enabled", es: "La autenticación biométrica está activada" },
+  "biometric.disabled": { en: "Biometric authentication is disabled", es: "La autenticación biométrica está desactivada" },
+  "biometric.enable": { en: "Enable Biometric Authentication", es: "Activar Autenticación Biométrica" },
+  "biometric.disable": { en: "Disable Biometric Authentication", es: "Desactivar Autenticación Biométrica" },
 
   // Checkout
   "checkout.title": { en: "Complete Payment", es: "Completar Pago" },

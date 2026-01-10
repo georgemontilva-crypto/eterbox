@@ -265,3 +265,16 @@
 - [x] Actualizar base de datos local a -1
 - [ ] Ejecutar script en Railway para actualizar producción
 - [ ] Verificar en eterbox.com que muestra "∞" en lugar de 999999
+
+
+## 🔐 Autenticación Biométrica en Settings
+- [x] Agregar opción "Biometric Authentication" en el menú hamburguesa (MobileMenu)
+- [x] Crear vista que muestre estado actual (activado/desactivado)
+- [x] Mostrar lista de beneficios de autenticación biométrica
+- [x] Agregar botón para activar biométrico (abre modal de configuración)
+- [x] Agregar botón para desactivar biométrico (con confirmación)
+- [x] Integrar con endpoints tRPC: checkBiometricStatus y disableBiometric
+- [x] Agregar traducciones completas en LanguageContext (EN/ES)
+- [x] Mover hooks fuera de condiciones para evitar errores React
+- [x] Probar flujo completo de activación desde Settings
+- [ ] Guardar checkpoint y desplegar a producción
