@@ -466,5 +466,17 @@
 ## 🚂 Railway Build Script Fix
 - [x] Identificar problema: hostinger:build falla silenciosamente en Railway
 - [x] Crear railway:build script sin pnpm install redundante
-- [ ] Actualizar Custom Build Command en Railway a "pnpm run railway:build"
+- [x] Modificar hostinger:build para eliminar pnpm install redundante
+- [x] Push código actualizado a GitHub (commit 4bdcf82)
+- [ ] Configurar Railway con pnpm run hostinger:build
 - [ ] Redeploy y verificar que funcione
+
+
+## 🔄 Railway Fresh Start
+- [ ] Crear checkpoint de respaldo con código actual funcionando
+- [ ] Eliminar proyecto actual de Railway completamente
+- [ ] Crear nuevo proyecto en Railway desde cero
+- [ ] Configurar variables de entorno
+- [ ] Configurar build y start commands correctamente
+- [ ] Hacer primer deployment
+- [ ] Verificar que eterbox.com funcione correctamente
