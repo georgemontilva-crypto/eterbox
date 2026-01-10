@@ -415,3 +415,60 @@
 - [ ] Revisar package.json y deshabilitar migraciones automáticas en start
 - [ ] Asegurar que la app pueda iniciar sin base de datos configurada
 - [ ] Push a GitHub y verificar deployment exitoso
+
+
+## Implementación Completa de Autenticación y Admin Panel
+
+### Fase 1: Verificación de Railway
+- [ ] Confirmar que eterbox.com está online sin crashes
+- [ ] Verificar que el Custom Start Command es solo `npm run start`
+
+### Fase 2: Inicialización de Base de Datos
+- [x] Crear endpoint temporal /api/setup-database
+- [ ] Usuario visita https://eterbox.com/api/setup-database para inicializar
+- [ ] Eliminar endpoint temporal después de inicializar
+
+### Fase 3: Autenticación Email/Password
+- [ ] Crear página de registro (/register) con formulario email/password
+- [ ] Crear página de login (/login) con formulario email/password
+- [ ] Implementar hash de contraseñas con bcrypt
+- [ ] Crear endpoints tRPC para register y login
+- [ ] Implementar JWT para sesiones
+- [ ] Agregar validación de email y contraseña
+
+### Fase 4: Google OAuth
+- [ ] Crear credenciales OAuth en Google Cloud Console
+- [ ] Configurar redirect URI para eterbox.com
+- [ ] Implementar flujo de OAuth con Google
+- [ ] Agregar botón "Sign in with Google" en login/register
+- [ ] Guardar usuarios de Google en base de datos
+
+### Fase 5: Apple OAuth
+- [ ] Crear App ID en Apple Developer
+- [ ] Configurar Sign in with Apple
+- [ ] Implementar flujo de OAuth con Apple
+- [ ] Agregar botón "Sign in with Apple" en login/register
+- [ ] Guardar usuarios de Apple en base de datos
+
+### Fase 6: Panel de Administración
+- [ ] Crear página /admin protegida (solo para admin)
+- [ ] Mostrar lista de todos los usuarios registrados
+- [ ] Mostrar plan actual de cada usuario
+- [ ] Agregar filtros por método de login (Google/Apple/Email)
+- [ ] Agregar búsqueda de usuarios
+- [ ] Mostrar estadísticas (total usuarios, por plan, etc.)
+- [ ] Permitir cambiar plan de usuario manualmente
+- [ ] Permitir eliminar usuarios
+
+### Fase 7: Testing
+- [ ] Probar registro con email/password
+- [ ] Probar login con email/password
+- [ ] Probar Google OAuth completo
+- [ ] Probar Apple OAuth completo
+- [ ] Probar acceso a panel admin
+- [ ] Verificar que usuarios no-admin no pueden acceder a /admin
+
+### Fase 8: Deployment Final
+- [ ] Push todos los cambios a GitHub
+- [ ] Verificar deployment en Railway
+- [ ] Confirmar que todo funciona en producción
