@@ -24,10 +24,14 @@ export const webauthnRouter = router({
   /**
    * Generate registration options for biometric authentication
    */
-  generateRegistrationOptions: protectedProcedure.mutation(async ({ ctx }) => {
+  generateRegistrationOptions: publicProcedure.mutation(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
 
+    // Manual JWT verification since this is called right after registration
+    if (!ctx.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED", message: "Authentication required" });
+    }
     const user = ctx.user;
     
     // Parse existing authenticators
@@ -60,7 +64,7 @@ export const webauthnRouter = router({
   /**
    * Verify and store biometric registration
    */
-  verifyRegistration: protectedProcedure
+  verifyRegistration: publicProcedure
     .input(
       z.object({
         response: z.any(), // RegistrationResponseJSON
@@ -70,6 +74,10 @@ export const webauthnRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
 
+      // Manual JWT verification since this is called right after registration
+      if (!ctx.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Authentication required" });
+      }
       const user = ctx.user;
       
       // Get stored challenge
