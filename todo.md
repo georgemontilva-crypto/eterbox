@@ -483,4 +483,10 @@
 ## Usar Drizzle migrations en lugar de SQL manual
 - [x] Modificar setup-database para usar drizzle-kit push
 - [x] Insertar planes iniciales después de crear tablas
-- [ ] Push a GitHub y verificar en Railway
+- [x] Push a GitHub y verificar en Railway
+
+
+## Eliminar endpoint temporal de setup-database
+- [x] Eliminar archivo server/setup-database.ts
+- [x] Eliminar import y registro del endpoint en server/_core/index.ts
+- [ ] Push a GitHub y verificar deployment en Railway
