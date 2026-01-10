@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { IconWithBackground } from "@/components/IconWithBackground";
-import { Lock, Shield, Zap, ArrowRight, Check, Globe, Menu, Mail, Briefcase, UserCog } from "lucide-react";
+import { Lock, Shield, Zap, ArrowRight, Check, Globe, Menu } from "lucide-react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
@@ -276,9 +275,10 @@ export default function Home() {
             {/* Contact */}
             <div>
               <h3 className="font-semibold text-foreground mb-3 text-sm sm:text-base">Contact Us</h3>
-              <div className="flex items-center gap-3">
-                <IconWithBackground icon={Mail} variant="blue" size="sm" />
-                <a href="mailto:support@eterbox.com" className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors">support@eterbox.com</a>
+              <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
+                <p>📧 <a href="mailto:support@eterbox.com" className="hover:text-accent transition-colors">support@eterbox.com</a></p>
+                <p>💼 <a href="mailto:sales@eterbox.com" className="hover:text-accent transition-colors">sales@eterbox.com</a></p>
+                <p>👥 <a href="mailto:admin@eterbox.com" className="hover:text-accent transition-colors">admin@eterbox.com</a></p>
               </div>
             </div>
             
