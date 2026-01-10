@@ -539,3 +539,47 @@
 - [ ] Implementar login con Face ID/Touch ID/Huella
 - [ ] Agregar fallback a contraseña si biometría falla
 - [ ] Crear tests para WebAuthn
+
+
+## Panel de Administración
+- [ ] Crear sistema de roles (admin/user)
+- [ ] Crear middleware de autorización para admin
+- [ ] Crear endpoints tRPC para gestión de usuarios
+- [ ] Crear endpoint para listar todos los usuarios
+- [ ] Crear endpoint para crear usuario manualmente
+- [ ] Crear endpoint para asignar/cambiar plan de usuario
+- [ ] Crear endpoint para eliminar usuario
+- [ ] Crear endpoint para suspender/activar usuario
+- [ ] Crear página /admin con autenticación requerida
+- [ ] Crear tabla de usuarios con filtros y búsqueda
+- [ ] Crear modal para crear nuevo usuario
+- [ ] Crear modal para editar usuario y asignar plan
+- [ ] Crear confirmación para eliminar usuario
+- [ ] Mostrar estadísticas de usuarios por plan
+- [ ] Asegurar que las contraseñas NUNCA se muestren en el admin
+
+
+## Panel de Administración Completado
+- [x] Crear middleware de autenticación admin (adminProcedure)
+- [x] Crear router tRPC con endpoints protegidos (/server/api/routers/admin.ts)
+- [x] Implementar listUsers con paginación, búsqueda y filtros
+- [x] Implementar getStats para estadísticas del sistema
+- [x] Implementar createUser para crear usuarios manualmente
+- [x] Implementar updateUserPlan para asignar planes
+- [x] Implementar updateUserRole para cambiar roles (user/admin)
+- [x] Implementar deleteUser con protección contra auto-eliminación
+- [x] Implementar verifyUserEmail para verificar emails manualmente
+- [x] Crear página /admin con UI completa
+- [x] Crear ruta protegida AdminRoute en App.tsx
+- [x] Diseñar UI con estadísticas (total users, admins, users por plan)
+- [x] Crear tabla de usuarios con columnas: nombre, email, rol, plan, verificado
+- [x] Implementar búsqueda por nombre/email
+- [x] Implementar filtro por rol (user/admin)
+- [x] Crear modal para crear nuevos usuarios
+- [x] Crear modal para editar usuarios (cambiar plan y rol)
+- [x] Crear modal de confirmación para eliminar usuarios
+- [x] Implementar paginación con botones prev/next
+- [x] Agregar botón "Back to Dashboard" en header
+- [x] Proteger contra demotion/deletion del propio admin
+- [x] Asegurar que las contraseñas NUNCA sean visibles para admins (solo hashes)
+- [x] Tests unitarios para funcionalidad admin (10 tests)

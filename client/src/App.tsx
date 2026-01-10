@@ -13,6 +13,7 @@ import Settings from "./pages/Settings";
 import Verify2FA from "./pages/Verify2FA";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Admin from "./pages/Admin";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
@@ -34,6 +35,24 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   return <Component />;
 }
 
+function AdminRoute({ component: Component }: { component: React.ComponentType }) {
+  const { isAuthenticated, loading, user } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin w-8 h-8 text-accent" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || user?.role !== "admin") {
+    return <NotFound />;
+  }
+
+  return <Component />;
+}
+
 function Router() {
   return (
     <Switch>
@@ -42,6 +61,7 @@ function Router() {
       <Route path={"/pricing"} component={Pricing} />
       <Route path={"/support"} component={Support} />
       <Route path={"/settings"} component={() => <ProtectedRoute component={Settings} />} />
+      <Route path={"/admin"} component={() => <AdminRoute component={Admin} />} />
       <Route path={"/verify-2fa"} component={Verify2FA} />
       <Route path={"/login"} component={Login} />
       <Route path={"/register"} component={Register} />
