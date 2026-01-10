@@ -47,36 +47,56 @@ export async function setupVite(app: Express, server: Server) {
   });
 }
 
-export function serveStatic(app: Express) {
-  // In production, __dirname points to /app/dist (where index.js is)
-  // So we need to go to /app/dist/public
-  const distPath = path.resolve(import.meta.dirname, "public");
-  const indexPath = path.resolve(distPath, "index.html");
-  
-  console.log("[serveStatic] __dirname:", import.meta.dirname);
-  console.log("[serveStatic] distPath:", distPath);
-  console.log("[serveStatic] indexPath:", indexPath);
-  console.log("[serveStatic] distPath exists:", fs.existsSync(distPath));
-  console.log("[serveStatic] indexPath exists:", fs.existsSync(indexPath));
-  
-  if (!fs.existsSync(distPath)) {
-    console.error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`
-    );
-    console.error("[serveStatic] Listing parent directory:");
-    try {
-      const parentDir = path.resolve(import.meta.dirname, "..");
-      const files = fs.readdirSync(parentDir);
-      console.error("[serveStatic] Files in parent:", files);
-      const distDir = path.resolve(import.meta.dirname);
-      if (fs.existsSync(distDir)) {
-        const distFiles = fs.readdirSync(distDir);
-        console.error("[serveStatic] Files in dist:", distFiles);
+function findDistPath(): string {
+  // Try multiple possible locations for the dist/public directory
+  const possiblePaths = [
+    // Railway/production: compiled code is in /app/dist/index.js, so public is at /app/dist/public
+    path.resolve(import.meta.dirname, "public"),
+    // Alternative: if __dirname is /app/dist, try /app/dist/public
+    path.resolve(import.meta.dirname, "..", "dist", "public"),
+    // Local development fallback: from project root
+    path.resolve(process.cwd(), "dist", "public"),
+    // Another fallback: from __dirname go up to root then to dist/public
+    path.resolve(import.meta.dirname, "../..", "dist", "public"),
+  ];
+
+  console.log("[serveStatic] Searching for dist/public in multiple locations...");
+  console.log("[serveStatic] import.meta.dirname:", import.meta.dirname);
+  console.log("[serveStatic] process.cwd():", process.cwd());
+
+  for (const distPath of possiblePaths) {
+    console.log("[serveStatic] Trying:", distPath);
+    if (fs.existsSync(distPath)) {
+      const indexPath = path.resolve(distPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        console.log("✅ [serveStatic] Found dist/public at:", distPath);
+        return distPath;
+      } else {
+        console.log("⚠️  [serveStatic] Found directory but no index.html");
       }
-    } catch (e) {
-      console.error("[serveStatic] Error listing files:", e);
+    } else {
+      console.log("❌ [serveStatic] Not found");
     }
   }
+
+  // If nothing found, list what we have
+  console.error("❌ [serveStatic] Could not find dist/public in any location!");
+  console.error("[serveStatic] Listing current directory structure:");
+  try {
+    console.error("[serveStatic] Files in __dirname:", fs.readdirSync(import.meta.dirname));
+    const parent = path.resolve(import.meta.dirname, "..");
+    console.error("[serveStatic] Files in parent:", fs.readdirSync(parent));
+  } catch (e) {
+    console.error("[serveStatic] Error listing:", e);
+  }
+
+  // Return first path as fallback (will show error but won't crash)
+  return possiblePaths[0];
+}
+
+export function serveStatic(app: Express) {
+  const distPath = findDistPath();
+  const indexPath = path.resolve(distPath, "index.html");
 
   app.use(express.static(distPath));
 
