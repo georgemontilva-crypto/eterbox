@@ -348,3 +348,12 @@
 - [x] Configurar redirección a /dashboard después de verificación exitosa
 - [x] Probar flujo completo de login con 2FA
 - [ ] Deploy
+
+
+## 🔧 Fix Plan Limits Display en Dashboard
+- [x] Investigar por qué muestra "0/∞" en lugar de límites reales
+- [x] Verificar que getUserPlan devuelve maxKeys y maxFolders correctos
+- [x] Base de datos actualizada con nuevos límites (Corporate: 500/200)
+- [x] Servidor reiniciado para cargar nuevos valores
+- [x] Dashboard ya muestra límites correctos automáticamente
+- [ ] Deploy

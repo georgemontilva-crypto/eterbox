@@ -1,0 +1,55 @@
+{
+  "query": "-- Check user's plan\nSELECT u.id, u.email, u.planId, p.name as planName, p.maxKeys, p.maxFolders \nFROM users u \nJOIN plans p ON u.planId = p.id \nLIMIT 5;\n\n-- Check all plans\nSELECT id, name, maxKeys, maxFolders, price FROM plans ORDER BY price;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute -- Check user's plan\nSELECT u.id, u.email, u.planId, p.name as planName, p.maxKeys, p.maxFolders \nFROM users u \nJOIN plans p ON u.planId = p.id \nLIMIT 5;\n\n-- Check all plans\nSELECT id, name, maxKeys, maxFolders, price FROM plans ORDER BY price;",
+  "rows": [
+    {
+      "id": "1",
+      "email": "georgemontilvawork@gmail.com",
+      "planId": "1",
+      "planName": "Free",
+      "maxKeys": "10",
+      "maxFolders": "2"
+    },
+    {
+      "id": "390369",
+      "email": "test@eterbox.com",
+      "planId": "1",
+      "planName": "Free",
+      "maxKeys": "10",
+      "maxFolders": "2"
+    },
+    {
+      "id": "390370",
+      "email": "test2@eterbox.com",
+      "planId": "1",
+      "planName": "Free",
+      "maxKeys": "10",
+      "maxFolders": "2"
+    },
+    {
+      "id": "390371",
+      "email": "test3@eterbox.com",
+      "planId": "1",
+      "planName": "Free",
+      "maxKeys": "10",
+      "maxFolders": "2"
+    },
+    {
+      "id": "390372",
+      "email": "test4@eterbox.com",
+      "planId": "1",
+      "planName": "Free",
+      "maxKeys": "10",
+      "maxFolders": "2"
+    }
+  ],
+  "messages": [
+    "id\tname\tmaxKeys\tmaxFolders\tprice",
+    "1\tFree\t10\t2\t0.00",
+    "2\tBasic\t100\t20\t15.00",
+    "3\tCorporate\t500\t200\t25.00"
+  ],
+  "stdout": "id\temail\tplanId\tplanName\tmaxKeys\tmaxFolders\n1\tgeorgemontilvawork@gmail.com\t1\tFree\t10\t2\n390369\ttest@eterbox.com\t1\tFree\t10\t2\n390370\ttest2@eterbox.com\t1\tFree\t10\t2\n390371\ttest3@eterbox.com\t1\tFree\t10\t2\n390372\ttest4@eterbox.com\t1\tFree\t10\t2\nid\tname\tmaxKeys\tmaxFolders\tprice\n1\tFree\t10\t2\t0.00\n2\tBasic\t100\t20\t15.00\n3\tCorporate\t500\t200\t25.00\n",
+  "stderr": "",
+  "execution_time_ms": 202
+}
