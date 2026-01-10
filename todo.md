@@ -659,3 +659,15 @@
 - [x] Eliminar admin@eterbox.com del footer
 - [x] Dejar solo support@eterbox.com
 - [ ] Deploy cambios
+
+
+## 💰 Actualizar Página de Pricing
+- [ ] Crear/actualizar página de Pricing con 4 planes
+- [ ] Plan Free: 10 credenciales, 2 carpetas, AES-256, sin backup/2FA
+- [ ] Plan Basic ($9/mes): 100 credenciales, 10 carpetas, 2FA, backup, soporte estándar
+- [ ] Plan Corporate ($29/mes): 1000 credenciales, 100 carpetas, multiusuario (10), alertas, dashboard, API
+- [ ] Plan Enterprise ($99+/mes): Ilimitado, multiusuario (50+), auditorías, API, soporte 24/7
+- [ ] Usar iconos con estilo de la web
+- [ ] Botones de "Get Started" / "Contact Sales"
+- [ ] Destacar plan recomendado (Basic o Corporate)
+- [ ] Deploy cambios
