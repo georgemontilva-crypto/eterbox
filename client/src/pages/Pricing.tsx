@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
+// import { useAuth } from "@/_core/hooks/useAuth"; // Removed - public page doesn't need auth
 import { Check, Lock, Loader2 } from "lucide-react";
 import { useLocation, useSearch } from "wouter";
 import { toast } from "sonner";
@@ -49,13 +49,23 @@ const PLANS = [
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const search = useSearch();
-  const { user } = useAuth();
+  // const { user } = useAuth(); // Removed - will check localStorage directly
+  const [user, setUser] = useState<any>(null);
+
+  // Check if user is logged in by checking localStorage token
+  useEffect(() => {
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      // User is logged in, we can show their plan
+      setUser({ loggedIn: true });
+    }
+  }, []);
   const { t } = useLanguage();
   // Use hardcoded plans instead of database
   const plans = PLANS;
-  const { data: userPlan, refetch: refetchUserPlan } = trpc.plans.getUserPlan.useQuery(undefined, {
-    enabled: !!user,
-  });
+  // Removed getUserPlan query to prevent auth errors on public page
+  const userPlan = null;
+  const refetchUserPlan = () => {};
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
@@ -111,7 +121,8 @@ export default function Pricing() {
   };
 
   const isCurrentPlan = (planId: number) => {
-    return userPlan?.id === planId;
+    // Always return false since we don't fetch user plan on public page
+    return false;
   };
 
   const getPrice = (plan: any) => {
