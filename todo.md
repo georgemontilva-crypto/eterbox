@@ -287,7 +287,7 @@
 - [x] Actualizar base de datos local: cambiar maxCredentials y maxFolders de 999999 a -1
 - [x] Crear script para actualizar producción (update-corporate-unlimited-prod.mjs)
 - [x] Probar en local
-- [ ] Deploy a producción
+- [x] Deploy a producción
 
 
 ## 🎨 Agregar Favicon y Logo
@@ -295,8 +295,8 @@
 - [x] Actualizar index.html para usar el nuevo favicon
 - [x] Actualizar Header component para mostrar logo junto al texto "EterBox"
 - [x] Actualizado en Home, Dashboard, Pricing, Register, Settings, Support
-- [ ] Probar en navegador
-- [ ] Guardar checkpoint y deploy
+- [x] Probar en navegador
+- [x] Guardar checkpoint y deploy
 
 
 ## 🔑 Agregar Login en el menú del Home y unificar estilos
@@ -304,4 +304,19 @@
 - [x] Verificar que Login page tenga el mismo estilo visual que Register
 - [x] Unificar diseño de ambas páginas (header, formulario, colores)
 - [x] Agregar traducciones completas para Login
-- [ ] Probar navegación y estilos
+- [x] Probar navegación y estilos
+
+
+## 🔧 Fix Autenticación Biométrica (Face ID/Huella)
+- [x] Revisar implementación actual de WebAuthn en backend
+- [x] Verificar configuración de RP ID y origin
+- [x] Configurar variables de entorno WEBAUTHN_RP_ID y WEBAUTHN_ORIGIN
+- [x] Revisar generación de challenges en registro y login
+- [x] Verificar almacenamiento de credenciales en base de datos
+- [x] Agregar logs detallados para debugging en Register y Dashboard
+- [x] Mejorar manejo de errores con mensajes específicos
+- [x] Agregar verificación de disponibilidad de autenticador de plataforma
+- [x] Conectar evento de Settings con Dashboard para activar biométrico
+- [ ] Probar en HTTPS en producción (eterbox.com)
+- [ ] Probar flujo completo: registro → activación → login
+- [ ] Deploy y prueba en producción

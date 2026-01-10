@@ -60,10 +60,24 @@ export default function Register() {
   const handleActivateBiometric = async () => {
     try {
       console.log("[Biometric] Starting registration...");
+      console.log("[Biometric] Current origin:", window.location.origin);
+      console.log("[Biometric] Current hostname:", window.location.hostname);
       
       // Check if WebAuthn is supported
       if (!window.PublicKeyCredential) {
-        alert("Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID.");
+        console.error("[Biometric] WebAuthn not supported");
+        alert("Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID o Chrome/Edge en Android.");
+        setShowBiometric(false);
+        setShow2FAWelcome(true);
+        return;
+      }
+
+      // Check if platform authenticator is available
+      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      console.log("[Biometric] Platform authenticator available:", available);
+      
+      if (!available) {
+        alert("Tu dispositivo no tiene autenticación biométrica disponible (Face ID, Touch ID, o huella digital).");
         setShowBiometric(false);
         setShow2FAWelcome(true);
         return;
@@ -71,11 +85,11 @@ export default function Register() {
 
       console.log("[Biometric] Generating options...");
       const options = await webauthnRegisterMutation.mutateAsync();
-      console.log("[Biometric] Options received:", options);
+      console.log("[Biometric] Options received:", JSON.stringify(options, null, 2));
       
       console.log("[Biometric] Starting registration with device...");
       const attResp = await startRegistration({ optionsJSON: options });
-      console.log("[Biometric] Registration response received:", attResp);
+      console.log("[Biometric] Registration response received:", JSON.stringify(attResp, null, 2));
       
       console.log("[Biometric] Verifying registration...");
       await webauthnVerifyMutation.mutateAsync({
@@ -83,12 +97,23 @@ export default function Register() {
       });
       console.log("[Biometric] Registration verified successfully!");
 
-      alert("¡Face ID activado exitosamente!");
+      alert("¡Autenticación biométrica activada exitosamente!");
       setShowBiometric(false);
       setShow2FAWelcome(true);
     } catch (err: any) {
       console.error("[Biometric] Registration failed:", err);
-      alert(`Error al activar biometría: ${err.message || 'Error desconocido'}`);
+      console.error("[Biometric] Error details:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
+      
+      let errorMessage = "Error al activar biometría";
+      if (err.name === 'NotAllowedError') {
+        errorMessage = "Permiso denegado. Por favor, intenta de nuevo y acepta el prompt de autenticación.";
+      } else if (err.name === 'InvalidStateError') {
+        errorMessage = "Esta credencial ya está registrada. Intenta desde otro dispositivo o elimina la credencial existente.";
+      } else if (err.message) {
+        errorMessage = `Error: ${err.message}`;
+      }
+      
+      alert(errorMessage);
       setShowBiometric(false);
       setShow2FAWelcome(true);
     }

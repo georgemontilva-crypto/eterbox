@@ -4,14 +4,16 @@ import { CreateCredentialModal } from "@/components/CreateCredentialModal";
 import { CreateFolderModal } from "@/components/CreateFolderModal";
 import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { DeleteFolderDialog } from "@/components/DeleteFolderDialog";
+import { BiometricSetupModal } from "@/components/BiometricSetupModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { RenewalBanner } from "@/components/RenewalBanner";
 import { useLocation } from "wouter";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
+import { startRegistration } from "@simplewebauthn/browser";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -29,6 +31,7 @@ export default function Dashboard() {
   const [showDeleteFolderDialog, setShowDeleteFolderDialog] = useState(false);
   const [folderToDelete, setFolderToDelete] = useState<{ id: number; name: string; credentialCount: number } | null>(null);
   const [defaultPassword, setDefaultPassword] = useState<string | undefined>(undefined);
+  const [showBiometricSetup, setShowBiometricSetup] = useState(false);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -37,6 +40,8 @@ export default function Dashboard() {
   const deleteFolderMutation = trpc.folders.delete.useMutation();
   const updateCredentialMutation = trpc.credentials.update.useMutation();
   const utils = trpc.useUtils();
+  const webauthnRegisterMutation = trpc.webauthn.generateRegistrationOptions.useMutation();
+  const webauthnVerifyMutation = trpc.webauthn.verifyRegistration.useMutation();
 
   const togglePasswordVisibility = (id: number) => {
     const newSet = new Set(visiblePasswords);
@@ -88,6 +93,77 @@ export default function Dashboard() {
       setShowAddExistingModal(false);
     } catch (error) {
       toast.error("Failed to add credential to folder");
+    }
+  };
+
+  // Handle biometric setup from Settings menu
+  useEffect(() => {
+    const handleBiometricSetupEvent = () => {
+      setShowBiometricSetup(true);
+    };
+
+    window.addEventListener("show-biometric-setup", handleBiometricSetupEvent);
+    return () => {
+      window.removeEventListener("show-biometric-setup", handleBiometricSetupEvent);
+    };
+  }, []);
+
+  const handleActivateBiometric = async () => {
+    try {
+      console.log("[Biometric] Starting registration from Dashboard...");
+      console.log("[Biometric] Current origin:", window.location.origin);
+      console.log("[Biometric] Current hostname:", window.location.hostname);
+      
+      // Check if WebAuthn is supported
+      if (!window.PublicKeyCredential) {
+        console.error("[Biometric] WebAuthn not supported");
+        toast.error("Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID o Chrome/Edge en Android.");
+        setShowBiometricSetup(false);
+        return;
+      }
+
+      // Check if platform authenticator is available
+      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      console.log("[Biometric] Platform authenticator available:", available);
+      
+      if (!available) {
+        toast.error("Tu dispositivo no tiene autenticación biométrica disponible (Face ID, Touch ID, o huella digital).");
+        setShowBiometricSetup(false);
+        return;
+      }
+
+      console.log("[Biometric] Generating options...");
+      const options = await webauthnRegisterMutation.mutateAsync();
+      console.log("[Biometric] Options received:", JSON.stringify(options, null, 2));
+      
+      console.log("[Biometric] Starting registration with device...");
+      const attResp = await startRegistration({ optionsJSON: options });
+      console.log("[Biometric] Registration response received:", JSON.stringify(attResp, null, 2));
+      
+      console.log("[Biometric] Verifying registration...");
+      await webauthnVerifyMutation.mutateAsync({
+        response: attResp,
+      });
+      console.log("[Biometric] Registration verified successfully!");
+
+      toast.success("¡Autenticación biométrica activada exitosamente!");
+      setShowBiometricSetup(false);
+      utils.webauthn.checkBiometricStatus.invalidate();
+    } catch (err: any) {
+      console.error("[Biometric] Registration failed:", err);
+      console.error("[Biometric] Error details:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
+      
+      let errorMessage = "Error al activar biometría";
+      if (err.name === 'NotAllowedError') {
+        errorMessage = "Permiso denegado. Por favor, intenta de nuevo y acepta el prompt de autenticación.";
+      } else if (err.name === 'InvalidStateError') {
+        errorMessage = "Esta credencial ya está registrada. Intenta desde otro dispositivo o elimina la credencial existente.";
+      } else if (err.message) {
+        errorMessage = `Error: ${err.message}`;
+      }
+      
+      toast.error(errorMessage);
+      setShowBiometricSetup(false);
     }
   };
 
@@ -506,6 +582,11 @@ export default function Dashboard() {
           onDeleted={handleFolderDeleted}
         />
       )}
+      <BiometricSetupModal
+        open={showBiometricSetup}
+        onClose={() => setShowBiometricSetup(false)}
+        onEnable={handleActivateBiometric}
+      />
     </div>
   );
 }
