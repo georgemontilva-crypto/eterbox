@@ -477,4 +477,10 @@
 ## Bug - Error de sintaxis SQL en setup-database
 - [x] Arreglar sintaxis SQL para compatibilidad con MySQL de Railway
 - [x] Cambiar openId a open_id para evitar palabra reservada
-- [ ] Push a GitHub y verificar que funcione
+- [x] Push a GitHub y verificar que funcione
+
+
+## Usar Drizzle migrations en lugar de SQL manual
+- [x] Modificar setup-database para usar drizzle-kit push
+- [x] Insertar planes iniciales después de crear tablas
+- [ ] Push a GitHub y verificar en Railway
