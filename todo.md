@@ -652,3 +652,10 @@
 - [x] Cambiar iconos de footer para usar solo color accent de la web (azul)
 - [x] Eliminar colores múltiples (purple, pink, etc.)
 - [ ] Deploy cambios
+
+
+## 🧹 Limpiar Footer
+- [x] Eliminar sales@eterbox.com del footer
+- [x] Eliminar admin@eterbox.com del footer
+- [x] Dejar solo support@eterbox.com
+- [ ] Deploy cambios

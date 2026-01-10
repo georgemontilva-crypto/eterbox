@@ -276,19 +276,9 @@ export default function Home() {
             {/* Contact */}
             <div>
               <h3 className="font-semibold text-foreground mb-3 text-sm sm:text-base">Contact Us</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <IconWithBackground icon={Mail} variant="blue" size="sm" />
-                  <a href="mailto:support@eterbox.com" className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors">support@eterbox.com</a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <IconWithBackground icon={Briefcase} variant="blue" size="sm" />
-                  <a href="mailto:sales@eterbox.com" className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors">sales@eterbox.com</a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <IconWithBackground icon={UserCog} variant="blue" size="sm" />
-                  <a href="mailto:admin@eterbox.com" className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors">admin@eterbox.com</a>
-                </div>
+              <div className="flex items-center gap-3">
+                <IconWithBackground icon={Mail} variant="blue" size="sm" />
+                <a href="mailto:support@eterbox.com" className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors">support@eterbox.com</a>
               </div>
             </div>
             
