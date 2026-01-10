@@ -306,3 +306,10 @@
 - [x] Configurar PORT dinámico para Hostinger (ya estaba implementado)
 - [x] Probar build completo localmente - ✅ Exitoso
 - [x] Crear guía de despliegue actualizada (GUIA_DESPLIEGUE_HOSTINGER_FINAL.md)
+
+
+## Solución error EACCES de esbuild en Hostinger
+- [x] Cambiar de esbuild CLI a esbuild API (build-server.mjs)
+- [x] Modificar package.json con nuevo script de build
+- [x] Probar build localmente - ✅ Exitoso
+- [x] Actualizar guía de despliegue

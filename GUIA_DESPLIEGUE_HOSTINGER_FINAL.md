@@ -174,7 +174,18 @@ VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
 
 ## 🐛 Solución de Problemas
 
-### Problema: Build falla
+### Problema: Build falla con error EACCES de esbuild
+
+**Síntomas:** El deployment muestra "Build failed" con error "spawn esbuild EACCES"
+
+**Solución:** Este error ya está resuelto en la última versión del proyecto. El build ahora usa la API de esbuild en lugar del CLI, lo que evita problemas de permisos.
+
+**Si aún ves este error:**
+1. Asegúrate de descargar la última versión del proyecto desde Manus
+2. Verifica que el archivo `build-server.mjs` esté en la raíz del proyecto
+3. Verifica que `package.json` tenga: `"build": "vite build && node build-server.mjs"`
+
+### Problema: Build falla (otros errores)
 
 **Síntomas:** El deployment muestra "Build failed"
 
