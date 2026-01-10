@@ -37,6 +37,7 @@ export const authRouter = router({
 
       // Create user
       const [newUser] = await db.insert(users).values({
+        openId: undefined, // Not using OAuth
         name: input.name,
         email: input.email,
         password: hashedPassword,

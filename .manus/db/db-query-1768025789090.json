@@ -1,0 +1,17 @@
+{
+  "query": "UPDATE users SET emailVerified = true WHERE email = 'test2@eterbox.com'; SELECT id, name, email, emailVerified, loginMethod FROM users WHERE email = 'test2@eterbox.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute UPDATE users SET emailVerified = true WHERE email = 'test2@eterbox.com'; SELECT id, name, email, emailVerified, loginMethod FROM users WHERE email = 'test2@eterbox.com';",
+  "rows": [
+    {
+      "id": "390370",
+      "name": "Test User 2",
+      "email": "test2@eterbox.com",
+      "emailVerified": "1",
+      "loginMethod": "email"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\temailVerified\tloginMethod\n390370\tTest User 2\ttest2@eterbox.com\t1\temail\n",
+  "stderr": "",
+  "execution_time_ms": 144
+}
