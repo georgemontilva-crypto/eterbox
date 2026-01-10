@@ -313,3 +313,11 @@
 - [x] Modificar package.json con nuevo script de build
 - [x] Probar build localmente - ✅ Exitoso
 - [x] Actualizar guía de despliegue
+
+
+## Solución definitiva: Eliminar esbuild completamente
+- [x] Modificar package.json para usar tsx en producción
+- [x] Eliminar server.js y build-server.mjs (ya no necesarios)
+- [x] Simplificar build para solo compilar frontend (sin backend)
+- [x] Corregir ruta de archivos estáticos en vite.ts
+- [x] Probar build y servidor - ✅ Exitoso sin errores

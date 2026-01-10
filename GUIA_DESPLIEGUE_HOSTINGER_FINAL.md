@@ -1,13 +1,14 @@
-# Guía de Despliegue en Hostinger - EterBox (ACTUALIZADA)
+# Guía de Despliegue en Hostinger - EterBox (VERSIÓN FINAL)
 
-## ✅ Cambios Realizados
+## ✅ Solución Implementada
 
-El proyecto ha sido reestructurado para ser 100% compatible con Hostinger Node.js Apps:
+El proyecto ha sido completamente reestructurado para evitar problemas de permisos con esbuild en Hostinger:
 
-1. **Nuevo entry point:** `server.js` en la raíz del proyecto
-2. **Package.json actualizado:** Campo `"main": "server.js"` agregado
-3. **Script start simplificado:** `node server.js` (Hostinger lo ejecutará automáticamente)
-4. **Build probado:** ✅ Funciona correctamente
+**Cambios clave:**
+- ✅ **Build simplificado:** Solo compila el frontend (Vite)
+- ✅ **Sin esbuild:** El backend se ejecuta directamente con `tsx` (sin compilación)
+- ✅ **Sin binarios:** No hay problemas de permisos
+- ✅ **Probado:** Build y servidor funcionan correctamente
 
 ## 📋 Requisitos Previos
 
@@ -58,7 +59,7 @@ El proyecto ha sido reestructurado para ser 100% compatible con Hostinger Node.j
 
 ### Paso 4: Configurar Build Settings
 
-**IMPORTANTE:** Usa exactamente esta configuración:
+**CONFIGURACIÓN EXACTA:**
 
 - **Framework preset:** `Vite`
 - **Node version:** `22.x`
@@ -67,7 +68,7 @@ El proyecto ha sido reestructurado para ser 100% compatible con Hostinger Node.j
 - **Build command:** `pnpm run build`
 - **Output directory:** `dist`
 
-**NO modifiques el Build command.** Hostinger ejecutará automáticamente `pnpm start` después del build, que a su vez ejecutará `node server.js`.
+**IMPORTANTE:** Hostinger ejecutará automáticamente `pnpm start` después del build.
 
 ### Paso 5: Configurar Variables de Entorno
 
@@ -174,18 +175,7 @@ VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
 
 ## 🐛 Solución de Problemas
 
-### Problema: Build falla con error EACCES de esbuild
-
-**Síntomas:** El deployment muestra "Build failed" con error "spawn esbuild EACCES"
-
-**Solución:** Este error ya está resuelto en la última versión del proyecto. El build ahora usa la API de esbuild en lugar del CLI, lo que evita problemas de permisos.
-
-**Si aún ves este error:**
-1. Asegúrate de descargar la última versión del proyecto desde Manus
-2. Verifica que el archivo `build-server.mjs` esté en la raíz del proyecto
-3. Verifica que `package.json` tenga: `"build": "vite build && node build-server.mjs"`
-
-### Problema: Build falla (otros errores)
+### Problema: Build falla
 
 **Síntomas:** El deployment muestra "Build failed"
 
@@ -194,6 +184,7 @@ VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
 2. Verifica que el **Package manager** esté en `pnpm` (no `npm`)
 3. Verifica que **Node version** sea `22.x`
 4. Verifica que **Build command** sea exactamente `pnpm run build`
+5. Si ves errores de esbuild, asegúrate de descargar la última versión del proyecto (que ya no usa esbuild)
 
 ### Problema: Build exitoso pero sitio no carga (403 Forbidden)
 
@@ -206,8 +197,8 @@ VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
 4. Si no ves ese mensaje, el servidor no se inició
 
 **Si el servidor no inicia:**
-- Verifica que el archivo `server.js` esté en la raíz del proyecto
-- Verifica que `package.json` tenga `"main": "server.js"`
+- Verifica que todas las variables de entorno estén configuradas
+- Verifica que `DATABASE_URL` esté correcta
 - Contacta al soporte de Hostinger
 
 ### Problema: Error de conexión a base de datos
@@ -247,19 +238,23 @@ VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
 
 ## 📝 Notas Importantes
 
-### Sobre el Entry Point
-
-El proyecto ahora usa `server.js` en la raíz como entry point. Este archivo simplemente importa el servidor compilado en `dist/index.js`.
-
-**NO modifiques `server.js`** a menos que sepas lo que estás haciendo.
-
 ### Sobre el Build
 
-El comando `pnpm run build` hace dos cosas:
-1. Construye el frontend (Vite) → `dist/public/`
-2. Construye el backend (esbuild) → `dist/index.js`
+El comando `pnpm run build` ahora **solo** construye el frontend (Vite) → `dist/public/`
 
-Hostinger ejecutará automáticamente `pnpm start` después del build, que ejecuta `node server.js`.
+El backend **NO se compila**, se ejecuta directamente con `tsx` en producción.
+
+Hostinger ejecutará automáticamente `pnpm start` después del build, que ejecuta:
+```
+NODE_ENV=production tsx server/_core/index.ts
+```
+
+### Sobre tsx
+
+`tsx` es un ejecutor de TypeScript que permite ejecutar código TypeScript directamente sin compilación previa. Es perfecto para producción en este caso porque:
+- ✅ No requiere binarios con permisos especiales
+- ✅ Es rápido y eficiente
+- ✅ Funciona en cualquier entorno Node.js
 
 ### Sobre las Variables de Entorno
 
@@ -299,5 +294,5 @@ Tu aplicación EterBox debería estar completamente funcional en Hostinger.
 ---
 
 **Última actualización:** 2026-01-09  
-**Versión del proyecto:** 40e2332e  
+**Versión del proyecto:** 5cdb93ef (sin esbuild, usa tsx)  
 **Creado por:** Manus AI Assistant
