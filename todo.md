@@ -343,3 +343,9 @@
 - [x] Agregar overflow-x-hidden al contenedor principal
 - [x] Reducir tamaños de iconos en móvil
 - [x] Ajustar espaciado entre elementos para móvil
+
+
+## Eliminar scroll horizontal en toda la aplicación
+- [x] Agregar reglas CSS globales para prevenir overflow horizontal
+- [x] Aplicar overflow-x-hidden a html y body
+- [x] Verificar que no haya elementos que causen desbordamiento
