@@ -56,7 +56,7 @@ export default function Home() {
             </DropdownMenu>
             <Button variant="ghost" onClick={() => setLocation("/pricing")}>{t("home.nav.pricing")}</Button>
             <Button variant="ghost" onClick={() => setLocation("/support")}>{t("home.nav.support")}</Button>
-            <Button onClick={() => window.location.href = getLoginUrl()}>{t("home.nav.signIn")}</Button>
+            <Button onClick={() => setLocation('/register')}>{t("home.nav.signIn")}</Button>
           </div>
 
           {/* Mobile Navigation */}
@@ -90,7 +90,7 @@ export default function Home() {
                 <DropdownMenuItem onClick={() => setLocation("/support")}>
                   {t("home.nav.support")}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.location.href = getLoginUrl()}>
+                <DropdownMenuItem onClick={() => setLocation('/register')}>
                   {t("home.nav.signIn")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -110,7 +110,7 @@ export default function Home() {
             {t("home.hero.subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Button size="lg" onClick={() => window.location.href = getLoginUrl()} className="h-11 sm:h-12 text-sm sm:text-base w-full sm:w-auto">
+            <Button size="lg" onClick={() => setLocation('/register')} className="h-11 sm:h-12 text-sm sm:text-base w-full sm:w-auto">
               {t("home.hero.getStarted")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -176,7 +176,7 @@ export default function Home() {
                 <span className="text-xs sm:text-sm">{t("home.plans.encryption")}</span>
               </div>
             </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline" onClick={() => window.location.href = getLoginUrl()}>{t("home.plans.getStarted")}</Button>
+            <Button className="w-full text-sm sm:text-base" variant="outline" onClick={() => setLocation('/register')}>{t("home.plans.getStarted")}</Button>
           </div>
 
           <div className="p-6 sm:p-8 rounded-[15px] border-accent bg-accent/5 border md:scale-105">
@@ -232,7 +232,7 @@ export default function Home() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">{t("home.cta.title")}</h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 px-4">{t("home.cta.subtitle")}</p>
-          <Button size="lg" onClick={() => window.location.href = getLoginUrl()} className="h-11 sm:h-12 text-sm sm:text-base w-full sm:w-auto">
+          <Button size="lg" onClick={() => setLocation('/register')} className="h-11 sm:h-12 text-sm sm:text-base w-full sm:w-auto">
             {t("home.cta.button")}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>

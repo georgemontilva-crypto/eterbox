@@ -532,8 +532,9 @@
 - [x] Agregar campos de WebAuthn a la tabla de usuarios
 - [x] Instalar @simplewebauthn/server y @simplewebauthn/browser
 - [x] Crear servicio WebAuthn para Face ID/Touch ID/Huella
-- [ ] Crear endpoints tRPC para registro WebAuthn
-- [ ] Crear endpoints tRPC para autenticación WebAuthn
+- [x] Crear endpoints tRPC para registro WebAuthn
+- [x] Crear endpoints tRPC para autenticación WebAuthn
+- [x] Integrar routers de auth y webauthn en appRouter principal
 - [ ] Implementar UI para activar biometría después del registro
 - [ ] Implementar login con Face ID/Touch ID/Huella
 - [ ] Agregar fallback a contraseña si biometría falla
