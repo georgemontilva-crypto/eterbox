@@ -631,3 +631,17 @@
 - [ ] Email de aceptación/rechazo
 - [ ] Email cuando te comparten una carpeta
 
+
+
+## 🎨 Actualizar Estilo de Iconos
+
+### Iconos con Fondos de Colores
+- [x] Actualizar iconos del Home (features section)
+- [x] Actualizar iconos de contacto (support, sales, admin) con fondos morado/rosa/azul
+- [x] Crear componente reutilizable IconWithBackground
+- [x] Usar gradientes sutiles en los fondos
+- [ ] Actualizar iconos del Dashboard
+- [ ] Actualizar iconos de Settings
+
+### Fix Railway Deploy
+- [ ] Configurar RESEND_API_KEY en Railway variables
