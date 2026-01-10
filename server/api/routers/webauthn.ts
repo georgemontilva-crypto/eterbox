@@ -269,6 +269,125 @@ export const webauthnRouter = router({
     }),
 
   /**
+   * Generate usernameless authentication options (discoverable credentials)
+   * No email required - uses passkeys stored on device
+   */
+  generateUsernamelessAuthOptions: publicProcedure.mutation(async () => {
+    // Generate options for discoverable credentials
+    const options = await webauthnService.generateUsernamelessAuthenticationOptions();
+
+    // Store challenge with a temporary key (will be matched later by credential ID)
+    challenges.set(`usernameless_${options.challenge}`, {
+      challenge: options.challenge,
+      expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
+    });
+
+    return options;
+  }),
+
+  /**
+   * Verify usernameless authentication and login
+   * Identifies user from the credential response
+   */
+  verifyUsernamelessAuth: publicProcedure
+    .input(
+      z.object({
+        response: z.any(), // AuthenticationResponseJSON
+      })
+    )
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+      // Get the credential ID from response
+      const credentialID = input.response.id;
+
+      // Find user by credential ID
+      const allUsers = await db.select().from(users).where(eq(users.webauthnEnabled, true));
+      
+      let matchedUser = null;
+      let matchedAuthenticator = null;
+
+      for (const user of allUsers) {
+        if (!user.webauthnCredentials) continue;
+        
+        try {
+          const authenticators: webauthnService.StoredAuthenticator[] = JSON.parse(user.webauthnCredentials);
+          const authenticator = authenticators.find(auth => auth.credentialID === credentialID);
+          
+          if (authenticator) {
+            matchedUser = user;
+            matchedAuthenticator = authenticator;
+            break;
+          }
+        } catch (error) {
+          console.error("[WebAuthn] Failed to parse credentials for user", user.id);
+        }
+      }
+
+      if (!matchedUser || !matchedAuthenticator) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Credential not found" });
+      }
+
+      // Get stored challenge
+      const rawChallenge = input.response.response.clientDataJSON;
+      const clientData = JSON.parse(Buffer.from(rawChallenge, 'base64').toString());
+      const challenge = clientData.challenge;
+      
+      const challengeData = challenges.get(`usernameless_${challenge}`);
+      if (!challengeData) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Challenge not found or expired" });
+      }
+
+      // Verify authentication
+      const verification = await webauthnService.verifyBiometricAuthentication(
+        input.response,
+        challengeData.challenge,
+        matchedAuthenticator
+      );
+
+      if (!verification.verified) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Authentication verification failed" });
+      }
+
+      // Update authenticator counter
+      const authenticators: webauthnService.StoredAuthenticator[] = JSON.parse(matchedUser.webauthnCredentials!);
+      const authIndex = authenticators.findIndex(auth => auth.credentialID === credentialID);
+      if (authIndex !== -1) {
+        authenticators[authIndex].counter = verification.authenticationInfo.newCounter;
+      }
+
+      await db.update(users)
+        .set({
+          webauthnCredentials: JSON.stringify(authenticators),
+          lastSignedIn: new Date(),
+        })
+        .where(eq(users.id, matchedUser.id));
+
+      // Clean up challenge
+      challenges.delete(`usernameless_${challenge}`);
+
+      // Generate JWT token
+      const token = generateToken({
+        userId: matchedUser.id,
+        email: matchedUser.email,
+        role: matchedUser.role,
+      });
+
+      return {
+        success: true,
+        token,
+        user: {
+          id: matchedUser.id,
+          name: matchedUser.name,
+          email: matchedUser.email,
+          role: matchedUser.role,
+          planId: matchedUser.planId,
+        },
+      };
+    }),
+
+  /**
    * Check if user has biometric enabled
    */
   checkBiometricStatus: protectedProcedure.query(async ({ ctx }) => {

@@ -347,7 +347,7 @@
 - [x] Agregar logo en header
 - [x] Configurar redirección a /dashboard después de verificación exitosa
 - [x] Probar flujo completo de login con 2FA
-- [ ] Deploy
+- [x] Deploy
 
 
 ## 🔧 Fix Plan Limits Display en Dashboard
@@ -356,4 +356,18 @@
 - [x] Base de datos actualizada con nuevos límites (Corporate: 500/200)
 - [x] Servidor reiniciado para cargar nuevos valores
 - [x] Dashboard ya muestra límites correctos automáticamente
+- [x] Deploy
+
+
+## 🔐 Implementar Login Biométrico Directo (Discoverable Credentials)
+- [x] Actualizar registro biométrico para crear discoverable credentials (resident keys)
+- [x] Cambiar residentKey: 'preferred' a 'required' y userVerification: 'required'
+- [x] Agregar userID en opciones de registro
+- [x] Crear endpoint generateUsernamelessAuthOptions (sin email)
+- [x] Crear endpoint verifyUsernamelessAuth (identifica usuario por credential)
+- [x] Actualizar Login page: botón biométrico sin requerir email
+- [x] Implementar flujo: click → Face ID/huella → identificar usuario → dashboard
+- [x] Agregar logs detallados para debugging
+- [x] Compilación exitosa sin errores TypeScript
+- [ ] Probar en dispositivo real con Face ID/Touch ID (requiere HTTPS)
 - [ ] Deploy

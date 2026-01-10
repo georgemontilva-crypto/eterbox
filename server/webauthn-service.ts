@@ -45,6 +45,7 @@ export async function generateBiometricRegistrationOptions(
   const opts: GenerateRegistrationOptionsOpts = {
     rpName: RP_NAME,
     rpID: RP_ID,
+    userID: Buffer.from(userId.toString()),
     userName: userEmail,
     userDisplayName: userName,
     timeout: 60000, // 60 seconds
@@ -54,8 +55,8 @@ export async function generateBiometricRegistrationOptions(
       transports: authenticator.transports as AuthenticatorTransport[],
     })),
     authenticatorSelection: {
-      residentKey: 'preferred',
-      userVerification: 'preferred',
+      residentKey: 'required', // Force discoverable credentials (passkeys)
+      userVerification: 'required', // Require biometric verification
       authenticatorAttachment: 'platform', // Prefer platform authenticators (Face ID, Touch ID, Windows Hello)
     },
   };
@@ -93,6 +94,22 @@ export async function generateBiometricAuthenticationOptions(
       transports: authenticator.transports as AuthenticatorTransport[],
     })),
     userVerification: 'preferred',
+    rpID: RP_ID,
+  };
+
+  return generateAuthenticationOptions(opts);
+}
+
+/**
+ * Generate usernameless authentication options (discoverable credentials)
+ * Used for biometric login without requiring email
+ */
+export async function generateUsernamelessAuthenticationOptions(): Promise<ReturnType<typeof generateAuthenticationOptions>> {
+  const opts: GenerateAuthenticationOptionsOpts = {
+    timeout: 60000,
+    // Empty allowCredentials array enables discoverable credential flow
+    allowCredentials: [],
+    userVerification: 'required',
     rpID: RP_ID,
   };
 

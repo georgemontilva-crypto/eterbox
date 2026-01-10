@@ -24,6 +24,8 @@ export default function Login() {
   const loginMutation = trpc.auth.login.useMutation();
   const generateAuthOptions = trpc.webauthn.generateAuthenticationOptions.useMutation();
   const verifyAuthentication = trpc.webauthn.verifyAuthentication.useMutation();
+  const generateUsernamelessOptions = trpc.webauthn.generateUsernamelessAuthOptions.useMutation();
+  const verifyUsernamelessAuth = trpc.webauthn.verifyUsernamelessAuth.useMutation();
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,28 +69,21 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Get user ID from email
-      if (!formData.email) {
-        setError("Please enter your email for biometric login");
-        setLoading(false);
-        return;
-      }
+      console.log("[Biometric] Starting usernameless authentication...");
+      
+      // Get authentication options (no email required)
+      const options = await generateUsernamelessOptions.mutateAsync();
+      console.log("[Biometric] Options generated", options);
 
-      // Get authentication options
-      const options = await generateAuthOptions.mutateAsync({
-        email: formData.email,
-      });
+      // Start WebAuthn authentication with discoverable credentials
+      const authResp = await startAuthentication({ optionsJSON: options });
+      console.log("[Biometric] Authentication response received");
 
-      // Start WebAuthn authentication
-      const authResp = await startAuthentication({ optionsJSON: options.options });
-
-      const userId = options.userId;
-
-      // Verify authentication
-      const result = await verifyAuthentication.mutateAsync({
-        userId,
+      // Verify authentication (backend will identify user from credential)
+      const result = await verifyUsernamelessAuth.mutateAsync({
         response: authResp,
       });
+      console.log("[Biometric] Verification successful", result);
 
       // Store token
       localStorage.setItem("auth_token", result.token);
@@ -96,8 +91,8 @@ export default function Login() {
       // Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (err: any) {
-      console.error("Biometric login error:", err);
-      setError("Could not authenticate with biometrics. Try with your password.");
+      console.error("[Biometric] Login error:", err);
+      setError(err.message || "Could not authenticate with biometrics. Make sure you have registered Face ID/fingerprint first.");
     } finally {
       setLoading(false);
     }
@@ -225,29 +220,15 @@ export default function Login() {
                   </div>
                 )}
 
-                <div>
-                  <label htmlFor="email-biometric" className="block text-sm font-medium text-muted-foreground mb-2">
-                    {t("common.email")}
-                  </label>
-                  <input
-                    id="email-biometric"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full h-12 px-4 bg-background border border-border/20 rounded-[15px] focus:border-accent focus:outline-none"
-                    placeholder={t("common.emailPlaceholder")}
-                    disabled={loading}
-                  />
-                </div>
-
-                <div className="text-center p-6 bg-accent/5 border border-accent/20 rounded-[15px]">
-                  <Fingerprint className="w-12 h-12 text-accent mx-auto mb-3" />
-                  <p className="text-sm text-muted-foreground mb-4">
+                <div className="text-center p-8 bg-accent/5 border border-accent/20 rounded-[15px]">
+                  <Fingerprint className="w-16 h-16 text-accent mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">{t("login.biometric")}</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
                     {t("login.biometricDesc")}
                   </p>
                   <Button
                     onClick={handleBiometricLogin}
-                    disabled={loading || !formData.email}
+                    disabled={loading}
                     className="w-full h-12 rounded-[15px] bg-accent hover:bg-accent/90"
                   >
                     {loading ? t("login.authenticating") : t("login.biometricButton")}
