@@ -114,7 +114,17 @@ export default function Home() {
               {t("home.hero.getStarted")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
-            <Button size="lg" variant="outline" onClick={() => setLocation("/pricing")} className="h-11 sm:h-12 text-sm sm:text-base w-full sm:w-auto">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={() => {
+                const pricingSection = document.getElementById('pricing');
+                if (pricingSection) {
+                  pricingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }} 
+              className="h-11 sm:h-12 text-sm sm:text-base w-full sm:w-auto"
+            >
               {t("home.hero.viewPricing")}
             </Button>
           </div>
@@ -144,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* Plans Section */}
-      <section className="container py-12 sm:py-20 border-t border-border/20 px-4">
+      <section id="pricing" className="container py-12 sm:py-20 border-t border-border/20 px-4">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-16">{t("home.plans.title")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
           <div className="p-6 sm:p-8 rounded-[15px] border border-border/20 bg-card hover:border-accent/50 transition-all">

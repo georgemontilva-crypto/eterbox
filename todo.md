@@ -370,5 +370,11 @@
 
 ## Bug - Endpoint init-db con error de DATABASE_URL
 - [x] Cambiar de DATABASE_URL a MYSQL_URL en init-db-endpoint.ts
-- [ ] Push a GitHub y esperar deployment
+- [x] Push a GitHub y esperar deployment
 - [ ] Usuario visita https://eterbox.com/api/init-db nuevamente
+
+
+## Mostrar planes sin base de datos
+- [x] Hardcodear planes en la página de Pricing
+- [x] Hacer que "View Pricing" en Home haga scroll a la sección de planes
+- [x] Eliminar dependencia de base de datos para mostrar planes públicos

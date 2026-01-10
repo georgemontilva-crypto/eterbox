@@ -9,12 +9,50 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PayPalCheckout } from "@/components/PayPalCheckout";
 
+// Hardcoded plans - no database needed for public view
+const PLANS = [
+  {
+    id: 1,
+    name: "Free",
+    description: "Perfect for getting started",
+    maxKeys: 3,
+    maxFolders: 1,
+    maxGeneratedKeys: 10,
+    price: 0,
+    yearlyPrice: 0,
+    yearlyDiscount: 0,
+  },
+  {
+    id: 2,
+    name: "Basic",
+    description: "For individuals and small teams",
+    maxKeys: 25,
+    maxFolders: 5,
+    maxGeneratedKeys: 300,
+    price: 15,
+    yearlyPrice: 160,
+    yearlyDiscount: 11,
+  },
+  {
+    id: 3,
+    name: "Corporate",
+    description: "For enterprises and large teams",
+    maxKeys: 2500,
+    maxFolders: 1500,
+    maxGeneratedKeys: -1,
+    price: 25,
+    yearlyPrice: 280,
+    yearlyDiscount: 7,
+  },
+];
+
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const search = useSearch();
   const { user } = useAuth();
   const { t } = useLanguage();
-  const { data: plans = [] } = trpc.plans.list.useQuery();
+  // Use hardcoded plans instead of database
+  const plans = PLANS;
   const { data: userPlan, refetch: refetchUserPlan } = trpc.plans.getUserPlan.useQuery(undefined, {
     enabled: !!user,
   });
