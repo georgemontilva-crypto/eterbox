@@ -56,15 +56,34 @@ export default function Register() {
 
   const handleActivateBiometric = async () => {
     try {
+      console.log("[Biometric] Starting registration...");
+      
+      // Check if WebAuthn is supported
+      if (!window.PublicKeyCredential) {
+        alert("Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID.");
+        setLocation("/login");
+        return;
+      }
+
+      console.log("[Biometric] Generating options...");
       const options = await webauthnRegisterMutation.mutateAsync();
+      console.log("[Biometric] Options received:", options);
+      
+      console.log("[Biometric] Starting registration with device...");
       const attResp = await startRegistration({ optionsJSON: options });
+      console.log("[Biometric] Registration response received:", attResp);
+      
+      console.log("[Biometric] Verifying registration...");
       await webauthnVerifyMutation.mutateAsync({
         response: attResp,
       });
+      console.log("[Biometric] Registration verified successfully!");
 
+      alert("¡Face ID activado exitosamente!");
       setLocation("/login");
     } catch (err: any) {
-      console.error("Biometric registration failed:", err);
+      console.error("[Biometric] Registration failed:", err);
+      alert(`Error al activar biometría: ${err.message || 'Error desconocido'}`);
       setLocation("/login");
     }
   };
