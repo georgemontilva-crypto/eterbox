@@ -448,3 +448,16 @@
 - [x] Usar useLocation de wouter para redirección
 - [ ] Probar flujo completo con y sin autenticación
 - [ ] Deploy a producción
+
+
+## 🚫 Eliminar OAuth de Manus
+- [x] Buscar todas las referencias a OAuth en el código
+- [x] Eliminar redirects al portal de Manus (portal.manus.im)
+- [x] Actualizar useAuth hook para no usar OAuth
+- [x] Actualizar const.ts: getLoginUrl() ahora retorna /login
+- [x] Eliminar rutas /api/oauth/callback del servidor
+- [x] Limpiar imports relacionados con OAuth en server/index.ts
+- [x] Renombrar oauth.ts a oauth.ts.backup
+- [x] Eliminar localStorage manus-runtime-user-info
+- [ ] Reiniciar servidor y probar que la app funcione sin OAuth
+- [ ] Deploy a producción
