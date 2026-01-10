@@ -239,6 +239,20 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Password change mutation
+  const changePasswordMutation = trpc.auth.changePassword.useMutation({
+    onSuccess: () => {
+      toast.success(t("password.success") || "Password updated successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setActiveView(null);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   // tRPC mutations
   const setup2FA = trpc.twoFactor.setup.useMutation({
     onSuccess: (data) => {
@@ -355,6 +369,28 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
     setOpen(false);
     setActiveView(null);
     setLocation("/pricing");
+  };
+
+  const handleChangePassword = () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error(t("password.fillAll") || "Please fill in all fields");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast.error(t("password.minLength") || "New password must be at least 8 characters");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error(t("password.noMatch") || "New passwords do not match");
+      return;
+    }
+
+    changePasswordMutation.mutate({
+      currentPassword,
+      newPassword,
+    });
   };
 
   const handleSetup2FA = () => {
@@ -592,7 +628,12 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
                 placeholder={t("password.confirm")}
               />
             </div>
-            <Button className="w-full h-14 rounded-[15px] bg-accent hover:bg-accent/90 mt-4">
+            <Button 
+              className="w-full h-14 rounded-[15px] bg-accent hover:bg-accent/90 mt-4"
+              onClick={handleChangePassword}
+              disabled={changePasswordMutation.isPending}
+            >
+              {changePasswordMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               {t("password.update")}
             </Button>
           </div>
