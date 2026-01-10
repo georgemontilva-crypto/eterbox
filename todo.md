@@ -349,3 +349,10 @@
 - [x] Agregar reglas CSS globales para prevenir overflow horizontal
 - [x] Aplicar overflow-x-hidden a html y body
 - [x] Verificar que no haya elementos que causen desbordamiento
+
+
+## Bug - Página de Pricing no accesible sin login
+- [x] Permitir acceso a la página de Pricing sin autenticación (endpoint ya es público)
+- [x] Crear script actualizado de seeding para inicializar planes en Railway
+- [ ] Ejecutar script de seeding en Railway para poblar la base de datos
+- [ ] Verificar que el botón "View Pricing" funcione desde Home
