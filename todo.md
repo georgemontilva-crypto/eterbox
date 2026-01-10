@@ -317,6 +317,12 @@
 - [x] Mejorar manejo de errores con mensajes específicos
 - [x] Agregar verificación de disponibilidad de autenticador de plataforma
 - [x] Conectar evento de Settings con Dashboard para activar biométrico
-- [ ] Probar en HTTPS en producción (eterbox.com)
-- [ ] Probar flujo completo: registro → activación → login
-- [ ] Deploy y prueba en producción
+- [x] Probar en HTTPS en producción (eterbox.com)
+- [x] Probar flujo completo: registro → activación → login
+- [x] Deploy y prueba en producción
+
+
+## 🔧 Fix Sign In Button Navigation
+- [x] Corregir botón "Login" en Home para redirigir a /login (antes iba a /)
+- [x] Actualizado en desktop y mobile
+- [ ] Push a GitHub para deploy

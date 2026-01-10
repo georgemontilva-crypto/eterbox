@@ -42,7 +42,7 @@ export default function Home() {
             </DropdownMenu>
             <Button variant="ghost" onClick={() => setLocation("/pricing")}>{t("home.nav.pricing")}</Button>
             <Button variant="ghost" onClick={() => setLocation("/support")}>{t("home.nav.support")}</Button>
-            <Button variant="ghost" onClick={() => setLocation('/')}>{t("home.nav.login")}</Button>
+            <Button variant="ghost" onClick={() => setLocation('/login')}>{t("home.nav.login")}</Button>
             <Button onClick={() => setLocation('/register')}>{t("home.nav.signIn")}</Button>
           </div>
 
@@ -77,7 +77,7 @@ export default function Home() {
                 <DropdownMenuItem onClick={() => setLocation("/support")}>
                   {t("home.nav.support")}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLocation('/')}>
+                <DropdownMenuItem onClick={() => setLocation('/login')}>
                   {t("home.nav.login")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setLocation('/register')}>
