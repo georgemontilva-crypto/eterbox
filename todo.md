@@ -461,3 +461,14 @@
 - [x] Eliminar localStorage manus-runtime-user-info
 - [ ] Reiniciar servidor y probar que la app funcione sin OAuth
 - [ ] Deploy a producción
+
+
+## 🐛 Fix Splash Screen Loop (CRITICAL)
+- [x] Identificado: Splash screen en primera visita web causa loop infinito
+- [x] Problema: useAuth() en App.tsx causaba redirect automático a /login
+- [x] Desactivado temporalmente para debugging
+- [x] Probado: sin splash funciona perfectamente
+- [x] Solución: remover useAuth() de App.tsx (solo usar en rutas protegidas)
+- [x] Splash screen desactivado temporalmente hasta implementar correctamente
+- [x] Probar en dev server: funciona correctamente
+- [ ] Deploy a producción
