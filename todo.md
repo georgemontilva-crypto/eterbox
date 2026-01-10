@@ -583,3 +583,19 @@
 - [x] Proteger contra demotion/deletion del propio admin
 - [x] Asegurar que las contraseñas NUNCA sean visibles para admins (solo hashes)
 - [x] Tests unitarios para funcionalidad admin (10 tests)
+
+
+## Crear Usuario Administrador Inicial
+- [x] Verificar conexión a base de datos
+- [x] Crear script para insertar usuario admin
+- [x] Ejecutar script y crear usuario admin con credenciales seguras
+- [x] Verificar que el usuario admin se creó correctamente
+- [x] Proporcionar credenciales de acceso al usuario
+
+
+## Bug - Login con usuario admin falla
+- [ ] Verificar que el usuario admin existe en la base de datos
+- [ ] Verificar que la contraseña está hasheada correctamente
+- [ ] Revisar el servicio de autenticación (auth.service.ts)
+- [ ] Probar el flujo de login completo
+- [ ] Corregir cualquier problema encontrado
