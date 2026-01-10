@@ -238,4 +238,4 @@
 - [x] Actualizar registro biométrico para mostrar popup 2FA
 - [x] Probar flujo completo de login → dashboard → logout → home
 - [x] Verificar que el servidor funcione correctamente
-- [ ] Desplegar a producción (push a GitHub)
+- [x] Desplegar a producción (push a GitHub) - Commit 93681a8
