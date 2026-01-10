@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS plans (
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  openId VARCHAR(64) NOT NULL UNIQUE,
+  open_id VARCHAR(64) NOT NULL UNIQUE,
   name TEXT,
   email VARCHAR(320),
   loginMethod VARCHAR(64),

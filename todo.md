@@ -472,3 +472,9 @@
 - [ ] Push todos los cambios a GitHub
 - [ ] Verificar deployment en Railway
 - [ ] Confirmar que todo funciona en producción
+
+
+## Bug - Error de sintaxis SQL en setup-database
+- [x] Arreglar sintaxis SQL para compatibilidad con MySQL de Railway
+- [x] Cambiar openId a open_id para evitar palabra reservada
+- [ ] Push a GitHub y verificar que funcione
