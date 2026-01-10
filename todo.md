@@ -472,3 +472,85 @@
 - [x] Splash screen desactivado temporalmente hasta implementar correctamente
 - [x] Probar en dev server: funciona correctamente
 - [ ] Deploy a producción
+
+
+## 📧 Sistema de Correos Completo
+- [x] Configurar servicio de email con Resend (API key validada)
+- [x] Crear utilidad sendEmail() reutilizable
+- [x] Plantilla: Email de bienvenida después del registro
+- [x] Plantilla: Email de cambio de contraseña
+- [x] Plantilla: Email de confirmación de pago
+- [x] Integrar email de bienvenida en registro
+- [x] Integrar email de cambio de contraseña
+- [ ] Plantilla: Email de verificación de cuenta
+- [ ] Plantilla: Email de recuperación de contraseña (forgot password)
+- [ ] Plantilla: Email de alerta de seguridad (nuevo dispositivo/IP)
+- [ ] Plantilla: Email de suscripción exitosa
+- [ ] Plantilla: Email de cancelación de suscripción
+- [ ] Probar envío de emails en desarrollo
+
+## 📰 Newsletter y Notificaciones
+- [x] Crear tabla newsletter_subscribers en BD (email, subscribed_at)
+- [x] Crear endpoint tRPC: newsletter.subscribe
+- [x] Formulario de suscripción en footer del Home
+- [x] Email de confirmación al suscriptor
+- [x] Email de notificación al admin cuando alguien se suscribe
+- [x] Configurar email del admin (admin@eterbox.com)
+- [x] Validar que no se suscriba el mismo email dos veces
+- [x] Footer mejorado con 3 emails: sales, support, admin
+- [ ] Probar suscripción en producción
+
+## 💳 Integración con Bold (Sistema de Pago)
+- [x] Investigar documentación de API de Bold
+- [x] Identificar API correcta: API pagos en línea (no API Integrations)
+- [ ] Solicitar activación de API pagos en línea en panel.bold.co
+- [ ] Obtener API keys cuando Bold apruebe la solicitud
+- [ ] Crear servicio de Bold en el backend
+- [ ] Endpoint para crear órdenes de pago
+- [ ] Webhook para confirmar pagos completados
+- [ ] Actualizar plan del usuario después del pago
+- [ ] Página de pricing con integración Bold
+- [ ] Página de historial de pagos
+- [ ] Probar flujo completo de suscripción
+- [ ] Agregar variables de entorno: BOLD_API_KEY, BOLD_PUBLIC_KEY, BOLD_WEBHOOK_SECRET
+- [ ] Instalar SDK de Bold o configurar cliente HTTP
+- [ ] Crear router tRPC: payment.ts
+- [ ] Endpoint: createCheckoutSession (genera link de pago Bold)
+- [ ] Endpoint: verifyPayment (verifica estado del pago)
+- [ ] Endpoint: getPaymentHistory (historial de pagos del usuario)
+- [ ] Endpoint: cancelSubscription (cancelar suscripción activa)
+- [ ] Configurar webhooks de Bold para confirmar pagos
+- [ ] Tabla en BD: payments (id, user_id, amount, currency, status, bold_transaction_id, plan, created_at)
+- [ ] Actualizar plan del usuario después de pago exitoso
+- [ ] Manejar estados: pending, completed, failed, refunded
+
+## 🔄 Flujo de Suscripción
+- [ ] Actualizar página Pricing con botones "Suscribirse" que llamen a Bold
+- [ ] Modal de confirmación antes de redirigir a Bold
+- [ ] Página de éxito después del pago (/payment-success)
+- [ ] Página de error si el pago falla (/payment-error)
+- [ ] Lógica de upgrade: Free → Basic, Free → Corporate, Basic → Corporate
+- [ ] Lógica de downgrade: Corporate → Basic, Basic → Free
+- [ ] Validar límites de credenciales/carpetas al cambiar plan
+- [ ] Enviar email de confirmación después de pago exitoso
+- [ ] Actualizar dashboard para mostrar plan actual y fecha de renovación
+
+## 📊 Historial de Pagos
+- [ ] Crear página PaymentHistory.tsx
+- [ ] Mostrar tabla con: fecha, monto, plan, estado, método de pago
+- [ ] Botón para descargar recibo (PDF)
+- [ ] Filtros por fecha y estado
+- [ ] Agregar al menú del dashboard
+- [ ] Mostrar próxima fecha de cobro si hay suscripción activa
+
+## 🧪 Testing y Deploy
+- [ ] Probar flujo completo en sandbox de Bold
+- [ ] Probar upgrade de Free a Basic
+- [ ] Probar upgrade de Basic a Corporate
+- [ ] Probar downgrade
+- [ ] Probar cancelación de suscripción
+- [ ] Verificar que webhooks funcionen correctamente
+- [ ] Verificar que emails se envíen correctamente
+- [ ] Configurar Bold en producción (API keys reales)
+- [ ] Deploy a Railway
+- [ ] Probar en producción con tarjeta de prueba
