@@ -17,6 +17,8 @@ import Admin from "./pages/Admin";
 import ChangePassword from "./pages/ChangePassword";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
+import { SplashScreen } from "./components/SplashScreen";
+import { useState, useEffect } from "react";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, loading } = useAuth();
@@ -80,6 +82,26 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
+
+  useEffect(() => {
+    // Check if this is the first visit or if the app is installed as PWA
+    const hasVisited = localStorage.getItem('hasVisited');
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    
+    if (!hasVisited || isPWA) {
+      setIsFirstVisit(true);
+      localStorage.setItem('hasVisited', 'true');
+    } else {
+      setShowSplash(false);
+    }
+  }, []);
+
+  if (showSplash && isFirstVisit) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+  }
+
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">

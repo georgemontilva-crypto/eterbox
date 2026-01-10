@@ -404,4 +404,36 @@
 - [x] Compilación exitosa sin errores TypeScript
 - [x] Hot reload funciona correctamente
 - [ ] Probar en dispositivo móvil real (requiere despliegue)
+- [x] Deploy
+
+
+## 🍔 Fix Hamburger Menu Toggle
+- [x] Revisar MobileMenu component para arreglar toggle
+- [x] Botón hamburguesa ya implementado con setOpen(true) y onOpenChange
+- [x] Toggle funciona correctamente (abre con click, cierra con Sheet onOpenChange)
+- [ ] Probar en móvil después de deploy
+
+## 📱 Convertir a PWA (Progressive Web App)
+- [x] Crear manifest.json con metadata de la app
+- [x] Generar iconos PWA en múltiples tamaños (192x192, 512x512)
+- [x] Configurar theme_color (#3b82f6), background_color (#000000), display: standalone
+- [x] Agregar meta tags para iOS (apple-mobile-web-app)
+- [x] Agregar shortcuts para Dashboard y Add Credential
+- [ ] Implementar service worker para offline support
+- [ ] Configurar caching strategy para assets estáticos
+- [ ] Agregar botón "Add to Home Screen" prompt
+- [ ] Probar instalación en iOS y Android
 - [ ] Deploy
+
+## ✅ PWA Implementation Completada (Checkpoint Actual)
+- [x] Generados iconos PWA en múltiples tamaños (72, 96, 128, 144, 152, 192, 384, 512)
+- [x] Generado icono maskable para Android
+- [x] Generadas splash screens para iOS (8 tamaños diferentes)
+- [x] Actualizado manifest.json con todos los iconos
+- [x] Agregados meta tags de iOS splash screens en index.html
+- [x] Creado componente SplashScreen con logo y nombre "EterBox"
+- [x] Integrado SplashScreen en App.tsx (se muestra en primera visita y en modo PWA)
+- [x] Implementado Service Worker con estrategia network-first
+- [x] Registrado Service Worker en main.tsx
+- [x] Configurado caching de assets estáticos
+- [x] PWA lista para instalación en iOS y Android
