@@ -19,8 +19,12 @@ import type {
 
 // WebAuthn configuration
 const RP_NAME = 'EterBox Security Vault';
-const RP_ID = process.env.WEBAUTHN_RP_ID || 'localhost'; // Should be 'eterbox.com' in production
-const ORIGIN = process.env.WEBAUTHN_ORIGIN || 'http://localhost:3000'; // Should be 'https://eterbox.com' in production
+const RP_ID = process.env.NODE_ENV === 'production' 
+  ? (process.env.WEBAUTHN_RP_ID || 'eterbox.com')
+  : 'localhost';
+const ORIGIN = process.env.NODE_ENV === 'production'
+  ? (process.env.WEBAUTHN_ORIGIN || 'https://eterbox.com')
+  : 'http://localhost:3000';
 
 export interface StoredAuthenticator {
   credentialID: string;
