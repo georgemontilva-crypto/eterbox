@@ -363,6 +363,12 @@
 
 ## Crear endpoint temporal para inicializar base de datos
 - [x] Crear endpoint /api/init-db que ejecute SQL de inicialización
-- [ ] Push a GitHub y esperar deployment en Railway
+- [x] Push a GitHub y esperar deployment en Railway
 - [ ] Usuario visita https://eterbox.com/api/init-db para inicializar
 - [ ] Eliminar endpoint por seguridad después de inicializar
+
+
+## Bug - Endpoint init-db con error de DATABASE_URL
+- [x] Cambiar de DATABASE_URL a MYSQL_URL en init-db-endpoint.ts
+- [ ] Push a GitHub y esperar deployment
+- [ ] Usuario visita https://eterbox.com/api/init-db nuevamente
