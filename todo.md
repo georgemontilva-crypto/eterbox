@@ -378,3 +378,27 @@
 - [x] Hardcodear planes en la página de Pricing
 - [x] Hacer que "View Pricing" en Home haga scroll a la sección de planes
 - [x] Eliminar dependencia de base de datos para mostrar planes públicos
+
+
+## Sistema de Autenticación Completo y Panel de Administración
+- [ ] Inicializar base de datos en Railway (ejecutar migraciones)
+- [ ] Implementar registro/login con Email y Contraseña
+- [ ] Configurar Google OAuth para registro/login
+- [ ] Configurar Apple OAuth para registro/login
+- [ ] Crear página de registro con las 3 opciones
+- [ ] Crear página de login con las 3 opciones
+- [ ] Guardar usuarios en base de datos con su método de autenticación
+- [ ] Guardar información de planes comprados en tabla de usuarios
+- [ ] Crear panel de administración (/admin)
+- [ ] Mostrar lista de todos los usuarios registrados
+- [ ] Mostrar plan actual de cada usuario
+- [ ] Permitir editar/eliminar usuarios desde admin
+- [ ] Proteger ruta /admin solo para administradores
+- [ ] Probar todo el flujo de registro, login y compra de planes
+
+
+## Bug - Railway deployment crasheando por endpoint init-db
+- [x] Eliminar endpoint temporal /api/init-db
+- [x] Eliminar archivo server/init-db-endpoint.ts
+- [x] Eliminar import y registro del endpoint en server/_core/index.ts
+- [ ] Push a GitHub y verificar que deployment funcione
