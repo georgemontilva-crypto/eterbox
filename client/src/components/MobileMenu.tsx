@@ -7,6 +7,7 @@ import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { detectPlatform, getBiometricTypeName, type Platform } from "@/lib/platform";
 
 // Inline Payment History Component
 function PaymentHistoryInline() {
@@ -225,6 +226,8 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [, setLocation] = useLocation();
   const { language, setLanguage, t } = useLanguage();
+  const [platform] = useState<Platform>(detectPlatform());
+  const biometricName = getBiometricTypeName(platform);
   
   // 2FA states
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -630,8 +633,8 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
             <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
               <Lock className="w-8 h-8 text-accent" />
             </div>
-            <h2 className="text-xl font-bold">{t("biometric.title")}</h2>
-            <p className="text-sm text-muted-foreground">{t("biometric.subtitle")}</p>
+            <h2 className="text-xl font-bold">{biometricName} Authentication</h2>
+            <p className="text-sm text-muted-foreground">Secure your account with {biometricName}</p>
           </div>
 
           {webauthnEnabled ? (
@@ -675,7 +678,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
                 className="w-full h-14 rounded-[15px] bg-accent hover:bg-accent/90"
                 onClick={handleEnableBiometric}
               >
-                {t("biometric.enable")}
+                Enable {biometricName}
               </Button>
             </div>
           )}

@@ -2,6 +2,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { Fingerprint, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { detectPlatform, getBiometricTypeName, type Platform } from "@/lib/platform";
+import { useState } from "react";
 
 interface BiometricSetupModalProps {
   open: boolean;
@@ -11,6 +13,8 @@ interface BiometricSetupModalProps {
 
 export function BiometricSetupModal({ open, onClose, onEnable }: BiometricSetupModalProps) {
   const { t } = useLanguage();
+  const [platform] = useState<Platform>(detectPlatform());
+  const biometricName = getBiometricTypeName(platform);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -18,14 +22,21 @@ export function BiometricSetupModal({ open, onClose, onEnable }: BiometricSetupM
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
             <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
-              <Fingerprint className="w-10 h-10 text-accent" />
+              {platform === 'ios' ? (
+                <svg className="w-10 h-10 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="10" r="3" />
+                  <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
+                </svg>
+              ) : (
+                <Fingerprint className="w-10 h-10 text-accent" />
+              )}
             </div>
           </div>
           <DialogTitle className="text-2xl text-center">
-            {t("biometric.setupTitle")}
+            Enable {biometricName}
           </DialogTitle>
           <DialogDescription className="text-center text-base mt-2">
-            {t("biometric.setupDescription")}
+            Secure your account with {biometricName} for quick and easy access
           </DialogDescription>
         </DialogHeader>
 
@@ -64,8 +75,15 @@ export function BiometricSetupModal({ open, onClose, onEnable }: BiometricSetupM
                 onClose();
               }}
             >
-              <Fingerprint className="w-4 h-4 mr-2" />
-              {t("biometric.enableNow")}
+              {platform === 'ios' ? (
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="10" r="2" />
+                  <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                </svg>
+              ) : (
+                <Fingerprint className="w-4 h-4 mr-2" />
+              )}
+              Enable {biometricName}
             </Button>
           </div>
 

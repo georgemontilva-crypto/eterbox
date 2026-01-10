@@ -6,10 +6,12 @@ import { useLocation } from "wouter";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Verify2FALogin } from "@/components/Verify2FALogin";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { detectPlatform, getBiometricTypeName, getBiometricDescription, type Platform } from "@/lib/platform";
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
+  const [platform] = useState<Platform>(detectPlatform());
   const [loginMethod, setLoginMethod] = useState<"password" | "biometric">("password");
   const [formData, setFormData] = useState({
     email: "",
@@ -92,7 +94,15 @@ export default function Login() {
       window.location.href = "/dashboard";
     } catch (err: any) {
       console.error("[Biometric] Login error:", err);
-      setError(err.message || "Could not authenticate with biometrics. Make sure you have registered Face ID/fingerprint first.");
+      
+      // Handle specific errors
+      if (err.message && err.message.includes("Credential not found")) {
+        setError(`Your ${getBiometricTypeName(platform)} credential was not found. If you registered biometrics before, please go to Settings after logging in with password and re-register to enable the new secure login.`);
+      } else if (err.message && err.message.includes("not found or expired")) {
+        setError("Authentication session expired. Please try again.");
+      } else {
+        setError(err.message || `Could not authenticate with ${getBiometricTypeName(platform)}. Make sure you have registered it first.`);
+      }
     } finally {
       setLoading(false);
     }
@@ -221,17 +231,24 @@ export default function Login() {
                 )}
 
                 <div className="text-center p-8 bg-accent/5 border border-accent/20 rounded-[15px]">
-                  <Fingerprint className="w-16 h-16 text-accent mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{t("login.biometric")}</h3>
+                  {platform === 'ios' ? (
+                    <svg className="w-16 h-16 text-accent mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="10" r="3" />
+                      <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
+                    </svg>
+                  ) : (
+                    <Fingerprint className="w-16 h-16 text-accent mx-auto mb-4" />
+                  )}
+                  <h3 className="text-lg font-semibold mb-2">{getBiometricTypeName(platform)}</h3>
                   <p className="text-sm text-muted-foreground mb-6">
-                    {t("login.biometricDesc")}
+                    {getBiometricDescription(platform)}
                   </p>
                   <Button
                     onClick={handleBiometricLogin}
                     disabled={loading}
                     className="w-full h-12 rounded-[15px] bg-accent hover:bg-accent/90"
                   >
-                    {loading ? t("login.authenticating") : t("login.biometricButton")}
+                    {loading ? t("login.authenticating") : `Authenticate with ${getBiometricTypeName(platform)}`}
                   </Button>
                 </div>
               </div>

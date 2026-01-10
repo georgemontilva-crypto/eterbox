@@ -370,4 +370,18 @@
 - [x] Agregar logs detallados para debugging
 - [x] Compilación exitosa sin errores TypeScript
 - [ ] Probar en dispositivo real con Face ID/Touch ID (requiere HTTPS)
+- [x] Deploy
+
+
+## 📱 Detección de Plataforma y Mejora de Errores Biométricos
+- [x] Crear utilidad para detectar plataforma (iOS/Android/Desktop)
+- [x] Funciones: detectPlatform(), getBiometricTypeName(), getBiometricDescription()
+- [x] Actualizar Login: mostrar "Face ID" con icono en iOS
+- [x] Actualizar Login: mostrar "Fingerprint" con icono en Android
+- [x] Mejorar mensaje de error "Credential not found"
+- [x] Agregar guía para re-registrar credenciales antiguas
+- [x] Actualizar BiometricSetupModal con detección de plataforma
+- [x] Actualizar MobileMenu Settings con detección de plataforma
+- [x] Iconos y textos dinámicos según plataforma
+- [ ] Probar en iOS y Android (requiere dispositivos reales)
 - [ ] Deploy
