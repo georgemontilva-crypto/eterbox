@@ -239,3 +239,19 @@
 - [x] Probar flujo completo de login → dashboard → logout → home
 - [x] Verificar que el servidor funcione correctamente
 - [x] Desplegar a producción (push a GitHub) - Commit 93681a8
+
+
+## 🎨 Mejoras de UX y Diseño
+- [x] Plan Corporativo debe mostrar "Ilimitado" en lugar de números (actualizado en DB y frontend)
+- [ ] Verificar que multiidioma funcione en TODAS las páginas y componentes
+- [ ] Asegurar que español cambie TODO a español
+- [ ] Asegurar que inglés cambie TODO a inglés
+- [ ] Unificar diseño visual de login, register, y todas las páginas de auth
+- [ ] Mantener consistencia con el diseño del resto de la aplicación
+- [x] Crear popup biométrico después del registro (BiometricSetupModal)
+- [x] Popup debe ofrecer habilitar Face ID/huella
+- [x] Usuario puede aceptar o rechazar la configuración biométrica
+- [x] Agregar traducciones para el popup biométrico
+- [x] Probar flujo completo de registro
+- [x] Verificar que el servidor funcione correctamente
+- [ ] Desplegar cambios a producción

@@ -193,7 +193,7 @@ INSERT INTO plans (name, description, maxKeys, maxFolders, maxGeneratedKeys, pri
 VALUES 
   ('Free', 'Perfect for getting started', 3, 1, 10, 0.00, 0.00, 0, 'price_free', '["3 Credentials", "1 Folder", "10 Generated Keys", "AES-256 Encryption"]', TRUE),
   ('Basic', 'For individuals and small teams', 25, 5, 300, 15.00, 160.00, 11, 'price_basic_monthly', '["25 Credentials", "5 Folders", "300 Generated Keys", "AES-256 Encryption", "2FA Support"]', TRUE),
-  ('Corporate', 'For enterprises and large teams', 2500, 1500, -1, 25.00, 280.00, 7, 'price_corporate_monthly', '["2500 Credentials", "1500 Folders", "Unlimited Generated Keys", "AES-256 Encryption", "2FA Support", "Priority Support"]', TRUE)
+  ('Corporate', 'For enterprises and large teams', -1, -1, -1, 25.00, 280.00, 7, 'price_corporate_monthly', '["Unlimited Credentials", "Unlimited Folders", "Unlimited Generated Keys", "AES-256 Encryption", "2FA Support", "Priority Support"]', TRUE)
 ON DUPLICATE KEY UPDATE
   description = VALUES(description),
   maxKeys = VALUES(maxKeys),

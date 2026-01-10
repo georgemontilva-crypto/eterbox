@@ -5,6 +5,7 @@ import { Lock, ArrowLeft, Shield, Check } from "lucide-react";
 import { useLocation } from "wouter";
 import { startRegistration } from "@simplewebauthn/browser";
 import { Welcome2FAModal } from "@/components/Welcome2FAModal";
+import { BiometricSetupModal } from "@/components/BiometricSetupModal";
 
 export default function Register() {
   const [, setLocation] = useLocation();
@@ -63,7 +64,8 @@ export default function Register() {
       // Check if WebAuthn is supported
       if (!window.PublicKeyCredential) {
         alert("Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID.");
-        setLocation("/dashboard");
+        setShowBiometric(false);
+        setShow2FAWelcome(true);
         return;
       }
 
@@ -82,15 +84,18 @@ export default function Register() {
       console.log("[Biometric] Registration verified successfully!");
 
       alert("¡Face ID activado exitosamente!");
+      setShowBiometric(false);
       setShow2FAWelcome(true);
     } catch (err: any) {
       console.error("[Biometric] Registration failed:", err);
       alert(`Error al activar biometría: ${err.message || 'Error desconocido'}`);
+      setShowBiometric(false);
       setShow2FAWelcome(true);
     }
   };
 
   const handleSkipBiometric = () => {
+    setShowBiometric(false);
     setShow2FAWelcome(true);
   };
 
@@ -104,64 +109,7 @@ export default function Register() {
     setLocation("/dashboard");
   };
 
-  if (showBiometric) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-4">
-              <Shield className="w-8 h-8 text-accent" />
-            </div>
-            <h1 className="text-3xl font-bold mb-2">¡Registro Exitoso!</h1>
-            <p className="text-muted-foreground">
-              ¿Quieres activar la autenticación biométrica?
-            </p>
-          </div>
 
-          <div className="p-6 rounded-[15px] bg-card border border-border/20 mb-6">
-            <h3 className="font-semibold mb-4">Beneficios:</h3>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                <span className="text-sm">Acceso rápido con Face ID, Touch ID o huella digital</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                <span className="text-sm">Seguridad de grado militar</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                <span className="text-sm">No más contraseñas olvidadas</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <Button
-              onClick={handleActivateBiometric}
-              className="w-full h-12"
-              disabled={webauthnRegisterMutation.isPending}
-            >
-              {webauthnRegisterMutation.isPending
-                ? "Activando..."
-                : "Activar Autenticación Biométrica"}
-            </Button>
-            <Button
-              onClick={handleSkipBiometric}
-              variant="ghost"
-              className="w-full h-12"
-            >
-              Omitir por ahora
-            </Button>
-          </div>
-
-          <p className="text-xs text-center text-muted-foreground mt-6">
-            Puedes activar la autenticación biométrica más tarde desde tu perfil
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -291,6 +239,13 @@ export default function Register() {
           </div>
         </div>
       </div>
+      
+      {/* Biometric Setup Modal */}
+      <BiometricSetupModal
+        open={showBiometric}
+        onClose={handleSkipBiometric}
+        onEnable={handleActivateBiometric}
+      />
       
       {/* Welcome 2FA Modal */}
       <Welcome2FAModal

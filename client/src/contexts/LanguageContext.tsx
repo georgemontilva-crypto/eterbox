@@ -226,6 +226,17 @@ export const translations: Translations = {
   "support.sending": { en: "Sending...", es: "Enviando..." },
   "support.sent": { en: "Message sent successfully!", es: "¡Mensaje enviado exitosamente!" },
   
+  // Biometric Setup
+  "biometric.setupTitle": { en: "Enable Biometric Login", es: "Habilitar Inicio Biométrico" },
+  "biometric.setupDescription": { en: "Use Face ID or fingerprint to securely access your account faster", es: "Usa Face ID o huella digital para acceder a tu cuenta de forma más rápida y segura" },
+  "biometric.benefits": { en: "Benefits", es: "Beneficios" },
+  "biometric.benefit1": { en: "Faster login without typing passwords", es: "Inicio de sesión más rápido sin escribir contraseñas" },
+  "biometric.benefit2": { en: "Enhanced security with biometric authentication", es: "Seguridad mejorada con autenticación biométrica" },
+  "biometric.benefit3": { en: "Works with Face ID, Touch ID, and fingerprint sensors", es: "Funciona con Face ID, Touch ID y sensores de huella" },
+  "biometric.enableNow": { en: "Enable Now", es: "Habilitar Ahora" },
+  "biometric.maybeLater": { en: "Maybe Later", es: "Quizás Luego" },
+  "biometric.canEnableLater": { en: "You can enable this feature anytime from Settings", es: "Puedes habilitar esta función en cualquier momento desde Configuración" },
+
   // Checkout
   "checkout.title": { en: "Complete Payment", es: "Completar Pago" },
   "checkout.secure": { en: "Secure checkout", es: "Pago seguro" },
