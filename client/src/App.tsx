@@ -84,6 +84,7 @@ function Router() {
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const { isAuthenticated, loading } = useAuth();
 
   useEffect(() => {
     // Check if this is the first visit or if the app is installed as PWA
@@ -98,8 +99,27 @@ function App() {
     }
   }, []);
 
-  if (showSplash && isFirstVisit) {
-    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
+
+  // Show splash screen on first visit or PWA mode
+  if (showSplash && isFirstVisit && !loading) {
+    return (
+      <SplashScreen 
+        onFinish={handleSplashFinish}
+        isAuthenticated={isAuthenticated}
+      />
+    );
+  }
+
+  // Show loading while checking authentication
+  if (loading && isFirstVisit) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <Loader2 className="animate-spin w-8 h-8 text-accent" />
+      </div>
+    );
   }
 
   return (

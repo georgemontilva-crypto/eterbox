@@ -437,3 +437,14 @@
 - [x] Registrado Service Worker en main.tsx
 - [x] Configurado caching de assets estáticos
 - [x] PWA lista para instalación en iOS y Android
+
+
+## 🔄 Smart Routing en Splash Screen
+- [x] Modificar SplashScreen para detectar estado de autenticación
+- [x] Si usuario NO está logueado → redirigir a Home (/)
+- [x] Si usuario SÍ está logueado → redirigir a Dashboard (/dashboard)
+- [x] Integrar useAuth hook en App.tsx
+- [x] Pasar isAuthenticated como prop a SplashScreen
+- [x] Usar useLocation de wouter para redirección
+- [ ] Probar flujo completo con y sin autenticación
+- [ ] Deploy a producción
