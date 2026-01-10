@@ -671,3 +671,10 @@
 - [ ] Botones de "Get Started" / "Contact Sales"
 - [ ] Destacar plan recomendado (Basic o Corporate)
 - [ ] Deploy cambios
+
+
+## 🚂 Railway Deployment Configuration Fix
+- [x] Identificar problema: archivos dist no se copian entre build y deploy phases
+- [x] Crear nixpacks.toml con configuración explícita
+- [ ] Push a GitHub y redeploy en Railway
+- [ ] Verificar que eterbox.com carga correctamente
