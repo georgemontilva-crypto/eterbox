@@ -401,4 +401,11 @@
 - [x] Eliminar endpoint temporal /api/init-db
 - [x] Eliminar archivo server/init-db-endpoint.ts
 - [x] Eliminar import y registro del endpoint en server/_core/index.ts
-- [ ] Push a GitHub y verificar que deployment funcione
+- [x] Push a GitHub y verificar que deployment funcione
+
+
+## Bug - Railway crash por MYSQL_URL inválida
+- [x] Revisar drizzle.config.ts y asegurar que use MYSQL_PUBLIC_URL o construya URL correctamente
+- [x] Actualizar drizzle.config.ts para usar DATABASE_URL || MYSQL_URL || MYSQL_PUBLIC_URL
+- [x] Actualizar server/db.ts getDb() para usar las mismas variables de fallback
+- [ ] Push a GitHub y verificar deployment
