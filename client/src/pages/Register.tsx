@@ -42,6 +42,11 @@ export default function Register() {
         password: formData.password,
       });
 
+      // Save JWT token to localStorage for immediate authentication
+      if (result.token) {
+        localStorage.setItem('auth_token', result.token);
+      }
+
       setUserId(result.userId);
       setShowBiometric(true);
     } catch (err: any) {

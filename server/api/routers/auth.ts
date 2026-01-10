@@ -49,10 +49,18 @@ export const authRouter = router({
 
       // TODO: Send verification email
 
+      // Generate JWT token for immediate authentication
+      const token = generateToken({
+        userId: newUser.insertId,
+        email: input.email,
+        role: "user",
+      });
+
       return {
         success: true,
         message: "Registration successful! Please check your email to verify your account.",
         userId: newUser.insertId,
+        token,
       };
     }),
 
