@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
@@ -58,58 +59,75 @@ function AdminRoute({ component: Component }: { component: React.ComponentType }
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
-      <Route path="/pricing" component={Pricing} />
-      <Route path="/support" component={Support} />
-      <Route path="/verify-2fa" component={Verify2FA} />
-      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-      <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
-      <Route path="/change-password" component={() => <ProtectedRoute component={ChangePassword} />} />
-      <Route path="/admin" component={() => <AdminRoute component={Admin} />} />
+      <Route path={"/"} component={Home} />
+      <Route path={"/dashboard"} component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path={"/pricing"} component={Pricing} />
+      <Route path={"/support"} component={Support} />
+      <Route path={"/settings"} component={() => <ProtectedRoute component={Settings} />} />
+      <Route path={"/change-password"} component={() => <ProtectedRoute component={ChangePassword} />} />
+      <Route path={"/admin"} component={() => <AdminRoute component={Admin} />} />
+      <Route path={"/verify-2fa"} component={Verify2FA} />
+      <Route path={"/login"} component={Login} />
+      <Route path={"/register"} component={Register} />
+      <Route path={"/404"} component={NotFound} />
+      {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// Theme Guideline:
+// NOTE: About Theme
 // - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
 //   to keep consistent foreground/background color across components
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
-  // Splash screen disabled temporarily - will be re-enabled after fixing auth issues
-  // const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const { isAuthenticated, loading } = useAuth();
 
-  // useEffect(() => {
-  //   const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-  //   const hasSeenSplash = sessionStorage.getItem('splash_shown');
-  //   
-  //   if (isPWA && !hasSeenSplash) {
-  //     setShowSplash(true);
-  //     sessionStorage.setItem('splash_shown', 'true');
-  //   }
-  // }, []);
+  useEffect(() => {
+    // Check if this is the first visit or if the app is installed as PWA
+    const hasVisited = localStorage.getItem('hasVisited');
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    
+    if (!hasVisited || isPWA) {
+      setIsFirstVisit(true);
+      localStorage.setItem('hasVisited', 'true');
+    } else {
+      setShowSplash(false);
+    }
+  }, []);
 
-  // const handleSplashFinish = () => {
-  //   setShowSplash(false);
-  // };
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
 
-  // if (showSplash) {
-  //   return (
-  //     <SplashScreen 
-  //       onFinish={handleSplashFinish}
-  //       isAuthenticated={false}
-  //     />
-  //   );
-  // }
+  // Show splash screen on first visit or PWA mode
+  if (showSplash && isFirstVisit && !loading) {
+    return (
+      <SplashScreen 
+        onFinish={handleSplashFinish}
+        isAuthenticated={isAuthenticated}
+      />
+    );
+  }
+
+  // Show loading while checking authentication
+  if (loading && isFirstVisit) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <Loader2 className="animate-spin w-8 h-8 text-accent" />
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <LanguageProvider>
           <TooltipProvider>
+            <Toaster />
             <Router />
           </TooltipProvider>
         </LanguageProvider>

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { sendEmail, emailTemplates } from "../../services/email";
 import { publicProcedure, protectedProcedure, router } from "../../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "../../db";
@@ -47,13 +46,6 @@ export const authRouter = router({
         verificationToken,
         planId: 1, // Free plan by default
       });
-
-      // Send welcome email (non-blocking)
-      sendEmail({
-        to: input.email,
-        subject: "Welcome to EterBox! 🎉",
-        html: emailTemplates.welcome(input.name),
-      }).catch(err => console.error('[Welcome Email Error]', err));
 
       // TODO: Send verification email
 
@@ -259,13 +251,6 @@ export const authRouter = router({
       await db.update(users)
         .set({ password: hashedPassword })
         .where(eq(users.id, ctx.user.id));
-
-      // Send password changed email (non-blocking)
-      sendEmail({
-        to: user.email,
-        subject: "Password Changed Successfully",
-        html: emailTemplates.passwordChanged(user.name || 'User'),
-      }).catch(err => console.error('[Password Changed Email Error]', err));
 
       return {
         success: true,

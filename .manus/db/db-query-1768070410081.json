@@ -1,9 +1,0 @@
-{
-  "query": "-- Update Free plan\nUPDATE plans SET \n  maxKeys = 10,\n  maxFolders = 2,\n  maxTeamMembers = 1,\n  hasBackup = FALSE,\n  has2FA = FALSE,\n  hasAPI = FALSE,\n  hasAlerts = FALSE,\n  hasDashboard = FALSE,\n  hasAudit = FALSE\nWHERE name = 'Free';\n\n-- Update Basic plan\nUPDATE plans SET \n  maxKeys = 100,\n  maxFolders = 10,\n  maxTeamMembers = 1,\n  price = 9.00,\n  hasBackup = TRUE,\n  has2FA = TRUE,\n  hasAPI = FALSE,\n  hasAlerts = FALSE,\n  hasDashboard = FALSE,\n  hasAudit = FALSE\nWHERE name = 'Basic';\n\n-- Update Corporate plan\nUPDATE plans SET \n  maxKeys = 1000,\n  maxFolders = 100,\n  maxTeamMembers = 10,\n  price = 29.00,\n  hasBackup = TRUE,\n  has2FA = TRUE,\n  hasAPI = TRUE,\n  hasAlerts = TRUE,\n  hasDashboard = TRUE,\n  hasAudit = FALSE\nWHERE name = 'Corporate';",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute -- Update Free plan\nUPDATE plans SET \n  maxKeys = 10,\n  maxFolders = 2,\n  maxTeamMembers = 1,\n  hasBackup = FALSE,\n  has2FA = FALSE,\n  hasAPI = FALSE,\n  hasAlerts = FALSE,\n  hasDashboard = FALSE,\n  hasAudit = FALSE\nWHERE name = 'Free';\n\n-- Update Basic plan\nUPDATE plans SET \n  maxKeys = 100,\n  maxFolders = 10,\n  maxTeamMembers = 1,\n  price = 9.00,\n  hasBackup = TRUE,\n  has2FA = TRUE,\n  hasAPI = FALSE,\n  hasAlerts = FALSE,\n  hasDashboard = FALSE,\n  hasAudit = FALSE\nWHERE name = 'Basic';\n\n-- Update Corporate plan\nUPDATE plans SET \n  maxKeys = 1000,\n  maxFolders = 100,\n  maxTeamMembers = 10,\n  price = 29.00,\n  hasBackup = TRUE,\n  has2FA = TRUE,\n  hasAPI = TRUE,\n  hasAlerts = TRUE,\n  hasDashboard = TRUE,\n  hasAudit = FALSE\nWHERE name = 'Corporate';",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 83
-}

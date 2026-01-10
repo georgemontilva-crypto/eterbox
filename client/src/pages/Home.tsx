@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Lock, Shield, Zap, ArrowRight, Check, Globe, Menu } from "lucide-react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { trpc } from "@/lib/trpc";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +12,6 @@ import {
 export default function Home() {
   const [, setLocation] = useLocation();
   const { language, setLanguage, t } = useLanguage();
-  const subscribeMutation = trpc.newsletter.subscribe.useMutation();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -231,81 +229,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="container py-12 sm:py-16 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">📰 Subscribe to Our Newsletter</h2>
-          <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
-            Get the latest updates, security tips, and exclusive offers delivered to your inbox.
-          </p>
-          <form 
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const email = formData.get('email') as string;
-              
-              try {
-                await subscribeMutation.mutateAsync({ email });
-                alert('✅ Successfully subscribed! Check your email for confirmation.');
-                e.currentTarget.reset();
-              } catch (error: any) {
-                alert(error.message || 'Failed to subscribe. Please try again.');
-              }
-            }}
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-          >
-            <input
-              type="email"
-              name="email"
-              placeholder="your@email.com"
-              required
-              className="flex-1 px-4 py-3 rounded-[15px] bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent text-sm sm:text-base"
-            />
-            <Button type="submit" className="h-12 text-sm sm:text-base whitespace-nowrap">
-              Subscribe
-            </Button>
-          </form>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="border-t border-border/20 bg-card/50 py-6 sm:py-8">
-        <div className="container px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
-            {/* Contact */}
-            <div>
-              <h3 className="font-semibold text-foreground mb-3 text-sm sm:text-base">Contact Us</h3>
-              <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-                <p>📧 <a href="mailto:support@eterbox.com" className="hover:text-accent transition-colors">support@eterbox.com</a></p>
-                <p>💼 <a href="mailto:sales@eterbox.com" className="hover:text-accent transition-colors">sales@eterbox.com</a></p>
-                <p>👥 <a href="mailto:admin@eterbox.com" className="hover:text-accent transition-colors">admin@eterbox.com</a></p>
-              </div>
-            </div>
-            
-            {/* Quick Links */}
-            <div>
-              <h3 className="font-semibold text-foreground mb-3 text-sm sm:text-base">Quick Links</h3>
-              <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-                <p><button onClick={() => setLocation('/pricing')} className="hover:text-accent transition-colors">Pricing</button></p>
-                <p><button onClick={() => setLocation('/support')} className="hover:text-accent transition-colors">Support</button></p>
-                <p><button onClick={() => setLocation('/login')} className="hover:text-accent transition-colors">Login</button></p>
-              </div>
-            </div>
-            
-            {/* Legal */}
-            <div>
-              <h3 className="font-semibold text-foreground mb-3 text-sm sm:text-base">Legal</h3>
-              <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-                <p><a href="#" className="hover:text-accent transition-colors">Privacy Policy</a></p>
-                <p><a href="#" className="hover:text-accent transition-colors">Terms of Service</a></p>
-                <p><a href="#" className="hover:text-accent transition-colors">Cookie Policy</a></p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="text-center text-muted-foreground text-xs sm:text-sm border-t border-border/20 pt-6">
-            <p>&copy; 2024 EterBox. {t("home.footer.rights")}</p>
-          </div>
+      <footer className="border-t border-border/20 bg-card/50 py-6 sm:py-8 mt-12 sm:mt-20">
+        <div className="container text-center text-muted-foreground text-xs sm:text-sm px-4">
+          <p>&copy; 2024 EterBox. {t("home.footer.rights")}</p>
         </div>
       </footer>
     </div>

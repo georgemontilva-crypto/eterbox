@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'wouter';
 
 interface SplashScreenProps {
   onFinish: () => void;
@@ -7,6 +8,7 @@ interface SplashScreenProps {
 
 export function SplashScreen({ onFinish, isAuthenticated }: SplashScreenProps) {
   const [fadeOut, setFadeOut] = useState(false);
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     // Show splash for 2 seconds
@@ -15,12 +17,17 @@ export function SplashScreen({ onFinish, isAuthenticated }: SplashScreenProps) {
       // Wait for fade animation to complete
       setTimeout(() => {
         onFinish();
-        // Don't redirect - let the app show the current route
+        // Redirect based on authentication state
+        if (isAuthenticated) {
+          setLocation('/dashboard');
+        } else {
+          setLocation('/');
+        }
       }, 500);
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [onFinish]);
+  }, [onFinish, isAuthenticated, setLocation]);
 
   return (
     <div
