@@ -56,11 +56,11 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Credential</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 pb-safe">
           <div>
             <label className="block text-sm font-medium mb-2">Platform</label>
             <input
@@ -68,7 +68,7 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               placeholder="e.g., Gmail, GitHub, Shopify"
               value={formData.platformName}
               onChange={(e) => setFormData({ ...formData, platformName: e.target.value })}
-              className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
               required
             />
           </div>
@@ -79,7 +79,7 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               placeholder="Your username"
               value={formData.username}
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
             />
           </div>
           <div>
@@ -89,7 +89,7 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               placeholder="your@email.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
             />
           </div>
           <div>
@@ -99,7 +99,7 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               placeholder="••••••••"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
               required
             />
           </div>
@@ -108,7 +108,7 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
             <select
               value={formData.selectedFolderId}
               onChange={(e) => setFormData({ ...formData, selectedFolderId: e.target.value })}
-              className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
             >
               <option value="">No folder</option>
               {folders && folders.map((folder: any) => (
@@ -124,7 +124,7 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               placeholder="Add any notes..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-4 py-2 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent min-h-20"
+              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent min-h-20 text-base"
             />
           </div>
           <div className="flex gap-3">

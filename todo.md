@@ -384,4 +384,24 @@
 - [x] Actualizar MobileMenu Settings con detección de plataforma
 - [x] Iconos y textos dinámicos según plataforma
 - [ ] Probar en iOS y Android (requiere dispositivos reales)
+- [x] Deploy
+
+
+## 📱 Mejorar UX Móvil - Add Credential y Generador de Contraseñas
+- [x] Arreglar modal Add Credential: permitir scroll cuando aparece teclado
+- [x] Reducir altura de inputs y espaciado en móvil (space-y-3, py-2.5)
+- [x] Hacer modal scrollable con max-height (85vh, overflow-y-auto)
+- [x] Agregar text-base para evitar zoom automático en iOS
+- [x] Crear componente PasswordGeneratorModal con UI moderna
+- [x] Opciones: longitud (8-32), mayúsculas, minúsculas, números, símbolos
+- [x] Botón "Copy" para copiar contraseña generada
+- [x] Indicador de fortaleza de contraseña (Weak/Medium/Strong/Very Strong)
+- [x] Generación segura con crypto.getRandomValues()
+- [x] Agregar botón "Generate Password" debajo de "Create Folder" en Dashboard
+- [x] Botón con icono de candado y texto "Generate Password"
+- [x] Conectar botón con PasswordGeneratorModal
+- [x] Optimizar espaciado y tamaños para móvil
+- [x] Compilación exitosa sin errores TypeScript
+- [x] Hot reload funciona correctamente
+- [ ] Probar en dispositivo móvil real (requiere despliegue)
 - [ ] Deploy

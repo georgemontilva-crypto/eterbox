@@ -5,6 +5,7 @@ import { CreateFolderModal } from "@/components/CreateFolderModal";
 import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { DeleteFolderDialog } from "@/components/DeleteFolderDialog";
 import { BiometricSetupModal } from "@/components/BiometricSetupModal";
+import { PasswordGeneratorModal } from "@/components/PasswordGeneratorModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus } from "lucide-react";
@@ -28,6 +29,7 @@ export default function Dashboard() {
   const [activeFolderView, setActiveFolderView] = useState<number | null>(null);
   const [folderSearchQuery, setFolderSearchQuery] = useState("");
   const [showAddExistingModal, setShowAddExistingModal] = useState(false);
+  const [showPasswordGenerator, setShowPasswordGenerator] = useState(false);
   const [showDeleteFolderDialog, setShowDeleteFolderDialog] = useState(false);
   const [folderToDelete, setFolderToDelete] = useState<{ id: number; name: string; credentialCount: number } | null>(null);
   const [defaultPassword, setDefaultPassword] = useState<string | undefined>(undefined);
@@ -436,12 +438,21 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }}>
-            <Plus className="w-4 h-4 mr-2" />Add New Credential
-          </Button>
-          <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)}>
-            <Plus className="w-4 h-4 mr-2" />Create Folder
+        <div className="space-y-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }}>
+              <Plus className="w-4 h-4 mr-2" />Add New Credential
+            </Button>
+            <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)}>
+              <Plus className="w-4 h-4 mr-2" />Create Folder
+            </Button>
+          </div>
+          <Button size="lg" variant="outline" className="w-full" onClick={() => setShowPasswordGenerator(true)}>
+            <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Generate Password
           </Button>
         </div>
 
@@ -571,6 +582,7 @@ export default function Dashboard() {
           defaultPassword={defaultPassword}
         />
       <CreateFolderModal open={showFolderModal} onOpenChange={setShowFolderModal} />
+      <PasswordGeneratorModal open={showPasswordGenerator} onOpenChange={setShowPasswordGenerator} />
       <MoveToFolderDialog open={showMoveDialog} onOpenChange={setShowMoveDialog} credentialId={selectedCredentialForMove?.id || 0} currentFolderId={selectedCredentialForMove?.folderId} folders={folders} />
       {folderToDelete && (
         <DeleteFolderDialog
