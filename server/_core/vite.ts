@@ -48,11 +48,12 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const cwd = process.cwd();
-  const distPath = path.resolve(cwd, "dist", "public");
+  // In production, __dirname points to /app/dist (where index.js is)
+  // So we need to go to /app/dist/public
+  const distPath = path.resolve(import.meta.dirname, "public");
   const indexPath = path.resolve(distPath, "index.html");
   
-  console.log("[serveStatic] process.cwd():", cwd);
+  console.log("[serveStatic] __dirname:", import.meta.dirname);
   console.log("[serveStatic] distPath:", distPath);
   console.log("[serveStatic] indexPath:", indexPath);
   console.log("[serveStatic] distPath exists:", fs.existsSync(distPath));
@@ -62,12 +63,14 @@ export function serveStatic(app: Express) {
     console.error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
     );
-    console.error("[serveStatic] Listing current directory:");
+    console.error("[serveStatic] Listing parent directory:");
     try {
-      const files = fs.readdirSync(cwd);
-      console.error("[serveStatic] Files in cwd:", files);
-      if (fs.existsSync(path.join(cwd, "dist"))) {
-        const distFiles = fs.readdirSync(path.join(cwd, "dist"));
+      const parentDir = path.resolve(import.meta.dirname, "..");
+      const files = fs.readdirSync(parentDir);
+      console.error("[serveStatic] Files in parent:", files);
+      const distDir = path.resolve(import.meta.dirname);
+      if (fs.existsSync(distDir)) {
+        const distFiles = fs.readdirSync(distDir);
         console.error("[serveStatic] Files in dist:", distFiles);
       }
     } catch (e) {
