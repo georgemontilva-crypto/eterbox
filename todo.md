@@ -321,3 +321,25 @@
 - [x] Simplificar build para solo compilar frontend (sin backend)
 - [x] Corregir ruta de archivos estáticos en vite.ts
 - [x] Probar build y servidor - ✅ Exitoso sin errores
+
+
+## Configuración de Railway y autenticación local
+- [ ] Inicializar base de datos en Railway (ejecutar migraciones)
+- [ ] Deshabilitar OAuth de Manus en el código
+- [ ] Implementar sistema de autenticación local (email/password)
+- [ ] Actualizar código en GitHub
+- [ ] Redesplegar en Railway
+- [ ] Conectar dominio eterbox.com de Hostinger
+- [ ] Verificar funcionamiento completo
+
+
+## Corrección de diseño responsive en Home (Landing Page)
+- [x] Agregar menú hamburguesa en móvil con opciones de navegación
+- [x] Hacer navegación responsive (ocultar botones en móvil, mostrar menú)
+- [x] Ajustar tamaños de texto para móvil (títulos, párrafos)
+- [x] Hacer botones full-width en móvil
+- [x] Agregar padding responsive en todas las secciones
+- [x] Eliminar scale-105 en móvil para evitar overflow
+- [x] Agregar overflow-x-hidden al contenedor principal
+- [x] Reducir tamaños de iconos en móvil
+- [x] Ajustar espaciado entre elementos para móvil
