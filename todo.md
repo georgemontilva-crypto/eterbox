@@ -616,3 +616,14 @@
 - [x] Corregir configuración de rutas (cambiar react-router-dom a wouter)
 - [x] Probar localmente
 - [ ] Desplegar corrección a producción
+
+
+## Bug - Botón Update Password no funciona
+- [x] Encontrar la página de cambio de contraseña (no existía)
+- [x] Revisar el código del botón y el handler (no implementado)
+- [x] Crear endpoint de cambio de contraseña (auth.changePassword)
+- [x] Crear página completa ChangePassword.tsx
+- [x] Agregar validación y manejo de errores
+- [x] Conectar botón en Settings a la nueva página
+- [x] Agregar ruta protegida /change-password
+- [ ] Desplegar corrección

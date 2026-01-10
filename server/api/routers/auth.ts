@@ -195,4 +195,54 @@ export const authRouter = router({
       message: "Logged out successfully",
     };
   }),
+
+  /**
+   * Change user password
+   */
+  changePassword: protectedProcedure
+    .input(
+      z.object({
+        currentPassword: z.string().min(1, "Current password is required"),
+        newPassword: z.string().min(8, "New password must be at least 8 characters"),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+      // Get user from database
+      const [user] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+
+      if (!user) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+      }
+
+      // Check if user has a password (not OAuth user)
+      if (!user.password) {
+        throw new TRPCError({ 
+          code: "BAD_REQUEST", 
+          message: "Cannot change password for social login accounts" 
+        });
+      }
+
+      // Verify current password
+      const isValidPassword = await verifyPassword(input.currentPassword, user.password);
+
+      if (!isValidPassword) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Current password is incorrect" });
+      }
+
+      // Hash new password
+      const hashedPassword = await hashPassword(input.newPassword);
+
+      // Update password
+      await db.update(users)
+        .set({ password: hashedPassword })
+        .where(eq(users.id, ctx.user.id));
+
+      return {
+        success: true,
+        message: "Password updated successfully",
+      };
+    }),
 });

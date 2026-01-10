@@ -14,6 +14,7 @@ import Verify2FA from "./pages/Verify2FA";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
+import ChangePassword from "./pages/ChangePassword";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
@@ -61,6 +62,7 @@ function Router() {
       <Route path={"/pricing"} component={Pricing} />
       <Route path={"/support"} component={Support} />
       <Route path={"/settings"} component={() => <ProtectedRoute component={Settings} />} />
+      <Route path={"/change-password"} component={() => <ProtectedRoute component={ChangePassword} />} />
       <Route path={"/admin"} component={() => <AdminRoute component={Admin} />} />
       <Route path={"/verify-2fa"} component={Verify2FA} />
       <Route path={"/login"} component={Login} />

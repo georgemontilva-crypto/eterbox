@@ -45,7 +45,13 @@ export default function Settings() {
         <Card className="p-8 border border-border/20">
           <h3 className="text-xl font-bold mb-4">Security</h3>
           <Button variant="outline" className="mb-4">Enable Two-Factor Authentication</Button>
-          <Button variant="outline" className="block w-full">Change Password</Button>
+          <Button 
+            variant="outline" 
+            className="block w-full"
+            onClick={() => setLocation("/change-password")}
+          >
+            Change Password
+          </Button>
         </Card>
 
         <div className="mt-8">
