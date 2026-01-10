@@ -199,4 +199,29 @@
 - [x] Agregar onClick al menú item "Change Password" en MobileMenu
 - [x] Agregar validación y manejo de errores
 - [x] Agregar mutation de changePassword
-- [ ] Desplegar fix
+- [x] Desplegar fix
+
+
+## 🔍 Auditoría de Menú Lateral (Mobile Menu)
+- [ ] Dashboard - Verificar navegación
+- [ ] Two-Factor Auth - Verificar setup y disable
+- [ ] Change Password - Verificar funcionalidad (FIXED)
+- [ ] View Plan - Verificar navegación a pricing
+- [ ] Settings - Verificar submenú
+- [ ] Language - Verificar cambio de idioma
+- [ ] Password Generator - Verificar generación y copia
+- [ ] Payment History - Verificar listado de pagos
+- [ ] Logout - Verificar cierre de sesión
+
+
+## 🔐 Mejoras de Seguridad 2FA
+- [x] Crear popup de bienvenida después del registro (Welcome2FAModal)
+- [x] Sugerir activación de 2FA en el popup
+- [x] Agregar botón "Activar Ahora" y "Más Tarde"
+- [x] Implementar verificación de 2FA en el login (twoFactor.verifyLogin)
+- [x] Crear página/modal de verificación 2FA durante login (Verify2FALogin)
+- [x] Validar token 2FA antes de permitir acceso
+- [x] Agregar opción de usar backup codes en login
+- [ ] Probar flujo completo de registro → popup → activación 2FA
+- [ ] Probar flujo de login con 2FA activado
+- [ ] Desplegar cambios

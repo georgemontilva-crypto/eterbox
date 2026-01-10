@@ -7,6 +7,7 @@ import * as db from "./db";
 import * as crypto from "./crypto";
 import * as twoFactorService from "./2fa-service";
 import * as emailService from "./email-service";
+import * as authService from "./auth-service";
 import * as paypalUtils from "./paypal-utils";
 import { randomBytes } from "crypto";
 import { TRPCError } from "@trpc/server";
@@ -354,6 +355,67 @@ export const appRouter = router({
 
       return { success: true };
     }),
+
+    // Verify 2FA code during login
+    verifyLogin: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+        token: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const user = await db.getUserById(input.userId);
+        if (!user) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+
+        if (!user.twoFactorEnabled || !user.twoFactorSecret) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "2FA is not enabled for this user" });
+        }
+
+        // Verify TOTP token
+        const isValid = twoFactorService.verifyTOTPToken(user.twoFactorSecret, input.token);
+        
+        if (!isValid) {
+          // Check if it's a backup code
+          if (user.backupCodes) {
+            const backupCodes = JSON.parse(user.backupCodes);
+            // Simple backup code verification (check if exists in array)
+            const codeIndex = backupCodes.findIndex((code: string) => code === input.token);
+            
+            if (codeIndex !== -1) {
+              // Remove used backup code
+              const updatedBackupCodes = backupCodes.filter((_: string, i: number) => i !== codeIndex);
+              await db.updateUserTwoFactor(user.id, true, user.twoFactorSecret, JSON.stringify(updatedBackupCodes));
+            } else {
+              throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid 2FA code" });
+            }
+          } else {
+            throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid 2FA code" });
+          }
+        }
+
+        // Update last signed in (using db helper)
+        // Note: This would need a db helper method, for now we skip this
+
+        // Generate JWT token (using auth-service)
+        const token = authService.generateToken({
+          userId: user.id,
+          email: user.email,
+          role: user.role,
+        });
+
+        await db.recordActivity(user.id, "2fa_login_success", "account");
+
+        return {
+          success: true,
+          token,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            planId: user.planId,
+          },
+        };
+      }),
   }),
 
   // ============ SUPPORT ============

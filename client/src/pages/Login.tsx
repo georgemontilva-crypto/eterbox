@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
+import { Lock } from "lucide-react";
 import { useLocation } from "wouter";
 import { startAuthentication } from "@simplewebauthn/browser";
+import { Verify2FALogin } from "@/components/Verify2FALogin";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -12,6 +15,9 @@ export default function Login() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFACode, setTwoFACode] = useState("");
+  const [pendingUserId, setPendingUserId] = useState<number | null>(null);
 
   const loginMutation = trpc.auth.login.useMutation();
   const generateAuthOptions = trpc.webauthn.generateAuthenticationOptions.useMutation();
@@ -34,8 +40,18 @@ export default function Login() {
         password: formData.password,
       });
 
+      // Check if 2FA is required
+      if (result.requires2FA && result.userId) {
+        setPendingUserId(result.userId);
+        setShow2FA(true);
+        setLoading(false);
+        return;
+      }
+
       // Store token
-      localStorage.setItem("auth_token", result.token);
+      if (result.token) {
+        localStorage.setItem("auth_token", result.token);
+      }
       
       // Redirect to dashboard
       window.location.href = "/";
@@ -45,6 +61,24 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  const handleBack2FA = () => {
+    setShow2FA(false);
+    setPendingUserId(null);
+    setTwoFACode("");
+    setError("");
+  };
+
+  // Show 2FA verification screen if needed
+  if (show2FA && pendingUserId) {
+    return (
+      <Verify2FALogin
+        userId={pendingUserId}
+        email={formData.email}
+        onBack={handleBack2FA}
+      />
+    );
+  }
 
   const handleBiometricLogin = async () => {
     setError("");

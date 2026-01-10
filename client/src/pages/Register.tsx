@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Lock, ArrowLeft, Shield, Check } from "lucide-react";
 import { useLocation } from "wouter";
 import { startRegistration } from "@simplewebauthn/browser";
+import { Welcome2FAModal } from "@/components/Welcome2FAModal";
 
 export default function Register() {
   const [, setLocation] = useLocation();
@@ -15,6 +16,7 @@ export default function Register() {
   });
   const [error, setError] = useState("");
   const [showBiometric, setShowBiometric] = useState(false);
+  const [show2FAWelcome, setShow2FAWelcome] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
 
   const registerMutation = trpc.auth.register.useMutation();
@@ -89,7 +91,17 @@ export default function Register() {
   };
 
   const handleSkipBiometric = () => {
-    setLocation("/login");
+    setShow2FAWelcome(true);
+  };
+
+  const handleActivate2FA = () => {
+    setShow2FAWelcome(false);
+    setLocation("/dashboard"); // User will see 2FA setup in mobile menu
+  };
+
+  const handleSkip2FA = () => {
+    setShow2FAWelcome(false);
+    setLocation("/dashboard");
   };
 
   if (showBiometric) {
@@ -279,6 +291,13 @@ export default function Register() {
           </div>
         </div>
       </div>
+      
+      {/* Welcome 2FA Modal */}
+      <Welcome2FAModal
+        open={show2FAWelcome}
+        onClose={handleSkip2FA}
+        onActivate={handleActivate2FA}
+      />
     </div>
   );
 }

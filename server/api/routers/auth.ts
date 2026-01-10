@@ -108,6 +108,17 @@ export const authRouter = router({
         });
       }
 
+      // Check if 2FA is enabled
+      if (user.twoFactorEnabled) {
+        // Return a special response indicating 2FA is required
+        return {
+          success: false,
+          requires2FA: true,
+          userId: user.id,
+          email: user.email,
+        };
+      }
+
       // Update last signed in
       await db.update(users)
         .set({ lastSignedIn: new Date() })
@@ -122,6 +133,7 @@ export const authRouter = router({
 
       return {
         success: true,
+        requires2FA: false,
         token,
         user: {
           id: user.id,
