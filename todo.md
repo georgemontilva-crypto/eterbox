@@ -359,3 +359,10 @@
 - [ ] Usuario debe arreglar Custom Start Command en Railway (cambiar a npm run start)
 - [ ] Usuario debe ejecutar init-database.sql en Railway MySQL Query Editor
 - [ ] Verificar que el botón "View Pricing" funcione desde Home
+
+
+## Crear endpoint temporal para inicializar base de datos
+- [x] Crear endpoint /api/init-db que ejecute SQL de inicialización
+- [ ] Push a GitHub y esperar deployment en Railway
+- [ ] Usuario visita https://eterbox.com/api/init-db para inicializar
+- [ ] Eliminar endpoint por seguridad después de inicializar
