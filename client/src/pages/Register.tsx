@@ -117,7 +117,7 @@ export default function Register() {
       <nav className="border-b border-border/20 bg-card/50 backdrop-blur-md">
         <div className="container flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-3">
-            <Lock className="w-8 h-8 text-accent" />
+            <img src="/logo.png" alt="EterBox Logo" className="w-8 h-8" />
             <span className="text-2xl font-bold">EterBox</span>
           </div>
           <Button variant="ghost" onClick={() => setLocation("/")}>

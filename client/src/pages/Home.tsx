@@ -19,7 +19,7 @@ export default function Home() {
       <nav className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-50">
         <div className="container flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-2 sm:gap-3">
-            <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-accent flex-shrink-0" />
+            <img src="/logo.png" alt="EterBox Logo" className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" />
             <span className="text-xl sm:text-2xl font-bold">EterBox</span>
           </div>
           
@@ -42,6 +42,7 @@ export default function Home() {
             </DropdownMenu>
             <Button variant="ghost" onClick={() => setLocation("/pricing")}>{t("home.nav.pricing")}</Button>
             <Button variant="ghost" onClick={() => setLocation("/support")}>{t("home.nav.support")}</Button>
+            <Button variant="ghost" onClick={() => setLocation('/')}>{t("home.nav.login")}</Button>
             <Button onClick={() => setLocation('/register')}>{t("home.nav.signIn")}</Button>
           </div>
 
@@ -75,6 +76,9 @@ export default function Home() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setLocation("/support")}>
                   {t("home.nav.support")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLocation('/')}>
+                  {t("home.nav.login")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setLocation('/register')}>
                   {t("home.nav.signIn")}

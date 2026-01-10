@@ -18,7 +18,7 @@ export default function Settings() {
       <header className="border-b border-border/20 bg-card">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-3">
-            <Lock className="w-8 h-8 text-accent" />
+            <img src="/logo.png" alt="EterBox Logo" className="w-8 h-8" />
             <h1 className="text-2xl font-bold">EterBox</h1>
           </div>
           <Button onClick={() => setLocation("/dashboard")} variant="ghost">Dashboard</Button>

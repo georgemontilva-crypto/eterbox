@@ -193,7 +193,7 @@ export default function Dashboard() {
           <div className="container py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Lock className="w-6 h-6 text-accent" />
+                <img src="/logo.png" alt="EterBox Logo" className="w-6 h-6" />
                 <span className="text-xl font-bold">EterBox</span>
               </div>
               <div className="flex items-center gap-4">
@@ -324,7 +324,7 @@ export default function Dashboard() {
             
             {/* Logo - siempre a la derecha */}
             <div className="flex items-center gap-2">
-              <Lock className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+              <img src="/logo.png" alt="EterBox Logo" className="w-5 h-5 md:w-6 md:h-6" />
               <span className="text-lg md:text-xl font-bold">EterBox</span>
             </div>
           </div>
@@ -352,11 +352,11 @@ export default function Dashboard() {
           </Card>
           <Card className="p-6 border border-border/20">
             <p className="text-sm text-muted-foreground">Credentials Used</p>
-            <p className="text-2xl font-bold">{credentials.length}/{maxKeys === -1 ? "∞" : maxKeys}</p>
+            <p className="text-2xl font-bold">{credentials.length}/{(maxKeys === -1 || maxKeys >= 999999) ? "∞" : maxKeys}</p>
           </Card>
           <Card className="p-6 border border-border/20">
             <p className="text-sm text-muted-foreground">Folders Used</p>
-            <p className="text-2xl font-bold">{folders.length}/{maxFolders === -1 ? "∞" : maxFolders}</p>
+            <p className="text-2xl font-bold">{folders.length}/{(maxFolders === -1 || maxFolders >= 999999) ? "∞" : maxFolders}</p>
           </Card>
         </div>
 

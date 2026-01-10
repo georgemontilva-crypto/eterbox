@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
-import { Lock } from "lucide-react";
+import { ArrowLeft, Fingerprint, Key } from "lucide-react";
 import { useLocation } from "wouter";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Verify2FALogin } from "@/components/Verify2FALogin";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Login() {
   const [, setLocation] = useLocation();
+  const { t } = useLanguage();
   const [loginMethod, setLoginMethod] = useState<"password" | "biometric">("password");
   const [formData, setFormData] = useState({
     email: "",
@@ -28,7 +30,7 @@ export default function Login() {
     setError("");
 
     if (!formData.email || !formData.password) {
-      setError("Por favor completa todos los campos");
+      setError("Please complete all fields");
       return;
     }
 
@@ -48,56 +50,39 @@ export default function Login() {
         return;
       }
 
-      // Store token
+      // If no 2FA required, store token and redirect
       if (result.token) {
         localStorage.setItem("auth_token", result.token);
+        window.location.href = "/dashboard";
       }
-      
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
     } catch (err: any) {
-      setError(err.message || "Email o contraseña incorrectos");
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBack2FA = () => {
-    setShow2FA(false);
-    setPendingUserId(null);
-    setTwoFACode("");
-    setError("");
-  };
-
-  // Show 2FA verification screen if needed
-  if (show2FA && pendingUserId) {
-    return (
-      <Verify2FALogin
-        userId={pendingUserId}
-        email={formData.email}
-        onBack={handleBack2FA}
-      />
-    );
-  }
-
   const handleBiometricLogin = async () => {
     setError("");
-
-    if (!formData.email) {
-      setError("Por favor ingresa tu email");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      // Generate authentication options
-      const { options, userId } = await generateAuthOptions.mutateAsync({
+      // Get user ID from email
+      if (!formData.email) {
+        setError("Please enter your email for biometric login");
+        setLoading(false);
+        return;
+      }
+
+      // Get authentication options
+      const options = await generateAuthOptions.mutateAsync({
         email: formData.email,
       });
 
       // Start WebAuthn authentication
-      const authResp = await startAuthentication({ optionsJSON: options });
+      const authResp = await startAuthentication({ optionsJSON: options.options });
+
+      const userId = options.userId;
 
       // Verify authentication
       const result = await verifyAuthentication.mutateAsync({
@@ -112,141 +97,177 @@ export default function Login() {
       window.location.href = "/dashboard";
     } catch (err: any) {
       console.error("Biometric login error:", err);
-      setError("No se pudo autenticar con biometría. Intenta con tu contraseña.");
+      setError("Could not authenticate with biometrics. Try with your password.");
     } finally {
       setLoading(false);
     }
   };
 
+  if (show2FA && pendingUserId) {
+    return (
+      <Verify2FALogin
+        userId={pendingUserId}
+        email={formData.email}
+        onBack={() => {
+          setShow2FA(false);
+          setPendingUserId(null);
+        }}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
-      <div className="max-w-md w-full bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-700">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">EterBox</h1>
-          <p className="text-slate-300">Accede a tu bóveda segura</p>
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="border-b border-border/20 bg-card/50 backdrop-blur-md">
+        <div className="container flex items-center justify-between py-4 px-4">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="EterBox Logo" className="w-8 h-8" />
+            <span className="text-2xl font-bold">EterBox</span>
+          </div>
+          <Button variant="ghost" onClick={() => setLocation("/")}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            {t("common.back")}
+          </Button>
         </div>
+      </nav>
 
-        {/* Login method tabs */}
-        <div className="flex gap-2 mb-6 bg-slate-700/30 p-1 rounded-lg">
-          <button
-            onClick={() => setLoginMethod("password")}
-            className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
-              loginMethod === "password"
-                ? "bg-blue-600 text-white"
-                : "text-slate-300 hover:text-white"
-            }`}
-          >
-            Contraseña
-          </button>
-          <button
-            onClick={() => setLoginMethod("biometric")}
-            className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
-              loginMethod === "biometric"
-                ? "bg-blue-600 text-white"
-                : "text-slate-300 hover:text-white"
-            }`}
-          >
-            Biométrico
-          </button>
-        </div>
+      {/* Login Form */}
+      <div className="container flex items-center justify-center py-12 px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+              {t("home.nav.login")} <span className="text-accent">{t("common.secure")}</span>
+            </h1>
+            <p className="text-muted-foreground">
+              {t("login.subtitle")}
+            </p>
+          </div>
 
-        {loginMethod === "password" ? (
-          <form onSubmit={handlePasswordLogin} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="tu@email.com"
-                disabled={loading}
-              />
+          <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20">
+            {/* Login method tabs */}
+            <div className="flex gap-2 mb-6 bg-muted/30 p-1 rounded-lg">
+              <button
+                onClick={() => setLoginMethod("password")}
+                className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors flex items-center justify-center gap-2 ${
+                  loginMethod === "password"
+                    ? "bg-accent text-white"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Key className="w-4 h-4" />
+                {t("login.password")}
+              </button>
+              <button
+                onClick={() => setLoginMethod("biometric")}
+                className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors flex items-center justify-center gap-2 ${
+                  loginMethod === "biometric"
+                    ? "bg-accent text-white"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Fingerprint className="w-4 h-4" />
+                {t("login.biometric")}
+              </button>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
-                Contraseña
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Tu contraseña"
-                disabled={loading}
-              />
-            </div>
+            {loginMethod === "password" ? (
+              <form onSubmit={handlePasswordLogin} className="space-y-4">
+                {error && (
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                    {error}
+                  </div>
+                )}
 
-            {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
-                {error}
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
+                    {t("common.email")}
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full h-12 px-4 bg-background border border-border/20 rounded-[15px] focus:border-accent focus:outline-none"
+                    placeholder={t("common.emailPlaceholder")}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-2">
+                    {t("common.password")}
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="w-full h-12 px-4 bg-background border border-border/20 rounded-[15px] focus:border-accent focus:outline-none"
+                    placeholder={t("common.passwordPlaceholder")}
+                    disabled={loading}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-12 rounded-[15px] bg-accent hover:bg-accent/90"
+                >
+                  {loading ? t("login.loggingIn") : t("login.loginButton")}
+                </Button>
+              </form>
+            ) : (
+              <div className="space-y-4">
+                {error && (
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <div>
+                  <label htmlFor="email-biometric" className="block text-sm font-medium text-muted-foreground mb-2">
+                    {t("common.email")}
+                  </label>
+                  <input
+                    id="email-biometric"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full h-12 px-4 bg-background border border-border/20 rounded-[15px] focus:border-accent focus:outline-none"
+                    placeholder={t("common.emailPlaceholder")}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="text-center p-6 bg-accent/5 border border-accent/20 rounded-[15px]">
+                  <Fingerprint className="w-12 h-12 text-accent mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {t("login.biometricDesc")}
+                  </p>
+                  <Button
+                    onClick={handleBiometricLogin}
+                    disabled={loading || !formData.email}
+                    className="w-full h-12 rounded-[15px] bg-accent hover:bg-accent/90"
+                  >
+                    {loading ? t("login.authenticating") : t("login.biometricButton")}
+                  </Button>
+                </div>
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
-            </button>
-          </form>
-        ) : (
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email-bio" className="block text-sm font-medium text-slate-300 mb-2">
-                Email
-              </label>
-              <input
-                id="email-bio"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="tu@email.com"
-                disabled={loading}
-              />
-            </div>
-
-            <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <p className="text-sm text-slate-300 mb-4">
-                Usa Face ID, Touch ID o tu huella digital para acceder
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                {t("login.noAccount")}{" "}
+                <button
+                  onClick={() => setLocation("/register")}
+                  className="text-accent hover:underline font-medium"
+                >
+                  {t("login.signUp")}
+                </button>
               </p>
             </div>
-
-            {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
-                {error}
-              </div>
-            )}
-
-            <button
-              onClick={handleBiometricLogin}
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Autenticando..." : "Autenticar con Biometría"}
-            </button>
           </div>
-        )}
-
-        <div className="mt-6 text-center">
-          <p className="text-slate-400 text-sm">
-            ¿No tienes una cuenta?{" "}
-            <a href="/register" className="text-blue-400 hover:text-blue-300 font-semibold">
-              Regístrate
-            </a>
-          </p>
         </div>
       </div>
     </div>

@@ -139,7 +139,7 @@ export default function Pricing() {
       <header className="border-b border-border/20 bg-card sticky top-0 z-40">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setLocation("/")} >
-            <Lock className="w-8 h-8 text-accent" />
+            <img src="/logo.png" alt="EterBox Logo" className="w-8 h-8" />
             <h1 className="text-2xl font-bold">EterBox</h1>
           </div>
           <Button onClick={() => user ? setLocation("/dashboard") : setLocation("/")} variant="ghost">

@@ -277,4 +277,31 @@
 - [x] Agregar traducciones completas en LanguageContext (EN/ES)
 - [x] Mover hooks fuera de condiciones para evitar errores React
 - [x] Probar flujo completo de activación desde Settings
-- [ ] Guardar checkpoint y desplegar a producción
+- [x] Guardar checkpoint y desplegar a producción
+
+
+## 🔧 Fix Corporate Plan - Mostrar "Unlimited" en lugar de 999999
+- [x] Encontrar dónde se muestra 0/999999 en el dashboard
+- [x] Actualizar lógica para mostrar "Unlimited" o "Ilimitado" cuando el límite es 999999 o -1
+- [x] Agregar traducciones para "Unlimited" e "Ilimitado" (usa símbolo ∞)
+- [x] Actualizar base de datos local: cambiar maxCredentials y maxFolders de 999999 a -1
+- [x] Crear script para actualizar producción (update-corporate-unlimited-prod.mjs)
+- [x] Probar en local
+- [ ] Deploy a producción
+
+
+## 🎨 Agregar Favicon y Logo
+- [x] Copiar logo PNG al directorio public/
+- [x] Actualizar index.html para usar el nuevo favicon
+- [x] Actualizar Header component para mostrar logo junto al texto "EterBox"
+- [x] Actualizado en Home, Dashboard, Pricing, Register, Settings, Support
+- [ ] Probar en navegador
+- [ ] Guardar checkpoint y deploy
+
+
+## 🔑 Agregar Login en el menú del Home y unificar estilos
+- [x] Agregar botón "Login" en el header del Home (desktop y mobile)
+- [x] Verificar que Login page tenga el mismo estilo visual que Register
+- [x] Unificar diseño de ambas páginas (header, formulario, colores)
+- [x] Agregar traducciones completas para Login
+- [ ] Probar navegación y estilos

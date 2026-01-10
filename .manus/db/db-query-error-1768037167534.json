@@ -1,0 +1,8 @@
+{
+  "query": "UPDATE plans SET \"maxKeys\" = -1, \"maxFolders\" = -1 WHERE name = 'Corporate';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute UPDATE plans SET \"maxKeys\" = -1, \"maxFolders\" = -1 WHERE name = 'Corporate';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 26 near \"\"maxKeys\" = -1, \"maxFolders\" = -1 WHERE name = 'Corporate'\""
+  ]
+}

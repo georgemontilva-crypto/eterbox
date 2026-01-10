@@ -125,6 +125,18 @@ export const translations: Translations = {
   "verify2fa.redirecting": { en: "Redirecting to login...", es: "Redirigiendo al inicio de sesión..." },
   "verify2fa.securityNote": { en: "This additional security step helps protect your account from unauthorized access.", es: "Este paso de seguridad adicional ayuda a proteger tu cuenta de accesos no autorizados." },
 
+  // Login Page
+  "login.subtitle": { en: "Access your secure vault", es: "Accede a tu bóveda segura" },
+  "login.password": { en: "Password", es: "Contraseña" },
+  "login.biometric": { en: "Biometric", es: "Biométrico" },
+  "login.loggingIn": { en: "Logging in...", es: "Iniciando sesión..." },
+  "login.loginButton": { en: "Login", es: "Iniciar Sesión" },
+  "login.biometricDesc": { en: "Use your fingerprint or Face ID to securely access your account", es: "Usa tu huella digital o Face ID para acceder de forma segura a tu cuenta" },
+  "login.authenticating": { en: "Authenticating...", es: "Autenticando..." },
+  "login.biometricButton": { en: "Authenticate with Biometrics", es: "Autenticar con Biometría" },
+  "login.noAccount": { en: "Don't have an account?", es: "¿No tienes una cuenta?" },
+  "login.signUp": { en: "Sign Up", es: "Registrarse" },
+
   // Password Change
   "password.title": { en: "Change Password", es: "Cambiar Contraseña" },
   "password.subtitle": { en: "Update your account password", es: "Actualiza la contraseña de tu cuenta" },
@@ -150,7 +162,8 @@ export const translations: Translations = {
   // Home Page
   "home.nav.pricing": { en: "Pricing", es: "Precios" },
   "home.nav.support": { en: "Support", es: "Soporte" },
-  "home.nav.signIn": { en: "Sign In", es: "Iniciar Sesión" },
+  "home.nav.login": { en: "Login", es: "Iniciar Sesión" },
+  "home.nav.signIn": { en: "Sign Up", es: "Registrarse" },
   "home.hero.title1": { en: "Your Passwords,", es: "Tus Contraseñas," },
   "home.hero.title2": { en: "Secured", es: "Protegidas" },
   "home.hero.subtitle": { en: "EterBox is a modern, secure password manager that keeps all your credentials safe with military-grade encryption.", es: "EterBox es un gestor de contraseñas moderno y seguro que mantiene todas tus credenciales protegidas con encriptación de grado militar." },
@@ -326,6 +339,11 @@ export const translations: Translations = {
   "common.english": { en: "English", es: "Inglés" },
   "common.spanish": { en: "Spanish", es: "Español" },
   "common.back": { en: "Back", es: "Volver" },
+  "common.email": { en: "Email", es: "Correo Electrónico" },
+  "common.emailPlaceholder": { en: "your@email.com", es: "tu@correo.com" },
+  "common.password": { en: "Password", es: "Contraseña" },
+  "common.passwordPlaceholder": { en: "Your password", es: "Tu contraseña" },
+  "common.secure": { en: "Secure", es: "Segura" },
 };
 
 interface LanguageContextType {
