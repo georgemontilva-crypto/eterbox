@@ -129,17 +129,17 @@ export default function Home() {
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-16">{t("home.features.title")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20 hover:border-accent/50 transition-colors">
-            <IconWithBackground icon={Shield} variant="blue" size="lg" className="mb-3 sm:mb-4" />
+            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-accent mb-3 sm:mb-4" />
             <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{t("home.features.encryption.title")}</h3>
             <p className="text-sm sm:text-base text-muted-foreground">{t("home.features.encryption.desc")}</p>
           </div>
           <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20 hover:border-accent/50 transition-colors">
-            <IconWithBackground icon={Zap} variant="orange" size="lg" className="mb-3 sm:mb-4" />
+            <Zap className="w-10 h-10 sm:w-12 sm:h-12 text-accent mb-3 sm:mb-4" />
             <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{t("home.features.fast.title")}</h3>
             <p className="text-sm sm:text-base text-muted-foreground">{t("home.features.fast.desc")}</p>
           </div>
           <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20 hover:border-accent/50 transition-colors">
-            <IconWithBackground icon={Lock} variant="green" size="lg" className="mb-3 sm:mb-4" />
+            <Lock className="w-10 h-10 sm:w-12 sm:h-12 text-accent mb-3 sm:mb-4" />
             <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{t("home.features.2fa.title")}</h3>
             <p className="text-sm sm:text-base text-muted-foreground">{t("home.features.2fa.desc")}</p>
           </div>
@@ -278,11 +278,11 @@ export default function Home() {
               <h3 className="font-semibold text-foreground mb-3 text-sm sm:text-base">Contact Us</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <IconWithBackground icon={Mail} variant="purple" size="sm" />
+                  <IconWithBackground icon={Mail} variant="blue" size="sm" />
                   <a href="mailto:support@eterbox.com" className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors">support@eterbox.com</a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <IconWithBackground icon={Briefcase} variant="pink" size="sm" />
+                  <IconWithBackground icon={Briefcase} variant="blue" size="sm" />
                   <a href="mailto:sales@eterbox.com" className="text-xs sm:text-sm text-muted-foreground hover:text-accent transition-colors">sales@eterbox.com</a>
                 </div>
                 <div className="flex items-center gap-3">

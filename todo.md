@@ -645,3 +645,10 @@
 
 ### Fix Railway Deploy
 - [ ] Configurar RESEND_API_KEY en Railway variables
+
+
+## 🔄 Revertir Iconos de Features
+- [x] Revertir iconos de features section a estilo simple (sin fondos)
+- [x] Cambiar iconos de footer para usar solo color accent de la web (azul)
+- [x] Eliminar colores múltiples (purple, pink, etc.)
+- [ ] Deploy cambios
