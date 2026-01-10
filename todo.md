@@ -461,3 +461,10 @@
 - [x] Eliminar localStorage manus-runtime-user-info
 - [ ] Reiniciar servidor y probar que la app funcione sin OAuth
 - [ ] Deploy a producción
+
+
+## 🚂 Railway Build Script Fix
+- [x] Identificar problema: hostinger:build falla silenciosamente en Railway
+- [x] Crear railway:build script sin pnpm install redundante
+- [ ] Actualizar Custom Build Command en Railway a "pnpm run railway:build"
+- [ ] Redeploy y verificar que funcione
