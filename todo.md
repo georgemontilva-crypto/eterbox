@@ -554,3 +554,80 @@
 - [ ] Configurar Bold en producción (API keys reales)
 - [ ] Deploy a Railway
 - [ ] Probar en producción con tarjeta de prueba
+
+
+## 🚨 Fix Railway Deployment Error
+- [ ] Investigar causa del crash en Railway (Node.js v22.21.1 error)
+- [ ] Revisar logs de deploy para identificar el problema
+- [ ] Verificar que todas las dependencias estén correctamente instaladas
+- [ ] Probar build localmente antes de deploy
+- [ ] Fix y redeploy
+
+## 💎 Reformular Planes de Suscripción
+- [ ] Actualizar schema de planes en drizzle/schema.ts
+- [ ] Plan Free: 10 credenciales, 2 carpetas, AES-256, sin backup
+- [ ] Plan Basic ($9/mes): 100 credenciales, 10 carpetas, AES-256+TLS, 2FA, backup automático
+- [ ] Plan Corporate ($29/mes): 1000 credenciales, 100 carpetas, multiusuario (10 miembros), alertas, dashboard, API
+- [ ] Plan Enterprise ($99+/mes): Ilimitado, multiusuario avanzado (50+ miembros), auditorías ISO/SOC2/GDPR, API personalizada, soporte 24/7
+- [ ] Actualizar página de pricing con nuevos planes
+- [ ] Actualizar lógica de validación de límites por plan
+
+## 👥 Sistema Multiusuario
+- [ ] Crear tabla `teams` (id, name, owner_id, plan, created_at)
+- [ ] Crear tabla `team_members` (team_id, user_id, role, invited_at, joined_at)
+- [ ] Roles: owner, admin, member, viewer
+- [ ] Sistema de invitaciones por email
+- [ ] Endpoint: team.create, team.invite, team.acceptInvite
+- [ ] Endpoint: team.removeMember, team.updateRole
+- [ ] Dashboard de gestión de equipo
+- [ ] Límite de miembros según plan (Corporate: 10, Enterprise: 50+)
+
+## 📁 Carpetas Compartidas con Permisos
+- [ ] Actualizar tabla `folders` con team_id
+- [ ] Crear tabla `folder_permissions` (folder_id, user_id, permission: read|write|admin)
+- [ ] Carpetas personales (solo del usuario)
+- [ ] Carpetas compartidas (todo el equipo puede ver)
+- [ ] Carpetas con permisos granulares (solo usuarios específicos)
+- [ ] UI para gestionar permisos de carpetas
+- [ ] Validación de permisos en backend antes de acceder a credenciales
+- [ ] Logs de auditoría: quién accedió a qué carpeta y cuándo
+
+## ✅ Schema y Planes Actualizados (Checkpoint Reciente)
+
+### Planes Reformulados
+- [x] Free: 10 credenciales, 2 carpetas
+- [x] Basic ($9/mes): 100 credenciales, 10 carpetas, 2FA, backup
+- [x] Corporate ($29/mes): 1000 credenciales, 100 carpetas, multiusuario (10 miembros)
+- [x] Enterprise ($99+/mes): Ilimitado, 50+ miembros, auditorías
+
+### Schema Multiusuario
+- [x] Tabla teams creada
+- [x] Tabla teamMembers creada
+- [x] Tabla folderPermissions creada
+- [x] Actualizada tabla plans con maxTeamMembers y features
+- [x] Actualizada tabla folders con teamId e isShared
+
+### Railway Deployment Fix
+- [x] Actualizado build script con esbuild
+- [x] Actualizado start script para usar node dist/index.js
+
+## 🔄 Pendiente: Sistema Multiusuario Completo
+
+### Backend tRPC Routers
+- [ ] Router teams: create, list, update, delete
+- [ ] Router teamMembers: invite, accept, remove, updateRole
+- [ ] Router folders: share, unshare, setPermissions
+- [ ] Validación de límites por plan (maxTeamMembers)
+
+### Frontend UI
+- [ ] Página Team Settings
+- [ ] Modal para invitar miembros
+- [ ] Lista de miembros del equipo con roles
+- [ ] Compartir carpetas con permisos
+- [ ] Indicador visual de carpetas compartidas
+
+### Emails
+- [ ] Email de invitación a equipo
+- [ ] Email de aceptación/rechazo
+- [ ] Email cuando te comparten una carpeta
+

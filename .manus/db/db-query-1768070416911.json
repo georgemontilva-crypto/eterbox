@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO plans (name, description, maxKeys, maxFolders, maxTeamMembers, maxGeneratedKeys, price, yearlyPrice, yearlyDiscount, hasBackup, has2FA, hasAPI, hasAlerts, hasDashboard, hasAudit, isActive)\nVALUES (\n  'Enterprise',\n  'Plan empresarial con capacidad ilimitada y soporte dedicado 24/7',\n  -1,\n  -1,\n  50,\n  -1,\n  99.00,\n  990.00,\n  15,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE\n)\nON DUPLICATE KEY UPDATE\n  maxKeys = -1,\n  maxFolders = -1,\n  maxTeamMembers = 50,\n  price = 99.00;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute INSERT INTO plans (name, description, maxKeys, maxFolders, maxTeamMembers, maxGeneratedKeys, price, yearlyPrice, yearlyDiscount, hasBackup, has2FA, hasAPI, hasAlerts, hasDashboard, hasAudit, isActive)\nVALUES (\n  'Enterprise',\n  'Plan empresarial con capacidad ilimitada y soporte dedicado 24/7',\n  -1,\n  -1,\n  50,\n  -1,\n  99.00,\n  990.00,\n  15,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE,\n  TRUE\n)\nON DUPLICATE KEY UPDATE\n  maxKeys = -1,\n  maxFolders = -1,\n  maxTeamMembers = 50,\n  price = 99.00;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 73
+}
