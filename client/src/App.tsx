@@ -19,9 +19,18 @@ import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 import { SplashScreen } from "./components/SplashScreen";
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, loading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      // Redirect to login if not authenticated
+      setLocation('/login');
+    }
+  }, [loading, isAuthenticated, setLocation]);
 
   if (loading) {
     return (
@@ -32,7 +41,8 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   }
 
   if (!isAuthenticated) {
-    return <NotFound />;
+    // Return null while redirecting
+    return null;
   }
 
   return <Component />;
@@ -40,6 +50,14 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 
 function AdminRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, loading, user } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!loading && (!isAuthenticated || user?.role !== "admin")) {
+      // Redirect to login if not authenticated or not admin
+      setLocation('/login');
+    }
+  }, [loading, isAuthenticated, user, setLocation]);
 
   if (loading) {
     return (
@@ -50,7 +68,8 @@ function AdminRoute({ component: Component }: { component: React.ComponentType }
   }
 
   if (!isAuthenticated || user?.role !== "admin") {
-    return <NotFound />;
+    // Return null while redirecting
+    return null;
   }
 
   return <Component />;
@@ -82,20 +101,19 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const [showSplash, setShowSplash] = useState(false);
   const { isAuthenticated, loading } = useAuth();
+  const [location] = useLocation();
 
   useEffect(() => {
-    // Check if this is the first visit or if the app is installed as PWA
-    const hasVisited = localStorage.getItem('hasVisited');
+    // Only show splash screen when app is opened in PWA mode
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    const hasShownSplash = sessionStorage.getItem('splashShown');
     
-    if (!hasVisited || isPWA) {
-      setIsFirstVisit(true);
-      localStorage.setItem('hasVisited', 'true');
-    } else {
-      setShowSplash(false);
+    // Show splash only once per session in PWA mode
+    if (isPWA && !hasShownSplash) {
+      setShowSplash(true);
+      sessionStorage.setItem('splashShown', 'true');
     }
   }, []);
 
@@ -103,22 +121,13 @@ function App() {
     setShowSplash(false);
   };
 
-  // Show splash screen on first visit or PWA mode
-  if (showSplash && isFirstVisit && !loading) {
+  // Show splash screen only in PWA mode
+  if (showSplash && !loading) {
     return (
       <SplashScreen 
         onFinish={handleSplashFinish}
         isAuthenticated={isAuthenticated}
       />
-    );
-  }
-
-  // Show loading while checking authentication
-  if (loading && isFirstVisit) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
-        <Loader2 className="animate-spin w-8 h-8 text-accent" />
-      </div>
     );
   }
 

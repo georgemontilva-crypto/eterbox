@@ -461,3 +461,27 @@
 - [x] Eliminar localStorage manus-runtime-user-info
 - [ ] Reiniciar servidor y probar que la app funcione sin OAuth
 - [ ] Deploy a producción
+
+
+## 🐛 Fix Infinite Redirect Loop en Dashboard
+- [x] Identificar causa del loop infinito cuando se accede a /dashboard sin autenticación
+- [x] Actualizar ProtectedRoute para redirigir a /login en lugar de NotFound
+- [x] Usar useLocation para redirección limpia
+- [x] Evitar múltiples redirects con useEffect
+- [x] Simplificar splash screen: solo en PWA mode, no en primera visita
+- [x] Usar sessionStorage en lugar de localStorage para splash
+- [x] Remover auto-redirect del splash que causaba conflictos
+- [ ] Probar acceso directo a /dashboard sin login
+- [ ] Probar acceso a /settings sin login
+- [ ] Probar en eterbox.com que no haya loop
+
+## 🐛 Fix Auto-Logout en Móvil
+- [x] Investigar por qué la app cierra sesión automáticamente en móvil
+- [x] Revisar manejo de tokens JWT en localStorage
+- [x] Verificar que auth.me no esté fallando en móvil
+- [x] Identificado: React Query refetch en background causaba logout
+- [x] Desactivar refetchOnWindowFocus, refetchOnReconnect, refetchOnMount
+- [x] Agregar keepPreviousData para mantener sesión en errores temporales
+- [x] Agregar staleTime de 5 minutos para reducir queries innecesarias
+- [ ] Probar en dispositivo real (iPhone/Android)
+- [ ] Deploy del fix
