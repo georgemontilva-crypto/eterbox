@@ -63,7 +63,7 @@ export function registerOAuthRoutes(app: Express) {
         await db.upsertUser({
           openId: userInfo.openId,
           name: userInfo.name || null,
-          email: userInfo.email ?? null,
+          email: userInfo.email || `${userInfo.openId}@eterbox.temp`,
           loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
           lastSignedIn: new Date(),
         });
@@ -90,7 +90,7 @@ export function registerOAuthRoutes(app: Express) {
       await db.upsertUser({
         openId: userInfo.openId,
         name: userInfo.name || null,
-        email: userInfo.email ?? null,
+        email: userInfo.email || `${userInfo.openId}@eterbox.temp`,
         loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
         lastSignedIn: new Date(),
       });
@@ -167,7 +167,7 @@ export function registerOAuthRoutes(app: Express) {
       await db.upsertUser({
         openId: pending.openId,
         name: pending.name || null,
-        email: pending.email ?? null,
+        email: pending.email || `${pending.openId}@eterbox.temp`,
         loginMethod: pending.loginMethod ?? null,
         lastSignedIn: new Date(),
       });

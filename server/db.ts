@@ -46,12 +46,18 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
 
   try {
+    // Email is now required, openId is optional
+    if (!user.email && !user.openId) {
+      throw new Error("Either email or openId must be provided");
+    }
+    
     const values: InsertUser = {
-      openId: user.openId,
+      email: user.email || `temp_${Date.now()}@eterbox.com`, // Temporary email for OAuth users without email
+      openId: user.openId || null,
     };
     const updateSet: Record<string, unknown> = {};
 
-    const textFields = ["name", "email", "loginMethod"] as const;
+    const textFields = ["name", "loginMethod"] as const; // email is already set above
     type TextField = (typeof textFields)[number];
 
     const assignNullable = (field: TextField) => {
@@ -63,6 +69,12 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     };
 
     textFields.forEach(assignNullable);
+    
+    // Handle email separately since it's required
+    if (user.email !== undefined && user.email !== null) {
+      values.email = user.email;
+      updateSet.email = user.email;
+    }
 
     if (user.lastSignedIn !== undefined) {
       values.lastSignedIn = user.lastSignedIn;

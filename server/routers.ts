@@ -166,7 +166,7 @@ export const appRouter = router({
     list: protectedProcedure.query(async ({ ctx }) => {
       const credentials = await db.getUserCredentials(ctx.user.id);
       return credentials.map(cred => {
-        const decryptedPassword = cred.encryptedPassword ? crypto.decryptPassword(cred.encryptedPassword, ctx.user.openId) : "";
+        const decryptedPassword = cred.encryptedPassword ? crypto.decryptPassword(cred.encryptedPassword, String(ctx.user.id)) : "";
         return {
           ...cred,
           encryptedPassword: decryptedPassword,
@@ -181,7 +181,7 @@ export const appRouter = router({
         if (!credential) throw new TRPCError({ code: "NOT_FOUND" });
 
         // Decrypt password before returning
-        const decryptedPassword = credential.encryptedPassword ? crypto.decryptPassword(credential.encryptedPassword, ctx.user.openId) : "";
+        const decryptedPassword = credential.encryptedPassword ? crypto.decryptPassword(credential.encryptedPassword, String(ctx.user.id)) : "";
         return {
           ...credential,
           encryptedPassword: decryptedPassword,
@@ -218,7 +218,7 @@ export const appRouter = router({
         const category = input.platformName.toLowerCase().replace(/\s+/g, "-");
 
         // Encrypt password
-        const encryptedPassword = crypto.encryptPassword(input.password, user.openId);
+        const encryptedPassword = crypto.encryptPassword(input.password, String(user.id));
 
         const result = await db.createCredential(ctx.user.id, {
           platformName: input.platformName,
@@ -261,7 +261,7 @@ export const appRouter = router({
         }
         if (input.username) updates.username = input.username;
         if (input.email !== undefined) updates.email = input.email;
-        if (input.password) updates.encryptedPassword = crypto.encryptPassword(input.password, user.openId);
+        if (input.password) updates.encryptedPassword = crypto.encryptPassword(input.password, String(user.id));
         if (input.folderId !== undefined) updates.folderId = input.folderId;
         if (input.url !== undefined) updates.url = input.url;
         if (input.notes !== undefined) updates.notes = input.notes;
@@ -304,7 +304,7 @@ export const appRouter = router({
         if (!user) throw new TRPCError({ code: "NOT_FOUND" });
 
         try {
-          const decryptedPassword = crypto.decryptPassword(credential.encryptedPassword, user.openId);
+          const decryptedPassword = crypto.decryptPassword(credential.encryptedPassword, String(user.id));
           return { password: decryptedPassword };
         } catch (error) {
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to decrypt password" });

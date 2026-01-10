@@ -1,0 +1,189 @@
+import { z } from "zod";
+import { publicProcedure, protectedProcedure, router } from "../../_core/trpc";
+import { TRPCError } from "@trpc/server";
+import { getDb } from "../../db";
+import { users } from "../../../drizzle/schema";
+import { eq } from "drizzle-orm";
+import { hashPassword, verifyPassword, generateToken, generateVerificationToken } from "../../auth-service";
+
+export const authRouter = router({
+  /**
+   * Register a new user with email and password
+   */
+  register: publicProcedure
+    .input(
+      z.object({
+        name: z.string().min(2, "Name must be at least 2 characters"),
+        email: z.string().email("Invalid email address"),
+        password: z.string().min(8, "Password must be at least 8 characters"),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+      // Check if user already exists
+      const existingUser = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+      
+      if (existingUser.length > 0) {
+        throw new TRPCError({ code: "CONFLICT", message: "Email already registered" });
+      }
+
+      // Hash password
+      const hashedPassword = await hashPassword(input.password);
+      
+      // Generate verification token
+      const verificationToken = generateVerificationToken();
+
+      // Create user
+      const [newUser] = await db.insert(users).values({
+        name: input.name,
+        email: input.email,
+        password: hashedPassword,
+        loginMethod: "email",
+        emailVerified: false,
+        verificationToken,
+        planId: 1, // Free plan by default
+      });
+
+      // TODO: Send verification email
+
+      return {
+        success: true,
+        message: "Registration successful! Please check your email to verify your account.",
+        userId: newUser.insertId,
+      };
+    }),
+
+  /**
+   * Login with email and password
+   */
+  login: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email("Invalid email address"),
+        password: z.string().min(1, "Password is required"),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+      // Find user by email
+      const [user] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+
+      if (!user) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+      }
+
+      // Check if user registered with email/password
+      if (!user.password) {
+        throw new TRPCError({ 
+          code: "BAD_REQUEST", 
+          message: "This account uses social login. Please sign in with Google or Apple." 
+        });
+      }
+
+      // Verify password
+      const isValidPassword = await verifyPassword(input.password, user.password);
+
+      if (!isValidPassword) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+      }
+
+      // Check if email is verified
+      if (!user.emailVerified) {
+        throw new TRPCError({ 
+          code: "FORBIDDEN", 
+          message: "Please verify your email before logging in" 
+        });
+      }
+
+      // Update last signed in
+      await db.update(users)
+        .set({ lastSignedIn: new Date() })
+        .where(eq(users.id, user.id));
+
+      // Generate JWT token
+      const token = generateToken({
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+      });
+
+      return {
+        success: true,
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          planId: user.planId,
+        },
+      };
+    }),
+
+  /**
+   * Get current user info
+   */
+  me: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+    const [user] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+
+    if (!user) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      planId: user.planId,
+      emailVerified: user.emailVerified,
+      twoFactorEnabled: user.twoFactorEnabled,
+      loginMethod: user.loginMethod,
+    };
+  }),
+
+  /**
+   * Verify email with token
+   */
+  verifyEmail: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+      const [user] = await db.select().from(users).where(eq(users.verificationToken, input.token)).limit(1);
+
+      if (!user) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid verification token" });
+      }
+
+      await db.update(users)
+        .set({ 
+          emailVerified: true, 
+          verificationToken: null 
+        })
+        .where(eq(users.id, user.id));
+
+      return {
+        success: true,
+        message: "Email verified successfully! You can now log in.",
+      };
+    }),
+
+  /**
+   * Logout (client-side will remove token)
+   */
+  logout: protectedProcedure.mutation(async () => {
+    return {
+      success: true,
+      message: "Logged out successfully",
+    };
+  }),
+});

@@ -5,11 +5,20 @@ import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, decimal,
  */
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  openId: varchar("openId", { length: 64 }).unique(), // Optional for OAuth users
   name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
+  email: varchar("email", { length: 320 }).notNull().unique(), // Required and unique
+  password: text("password"), // Hashed password for email/password auth
+  loginMethod: varchar("loginMethod", { length: 64 }), // 'email', 'google', 'apple'
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  emailVerified: boolean("emailVerified").default(false).notNull(),
+  verificationToken: varchar("verificationToken", { length: 255 }),
+  resetToken: varchar("resetToken", { length: 255 }),
+  resetTokenExpiry: timestamp("resetTokenExpiry"),
+  
+  // WebAuthn / Biometric authentication
+  webauthnEnabled: boolean("webauthnEnabled").default(false).notNull(),
+  webauthnCredentials: text("webauthnCredentials"), // JSON array of registered authenticators
   
   // 2FA fields
   twoFactorEnabled: boolean("twoFactorEnabled").default(false).notNull(),

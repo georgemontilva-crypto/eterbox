@@ -489,4 +489,52 @@
 ## Eliminar endpoint temporal de setup-database
 - [x] Eliminar archivo server/setup-database.ts
 - [x] Eliminar import y registro del endpoint en server/_core/index.ts
-- [ ] Push a GitHub y verificar deployment en Railway
+- [x] Push a GitHub y verificar deployment en Railway
+
+
+## Sistema de Autenticación Completo (Seguridad Grado Militar)
+- [x] Analizar sistema OAuth actual de Manus
+- [x] Actualizar schema de base de datos para email/password
+- [x] Cambiar encriptación de credenciales de openId a userId
+- [x] Implementar encriptación AES-256-GCM para credenciales
+- [x] Implementar bcrypt con 12 rounds para contraseñas
+- [x] Crear servicio de autenticación con JWT
+- [x] Crear servicio de criptografía con derivación de claves
+- [x] Agregar protección contra timing attacks
+- [ ] Implementar rate limiting en endpoints de auth
+- [ ] Implementar auditoría completa de accesos
+- [ ] Agregar headers de seguridad (HSTS, CSP, etc)
+- [ ] Implementar protección CSRF
+- [ ] Crear página de registro (/register) con Email/Password
+- [ ] Crear página de login (/login) con Email/Password
+- [ ] Implementar hash de contraseñas con bcrypt
+- [ ] Integrar Google OAuth en páginas de registro/login
+- [ ] Integrar Apple OAuth en páginas de registro/login
+- [ ] Crear tRPC procedures para registro y login
+- [ ] Implementar manejo de sesiones con JWT
+- [ ] Proteger rutas que requieren autenticación
+- [ ] Crear tests para autenticación
+
+## Panel de Administración
+- [ ] Crear página /admin con protección de acceso
+- [ ] Implementar verificación de rol admin
+- [ ] Mostrar lista de todos los usuarios registrados
+- [ ] Mostrar plan actual de cada usuario
+- [ ] Mostrar fecha de registro y último login
+- [ ] Implementar búsqueda y filtrado de usuarios
+- [ ] Agregar opción para cambiar plan de usuario
+- [ ] Agregar opción para desactivar/eliminar usuario
+- [ ] Mostrar estadísticas generales (total usuarios, usuarios por plan)
+- [ ] Crear tests para panel admin
+
+
+## Autenticación Biométrica (WebAuthn)
+- [x] Agregar campos de WebAuthn a la tabla de usuarios
+- [x] Instalar @simplewebauthn/server y @simplewebauthn/browser
+- [x] Crear servicio WebAuthn para Face ID/Touch ID/Huella
+- [ ] Crear endpoints tRPC para registro WebAuthn
+- [ ] Crear endpoints tRPC para autenticación WebAuthn
+- [ ] Implementar UI para activar biometría después del registro
+- [ ] Implementar login con Face ID/Touch ID/Huella
+- [ ] Agregar fallback a contraseña si biometría falla
+- [ ] Crear tests para WebAuthn

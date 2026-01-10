@@ -277,7 +277,7 @@ class SDKServer {
         await db.upsertUser({
           openId: userInfo.openId,
           name: userInfo.name || null,
-          email: userInfo.email ?? null,
+          email: userInfo.email || `${userInfo.openId}@eterbox.temp`,
           loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
           lastSignedIn: signedInAt,
         });
@@ -293,6 +293,7 @@ class SDKServer {
     }
 
     await db.upsertUser({
+      email: user.email || `${user.openId}@eterbox.temp`,
       openId: user.openId,
       lastSignedIn: signedInAt,
     });
