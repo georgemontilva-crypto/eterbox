@@ -354,5 +354,8 @@
 ## Bug - Página de Pricing no accesible sin login
 - [x] Permitir acceso a la página de Pricing sin autenticación (endpoint ya es público)
 - [x] Crear script actualizado de seeding para inicializar planes en Railway
-- [ ] Ejecutar script de seeding en Railway para poblar la base de datos
+- [x] Crear script SQL completo (init-database.sql) para ejecutar en Railway Query Editor
+- [x] Crear guía de solución rápida (RAILWAY_QUICK_FIX.md)
+- [ ] Usuario debe arreglar Custom Start Command en Railway (cambiar a npm run start)
+- [ ] Usuario debe ejecutar init-database.sql en Railway MySQL Query Editor
 - [ ] Verificar que el botón "View Pricing" funcione desde Home
