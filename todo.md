@@ -255,3 +255,13 @@
 - [x] Probar flujo completo de registro
 - [x] Verificar que el servidor funcione correctamente
 - [ ] Desplegar cambios a producción
+
+
+## 🐛 Bug - Dashboard no muestra "Ilimitado"
+- [x] Encontrar dónde el dashboard muestra 0/999999 (Dashboard.tsx líneas 355, 359)
+- [x] Verificar lógica - ya muestra "∞" cuando el plan tiene -1
+- [x] Aplicar en Credentials Used y Folders Used
+- [x] Crear script update-corporate-unlimited.mjs para producción
+- [x] Actualizar base de datos local a -1
+- [ ] Ejecutar script en Railway para actualizar producción
+- [ ] Verificar en eterbox.com que muestra "∞" en lugar de 999999

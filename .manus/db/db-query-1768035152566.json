@@ -1,0 +1,27 @@
+{
+  "query": "SELECT * FROM plans WHERE name = 'Corporate';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute SELECT * FROM plans WHERE name = 'Corporate';",
+  "rows": [
+    {
+      "id": "3",
+      "name": "Corporate",
+      "description": "For enterprises and large teams",
+      "maxKeys": "-1",
+      "maxFolders": "-1",
+      "price": "25.00",
+      "stripePriceId": "price_corporate",
+      "features": "[\"Unlimited Credentials\", \"Unlimited Folders\", \"Unlimited Generated Keys\", \"AES-256 Encryption\", \"2FA Support\", \"Priority Support\"]",
+      "isActive": "1",
+      "createdAt": "2026-01-09 17:21:05",
+      "updatedAt": "2026-01-10 08:46:12",
+      "maxGeneratedKeys": "-1",
+      "yearlyPrice": "280.00",
+      "yearlyDiscount": "7",
+      "stripeYearlyPriceId": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tmaxKeys\tmaxFolders\tprice\tstripePriceId\tfeatures\tisActive\tcreatedAt\tupdatedAt\tmaxGeneratedKeys\tyearlyPrice\tyearlyDiscount\tstripeYearlyPriceId\n3\tCorporate\tFor enterprises and large teams\t-1\t-1\t25.00\tprice_corporate\t[\"Unlimited Credentials\", \"Unlimited Folders\", \"Unlimited Generated Keys\", \"AES-256 Encryption\", \"2FA Support\", \"Priority Support\"]\t1\t2026-01-09 17:21:05\t2026-01-10 08:46:12\t-1\t280.00\t7\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 199
+}

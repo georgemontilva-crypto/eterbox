@@ -1,5 +1,21 @@
 # Scripts de Administración
 
+## Actualizar Plan Corporativo a Ilimitado
+
+Este script actualiza el plan Corporativo en la base de datos para mostrar "Ilimitado" en lugar de números.
+
+### Cómo ejecutar en Railway:
+
+1. Ve a tu proyecto en Railway: https://railway.app
+2. Selecciona tu servicio de Node.js
+3. Ve a "Settings" → "Deploy"
+4. Cambia "Custom Start Command" a: `node scripts/update-corporate-unlimited.mjs`
+5. Guarda y espera el deployment (1-2 minutos)
+6. Revisa los logs - deberías ver "✅ DONE! Corporate plan is now unlimited."
+7. **IMPORTANTE:** Restaura el comando a: `npm run start`
+
+---
+
 ## Crear Usuario Administrador en Producción
 
 Este script crea un usuario administrador en la base de datos de producción (Railway).
