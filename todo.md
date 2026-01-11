@@ -684,3 +684,9 @@
 - [x] Agregar botón de "Administración" que solo aparezca para admin@eterbox.com
 - [x] Agregar logo en el menú desplegable
 - [x] Fix ERR_ERL_PERMISSIVE_TRUST_PROXY error by configuring trust proxy correctly for Railway (trust proxy: 1)
+
+- [x] Actualizar precio del Plan Basic de $9/mes a $12.99/mes
+- [x] Eliminar mención de certificaciones (ISO, SOC2, GDPR) del Plan Enterprise
+- [x] Verificar y completar traducciones de planes en inglés y español
+- [x] Actualizar características de todos los planes según nueva especificación
+- [x] Ocultar scrollbar del menú desplegable manteniendo funcionalidad

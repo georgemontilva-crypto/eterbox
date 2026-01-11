@@ -290,6 +290,10 @@ export const translations: Translations = {
   "pricing.faq3Answer": { en: "We accept all major credit cards and PayPal for secure payments.", es: "Aceptamos todas las tarjetas de crédito principales y PayPal para pagos seguros." },
   "pricing.faq4Title": { en: "Is there a free trial?", es: "¿Hay una prueba gratuita?" },
   "pricing.faq4Answer": { en: "Yes! Start with our Free plan and upgrade anytime. No credit card required.", es: "¡Sí! Comienza con nuestro plan Gratis y mejora cuando quieras. No se requiere tarjeta de crédito." },
+  "pricing.freeDesc": { en: "Perfect for getting started", es: "Perfecto para comenzar" },
+  "pricing.basicDesc": { en: "For freelancers and professionals", es: "Para freelancers y profesionales" },
+  "pricing.corporateDesc": { en: "For teams and small businesses", es: "Para equipos y pequeñas empresas" },
+  "pricing.securePayment": { en: "Secure payment powered by PayPal", es: "Pago seguro con PayPal" },
   
   // Support
   "support.title": { en: "Contact Support", es: "Contactar Soporte" },

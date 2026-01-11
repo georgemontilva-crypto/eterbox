@@ -14,7 +14,7 @@ const PLANS = [
   {
     id: 1,
     name: "Free",
-    description: "Perfect for getting started",
+    descriptionKey: "pricing.freeDesc",
     maxKeys: 10,
     maxFolders: 2,
     maxGeneratedKeys: 10,
@@ -25,24 +25,24 @@ const PLANS = [
   {
     id: 2,
     name: "Basic",
-    description: "For freelancers and small businesses",
+    descriptionKey: "pricing.basicDesc",
     maxKeys: 100,
-    maxFolders: 20,
+    maxFolders: 10,
     maxGeneratedKeys: 300,
-    price: 15,
-    yearlyPrice: 160,
-    yearlyDiscount: 11,
+    price: 12.99,
+    yearlyPrice: 139.08,
+    yearlyDiscount: 10,
   },
   {
     id: 3,
     name: "Corporate",
-    description: "For enterprises with premium features (support, backups, audit)",
-    maxKeys: 500,
-    maxFolders: 200,
+    descriptionKey: "pricing.corporateDesc",
+    maxKeys: 1000,
+    maxFolders: 100,
     maxGeneratedKeys: -1,
-    price: 25,
-    yearlyPrice: 280,
-    yearlyDiscount: 7,
+    price: 29,
+    yearlyPrice: 319.20,
+    yearlyDiscount: 8,
   },
 ];
 
@@ -223,7 +223,7 @@ export default function Pricing() {
                 )}
                 
                 <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                <p className="text-muted-foreground mb-6 text-sm">{plan.description}</p>
+                <p className="text-muted-foreground mb-6 text-sm">{t(plan.descriptionKey)}</p>
 
                 {/* Price */}
                 <div className="mb-6">
