@@ -416,6 +416,11 @@ export const translations: Translations = {
   "common.password": { en: "Password", es: "Contraseña" },
   "common.passwordPlaceholder": { en: "Your password", es: "Tu contraseña" },
   "common.secure": { en: "Secure", es: "Segura" },
+  
+  // 404 Page
+  "notFound.title": { en: "Page Not Found", es: "Página No Encontrada" },
+  "notFound.description": { en: "Sorry, the page you are looking for doesn't exist. It may have been moved or deleted.", es: "Lo sentimos, la página que buscas no existe. Puede haber sido movida o eliminada." },
+  "notFound.goHome": { en: "Go Home", es: "Ir al Inicio" },
 };
 
 interface LanguageContextType {

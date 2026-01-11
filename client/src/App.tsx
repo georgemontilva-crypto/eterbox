@@ -87,6 +87,7 @@ function Router() {
       <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
       <Route path="/change-password" component={() => <ProtectedRoute component={ChangePassword} />} />
       <Route path="/admin" component={() => <ProtectedRoute component={AdminDashboard} />} />
+      <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
   );
