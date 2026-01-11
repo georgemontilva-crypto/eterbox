@@ -36,8 +36,10 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
   
-  // Trust proxy - required for rate limiting behind reverse proxy (Manus, Cloudflare, etc.)
-  app.set('trust proxy', true);
+  // Trust proxy configuration for Railway
+  // Use number 1 to trust only the first proxy (Railway's reverse proxy)
+  // This prevents ERR_ERL_PERMISSIVE_TRUST_PROXY error while maintaining security
+  app.set('trust proxy', 1);
   
   // Security headers with Helmet
   app.use(helmet({
@@ -77,32 +79,33 @@ async function startServer() {
   }));
   
   // Rate limiting - General API
+  // Disabled in development for easier testing
   const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: process.env.NODE_ENV === 'development' ? 1000 : 100, // More lenient in dev
+    max: 100, // 100 requests per 15 minutes
     message: JSON.stringify({ error: 'Too many requests from this IP, please try again later.' }),
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => process.env.NODE_ENV === 'development', // Skip in development
     handler: (req, res) => {
       res.status(429).json({ error: 'Too many requests from this IP, please try again later.' });
     },
   });
   
-  // Rate limiting - Strict for authentication
+  // Rate limiting - Strict for authentication endpoints
   const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: process.env.NODE_ENV === 'development' ? 50 : 5, // More lenient in dev
+    max: 10, // 10 authentication attempts per 15 minutes
     skipSuccessfulRequests: true,
     message: JSON.stringify({ error: 'Too many authentication attempts, please try again later.' }),
+    skip: (req) => process.env.NODE_ENV === 'development', // Skip in development
     handler: (req, res) => {
       res.status(429).json({ error: 'Too many authentication attempts, please try again later.' });
     },
   });
   
-  // Apply rate limiters (disabled in development)
-  if (process.env.NODE_ENV !== 'development') {
-    app.use('/api/', generalLimiter);
-  }
+  // Apply general rate limiter to all API routes
+  app.use('/api/', generalLimiter);
   
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
@@ -147,12 +150,10 @@ async function startServer() {
     });
   }
   // OAuth removed - using custom authentication (email/password + biometric)
-  // tRPC API with auth rate limiting (disabled in development)
-  if (process.env.NODE_ENV !== 'development') {
-    app.use("/api/trpc/auth.login", authLimiter);
-    app.use("/api/trpc/auth.register", authLimiter);
-    app.use("/api/trpc/twoFactor.verify", authLimiter);
-  }
+  // Apply strict rate limiting to authentication endpoints
+  app.use("/api/trpc/auth.login", authLimiter);
+  app.use("/api/trpc/auth.register", authLimiter);
+  app.use("/api/trpc/twoFactor.verify", authLimiter);
   
   app.use(
     "/api/trpc",
