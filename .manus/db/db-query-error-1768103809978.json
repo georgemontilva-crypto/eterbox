@@ -1,0 +1,18 @@
+{
+  "query": "-- First, check if user exists and get their ID\nSELECT id, email FROM users WHERE email = 'admin@eterbox.com';\n\n-- Create super admin permissions for the user\n-- Replace USER_ID with the actual ID from the query above\nINSERT INTO admin_permissions (\n  user_id, \n  is_super_admin, \n  can_view_users, \n  can_edit_users, \n  can_delete_users,\n  can_send_bulk_emails, \n  can_view_revenue, \n  can_manage_admins, \n  can_view_analytics\n)\nSELECT \n  id,\n  true,\n  true,\n  true,\n  true,\n  true,\n  true,\n  true,\n  true\nFROM users \nWHERE email = 'admin@eterbox.com'\nON CONFLICT (user_id) \nDO UPDATE SET\n  is_super_admin = true,\n  can_view_users = true,\n  can_edit_users = true,\n  can_delete_users = true,\n  can_send_bulk_emails = true,\n  can_view_revenue = true,\n  can_manage_admins = true,\n  can_view_analytics = true,\n  updated_at = NOW();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute -- First, check if user exists and get their ID\nSELECT id, email FROM users WHERE email = 'admin@eterbox.com';\n\n-- Create super admin permissions for the user\n-- Replace USER_ID with the actual ID from the query above\nINSERT INTO admin_permissions (\n  user_id, \n  is_super_admin, \n  can_view_users, \n  can_edit_users, \n  can_delete_users,\n  can_send_bulk_emails, \n  can_view_revenue, \n  can_manage_admins, \n  can_view_analytics\n)\nSELECT \n  id,\n  true,\n  true,\n  true,\n  true,\n  true,\n  true,\n  true,\n  true\nFROM users \nWHERE email = 'admin@eterbox.com'\nON CONFLICT (user_id) \nDO UPDATE SET\n  is_super_admin = true,\n  can_view_users = true,\n  can_edit_users = true,\n  can_delete_users = true,\n  can_send_bulk_emails = true,\n  can_view_revenue = true,\n  can_manage_admins = true,\n  can_view_analytics = true,\n  updated_at = NOW();",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 6: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 24 column 12 near \"CONFLICT (user_id) ",
+    "DO UPDATE SET",
+    "  is_super_admin = true,",
+    "  can_view_users = true,",
+    "  can_edit_users = true,",
+    "  can_delete_users = true,",
+    "  can_send_bulk_emails = true,",
+    "  can_view_revenue = true,",
+    "  can_manage_admins = true,",
+    "  can_view_analytics = true,",
+    "  updated_at = NOW()\""
+  ]
+}

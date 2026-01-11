@@ -5,10 +5,13 @@ import { users, plans } from "../../../drizzle/schema";
 import { eq, desc, like, or, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import * as bcrypt from "bcrypt";
+import * as adminService from "../../admin-service";
+import * as emailService from "../../email-notification-service";
 
 // Middleware to check if user is admin
 const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
-  if (!ctx.user || ctx.user.role !== "admin") {
+  const isAdminUser = await adminService.isAdmin(ctx.user.id);
+  if (!isAdminUser) {
     throw new TRPCError({
       code: "FORBIDDEN",
       message: "Solo los administradores pueden acceder a este recurso",
@@ -17,7 +20,49 @@ const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
   return next({ ctx });
 });
 
+// Middleware for super admin only
+const superAdminProcedure = adminProcedure.use(async ({ ctx, next }) => {
+  const isSuperAdminUser = await adminService.isSuperAdmin(ctx.user.id);
+  if (!isSuperAdminUser) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Solo los super administradores pueden acceder a este recurso",
+    });
+  }
+  return next({ ctx });
+});
+
 export const adminRouter = router({
+  // Check if current user is admin
+  isAdmin: protectedProcedure.query(async ({ ctx }) => {
+    const isAdminUser = await adminService.isAdmin(ctx.user.id);
+    const permissions = isAdminUser ? await adminService.getAdminPermissions(ctx.user.id) : null;
+    return {
+      isAdmin: isAdminUser,
+      permissions
+    };
+  }),
+
+  // Get analytics data
+  getAnalytics: adminProcedure
+    .input(
+      z.object({
+        period: z.enum(['day', 'week', 'month', 'year']).default('month')
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_view_analytics) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permisos para ver analytics",
+        });
+      }
+
+      const analytics = await adminService.getAnalytics(input.period);
+      return analytics;
+    }),
+
   // Get all users with pagination and search
   listUsers: adminProcedure
     .input(
@@ -29,7 +74,15 @@ export const adminRouter = router({
         role: z.enum(["user", "admin"]).optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_view_users) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permisos para ver usuarios",
+        });
+      }
+
       const { page, pageSize, search, planId, role } = input;
       const offset = (page - 1) * pageSize;
 
@@ -50,7 +103,7 @@ export const adminRouter = router({
       }
 
       const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      if (!db) throw new Error("Database not available");
 
       const [usersList, totalCount] = await Promise.all([
         db
@@ -60,27 +113,20 @@ export const adminRouter = router({
             email: users.email,
             role: users.role,
             planId: users.planId,
-            planName: plans.name,
-            emailVerified: users.emailVerified,
             twoFactorEnabled: users.twoFactorEnabled,
-            webauthnEnabled: users.webauthnEnabled,
-            subscriptionStatus: users.subscriptionStatus,
             createdAt: users.createdAt,
-            lastSignedIn: users.lastSignedIn,
-            keysUsed: users.keysUsed,
-            foldersUsed: users.foldersUsed,
+            subscriptionEndDate: users.subscriptionEndDate,
           })
           .from(users)
-          .leftJoin(plans, eq(users.planId, plans.id))
-          .where(conditions.length > 0 ? sql`${sql.join(conditions, sql` AND `)}` : undefined)
+          .where(conditions.length > 0 ? sql`${conditions.join(" AND ")}` : undefined)
           .orderBy(desc(users.createdAt))
           .limit(pageSize)
           .offset(offset),
         db
           .select({ count: sql<number>`count(*)` })
           .from(users)
-          .where(conditions.length > 0 ? sql`${sql.join(conditions, sql` AND `)}` : undefined)
-          .then((res: any) => res[0]?.count || 0),
+          .where(conditions.length > 0 ? sql`${conditions.join(" AND ")}` : undefined)
+          .then((res) => Number(res[0]?.count || 0)),
       ]);
 
       return {
@@ -92,194 +138,272 @@ export const adminRouter = router({
       };
     }),
 
-  // Get user statistics
-  getStats: adminProcedure.query(async () => {
-    const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
-
-    const [totalUsers, adminUsers, usersByPlan] = await Promise.all([
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(users)
-        .then((res: any) => res[0]?.count || 0),
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(users)
-        .where(eq(users.role, "admin"))
-        .then((res: any) => res[0]?.count || 0),
-      db
-        .select({
-          planId: users.planId,
-          planName: plans.name,
-          userCount: sql<number>`count(*)`,
-        })
-        .from(users)
-        .leftJoin(plans, eq(users.planId, plans.id))
-        .groupBy(users.planId, plans.name),
-    ]);
-
-    return {
-      totalUsers,
-      adminUsers,
-      regularUsers: totalUsers - adminUsers,
-      planStats: usersByPlan,
-    };
-  }),
-
-  // Create new user manually
-  createUser: adminProcedure
-    .input(
-      z.object({
-        name: z.string().min(1),
-        email: z.string().email(),
-        password: z.string().min(8),
-        role: z.enum(["user", "admin"]).default("user"),
-        planId: z.number().default(1),
-        emailVerified: z.boolean().default(false),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
-
-      // Check if email already exists
-      const existingUser = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, input.email))
-        .limit(1);
-
-      if (existingUser.length > 0) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Ya existe un usuario con este email",
-        });
-      }
-
-      // Hash password
-      const hashedPassword = await bcrypt.hash(input.password, 12);
-
-      // Create user
-      await db.insert(users).values({
-        name: input.name,
-        email: input.email,
-        password: hashedPassword,
-        role: input.role,
-        planId: input.planId,
-        emailVerified: input.emailVerified,
-        twoFactorEnabled: false,
-        webauthnEnabled: false,
-      });
-
-      // Fetch created user
-      const createdUsers = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, input.email))
-        .limit(1);
-
-      return {
-        success: true,
-        user: createdUsers[0],
-      };
-    }),
-
-  // Update user plan
-  updateUserPlan: adminProcedure
+  // Update user
+  updateUser: adminProcedure
     .input(
       z.object({
         userId: z.number(),
-        planId: z.number(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        planId: z.number().optional(),
+        role: z.enum(["user", "admin"]).optional(),
+        subscriptionEndDate: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
-
-      await db
-        .update(users)
-        .set({ planId: input.planId })
-        .where(eq(users.id, input.userId));
-
-      return { success: true };
-    }),
-
-  // Update user role
-  updateUserRole: adminProcedure
-    .input(
-      z.object({
-        userId: z.number(),
-        role: z.enum(["user", "admin"]),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
-
-      // Prevent admin from demoting themselves
-      if (input.userId === ctx.user.id && input.role !== "admin") {
+    .mutation(async ({ ctx, input }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_edit_users) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "No puedes cambiar tu propio rol de administrador",
+          code: "FORBIDDEN",
+          message: "No tienes permisos para editar usuarios",
         });
       }
 
-      await db
-        .update(users)
-        .set({ role: input.role })
-        .where(eq(users.id, input.userId));
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const updateData: any = {};
+      if (input.name) updateData.name = input.name;
+      if (input.email) updateData.email = input.email;
+      if (input.planId !== undefined) updateData.planId = input.planId;
+      if (input.role) updateData.role = input.role;
+      if (input.subscriptionEndDate) updateData.subscriptionEndDate = new Date(input.subscriptionEndDate);
+
+      await db.update(users).set(updateData).where(eq(users.id, input.userId));
 
       return { success: true };
     }),
 
   // Delete user
   deleteUser: adminProcedure
-    .input(
-      z.object({
-        userId: z.number(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
-
-      // Prevent admin from deleting themselves
-      if (input.userId === ctx.user.id) {
+    .input(z.object({ userId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_delete_users) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "No puedes eliminar tu propia cuenta de administrador",
+          code: "FORBIDDEN",
+          message: "No tienes permisos para eliminar usuarios",
         });
       }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
 
       await db.delete(users).where(eq(users.id, input.userId));
 
       return { success: true };
     }),
 
-  // Get all plans
-  getPlans: adminProcedure.query(async () => {
-    const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
-
-    return await db.select().from(plans).orderBy(plans.id);
-  }),
-
-  // Verify email manually
-  verifyUserEmail: adminProcedure
+  // Send bulk email
+  sendBulkEmail: adminProcedure
     .input(
       z.object({
-        userId: z.number(),
+        subject: z.string(),
+        title: z.string(),
+        body: z.string(),
+        actionUrl: z.string().optional(),
+        actionText: z.string().optional(),
+        targetUsers: z.enum(['all', 'free', 'premium']).default('all'),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_send_bulk_emails) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permisos para enviar emails masivos",
+        });
+      }
+
       const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      if (!db) throw new Error("Database not available");
 
-      await db
-        .update(users)
-        .set({ emailVerified: true })
-        .where(eq(users.id, input.userId));
+      // Get target users
+      let targetUsersList: any[];
+      if (input.targetUsers === 'all') {
+        targetUsersList = await db.select({ id: users.id, email: users.email }).from(users);
+      } else if (input.targetUsers === 'free') {
+        targetUsersList = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.planId, 1));
+      } else {
+        targetUsersList = await db.select({ id: users.id, email: users.email }).from(users).where(sql`plan_id IS NOT NULL AND plan_id != 1`);
+      }
 
-      return { success: true };
+      // Send emails
+      const userIds = targetUsersList.map(u => u.id);
+      const result = await emailService.sendBulkMarketingEmail({
+        userIds,
+        subject: input.subject,
+        title: input.title,
+        body: input.body,
+        actionUrl: input.actionUrl,
+        actionText: input.actionText
+      });
+
+      return result;
     }),
+
+  // Get revenue data
+  getRevenue: adminProcedure
+    .input(
+      z.object({
+        period: z.enum(['day', 'week', 'month', 'year']).default('month')
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_view_revenue) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permisos para ver ingresos",
+        });
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const now = new Date();
+      let startDate: Date;
+
+      switch (input.period) {
+        case 'day':
+          startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case 'week':
+          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case 'month':
+          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        case 'year':
+          startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+          break;
+      }
+
+      const revenueData: any = await db.execute(sql`
+        SELECT 
+          DATE(created_at) as date,
+          COUNT(*) as transactions,
+          SUM(amount) as total,
+          AVG(amount) as average
+        FROM payment_history
+        WHERE status = 'completed' AND created_at >= ${startDate.toISOString()}
+        GROUP BY DATE(created_at)
+        ORDER BY date ASC
+      `);
+
+      const totalRevenue: any = await db.execute(sql`
+        SELECT 
+          COUNT(*) as total_transactions,
+          SUM(amount) as total_amount,
+          AVG(amount) as average_amount
+        FROM payment_history
+        WHERE status = 'completed' AND created_at >= ${startDate.toISOString()}
+      `);
+
+      return {
+        daily: revenueData || [],
+        summary: totalRevenue?.[0] || { total_transactions: 0, total_amount: 0, average_amount: 0 },
+        period: input.period
+      };
+    }),
+
+  // Get users with expiring subscriptions
+  getExpiringSubscriptions: adminProcedure
+    .input(z.object({ daysBeforeExpiry: z.number().default(5) }))
+    .query(async ({ ctx, input }) => {
+      const users = await adminService.getUsersWithExpiringSubscriptions(input.daysBeforeExpiry);
+      return users;
+    }),
+
+  // Send payment reminders
+  sendPaymentReminders: adminProcedure
+    .mutation(async ({ ctx }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_send_bulk_emails) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permisos para enviar recordatorios",
+        });
+      }
+
+      const expiringUsers = await adminService.getUsersWithExpiringSubscriptions(5);
+      
+      let sent = 0;
+      for (const user of expiringUsers) {
+        const daysLeft = Math.ceil((new Date(user.subscription_end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        
+        await emailService.sendMarketingEmail({
+          userId: user.id,
+          userEmail: user.email,
+          subject: `⏰ Tu suscripción a ${user.plan_name} vence en ${daysLeft} días`,
+          title: 'Recordatorio de Renovación',
+          body: `
+            <p>Hola ${user.name},</p>
+            <p>Tu suscripción al plan <strong>${user.plan_name}</strong> vencerá el <strong>${new Date(user.subscription_end_date).toLocaleDateString('es-ES')}</strong>.</p>
+            <p>Para continuar disfrutando de todas las características premium, renueva tu suscripción antes de que expire.</p>
+            <p><strong>Precio:</strong> $${user.price}/mes</p>
+          `,
+          actionUrl: `${process.env.VITE_APP_URL}/pricing`,
+          actionText: 'Renovar Ahora'
+        });
+        sent++;
+      }
+
+      return { success: true, sent };
+    }),
+
+  // Admin management
+  listAdmins: superAdminProcedure.query(async () => {
+    const admins = await adminService.getAllAdmins();
+    return admins;
+  }),
+
+  addAdmin: superAdminProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        permissions: z.object({
+          is_super_admin: z.boolean().optional(),
+          can_view_users: z.boolean().optional(),
+          can_edit_users: z.boolean().optional(),
+          can_delete_users: z.boolean().optional(),
+          can_send_bulk_emails: z.boolean().optional(),
+          can_view_revenue: z.boolean().optional(),
+          can_manage_admins: z.boolean().optional(),
+          can_view_analytics: z.boolean().optional(),
+        })
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const result = await adminService.addAdmin(input.email, input.permissions, ctx.user.id);
+      if (!result.success) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: result.message || "Error al agregar administrador",
+        });
+      }
+      return result;
+    }),
+
+  removeAdmin: superAdminProcedure
+    .input(z.object({ userId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const success = await adminService.removeAdmin(input.userId, ctx.user.id);
+      if (!success) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Error al remover administrador",
+        });
+      }
+      return { success };
+    }),
+
+  // Get all plans
+  listPlans: adminProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    const plansList = await db.select().from(plans).orderBy(plans.id);
+    return plansList;
+  }),
 });

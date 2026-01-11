@@ -8,7 +8,7 @@ import { BiometricSetupModal } from "@/components/BiometricSetupModal";
 import { PasswordGeneratorModal } from "@/components/PasswordGeneratorModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus, Shield } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { RenewalBanner } from "@/components/RenewalBanner";
 import { useLocation } from "wouter";
@@ -18,6 +18,7 @@ import { startRegistration } from "@simplewebauthn/browser";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const { data: adminCheck } = trpc.admin.isAdmin.useQuery();
   const [, setLocation] = useLocation();
   const [showCredentialModal, setShowCredentialModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
@@ -400,8 +401,19 @@ export default function Dashboard() {
               />
             </div>
             
-            {/* Logo - siempre a la derecha */}
-            <div className="flex items-center gap-2">
+            {/* Logo y Admin Button */}
+            <div className="flex items-center gap-3">
+              {adminCheck?.isAdmin && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLocation("/admin")}
+                  className="hidden md:flex items-center gap-2 text-accent hover:text-accent/80"
+                >
+                  <Shield className="w-4 h-4" />
+                  Admin
+                </Button>
+              )}
               <img src="/logo.png" alt="EterBox Logo" className="w-5 h-5 md:w-6 md:h-6" />
               <span className="text-lg md:text-xl font-bold">EterBox</span>
             </div>

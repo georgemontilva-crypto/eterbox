@@ -12,7 +12,7 @@ import Settings from "./pages/Settings";
 import Verify2FA from "./pages/Verify2FA";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Admin from "./pages/Admin";
+import AdminDashboard from "./pages/AdminDashboard";
 import ChangePassword from "./pages/ChangePassword";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
@@ -86,7 +86,7 @@ function Router() {
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
       <Route path="/change-password" component={() => <ProtectedRoute component={ChangePassword} />} />
-      <Route path="/admin" component={() => <AdminRoute component={Admin} />} />
+      <Route path="/admin" component={() => <ProtectedRoute component={AdminDashboard} />} />
       <Route component={NotFound} />
     </Switch>
   );
