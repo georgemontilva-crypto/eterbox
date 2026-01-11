@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Lock, Shield, Zap, ArrowRight, Check, Globe, Menu } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
@@ -12,6 +15,30 @@ import {
 export default function Home() {
   const [, setLocation] = useLocation();
   const { language, setLanguage, t } = useLanguage();
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  
+  const subscribeNewsletter = trpc.newsletter.subscribe.useMutation({
+    onSuccess: () => {
+      toast.success("Successfully subscribed to newsletter!");
+      setNewsletterEmail("");
+      setIsSubscribing(false);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to subscribe");
+      setIsSubscribing(false);
+    },
+  });
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail || !newsletterEmail.includes('@')) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+    setIsSubscribing(true);
+    subscribeNewsletter.mutate({ email: newsletterEmail });
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -107,12 +134,7 @@ export default function Home() {
             <Button 
               size="lg" 
               variant="outline" 
-              onClick={() => {
-                const pricingSection = document.getElementById('pricing');
-                if (pricingSection) {
-                  pricingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }} 
+              onClick={() => setLocation("/pricing")} 
               className="h-11 sm:h-12 text-sm sm:text-base w-full sm:w-auto"
             >
               {t("home.hero.viewPricing")}
@@ -143,76 +165,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Plans Section */}
-      <section id="pricing" className="container py-12 sm:py-20 border-t border-border/20 px-4">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-16">{t("home.plans.title")}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
-          <div className="p-6 sm:p-8 rounded-[15px] border border-border/20 bg-card hover:border-accent/50 transition-all">
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">Free</h3>
-            <div className="mb-4 sm:mb-6">
-              <p className="text-3xl sm:text-4xl font-bold">{t("pricing.free")}</p>
-            </div>
-            <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">3 {t("home.plans.credentials")}</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">1 {t("home.plans.folder")}</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">{t("home.plans.encryption")}</span>
-              </div>
-            </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline" onClick={() => setLocation('/register')}>{t("home.plans.getStarted")}</Button>
+      {/* Why Choose EterBox Section */}
+      <section className="container py-12 sm:py-20 border-t border-border/20 px-4">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-16">{t("home.why.title")}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20">
+            <h3 className="text-lg sm:text-xl font-bold mb-3">{t("home.why.zeroKnowledge.title")}</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">{t("home.why.zeroKnowledge.desc")}</p>
           </div>
-
-          <div className="p-6 sm:p-8 rounded-[15px] border-accent bg-accent/5 border md:scale-105">
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">Basic</h3>
-            <div className="mb-4 sm:mb-6">
-              <p className="text-3xl sm:text-4xl font-bold">$15</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">/{t("pricing.month")}</p>
-            </div>
-            <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">25 {t("home.plans.credentials")}</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">5 {t("home.plans.folders")}</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">{t("home.plans.encryption")}</span>
-              </div>
-            </div>
-            <Button className="w-full text-sm sm:text-base" onClick={() => setLocation("/pricing")}>{t("home.plans.subscribeNow")}</Button>
+          <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20">
+            <h3 className="text-lg sm:text-xl font-bold mb-3">{t("home.why.crossPlatform.title")}</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">{t("home.why.crossPlatform.desc")}</p>
           </div>
-
-          <div className="p-6 sm:p-8 rounded-[15px] border border-border/20 bg-card hover:border-accent/50 transition-all">
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">Corporate</h3>
-            <div className="mb-4 sm:mb-6">
-              <p className="text-3xl sm:text-4xl font-bold">$25</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">/{t("pricing.month")}</p>
-            </div>
-            <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">2500 {t("home.plans.credentials")}</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">1500 {t("home.plans.folders")}</span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
-                <span className="text-xs sm:text-sm">{t("home.plans.encryption")}</span>
-              </div>
-            </div>
-            <Button className="w-full text-sm sm:text-base" variant="outline" onClick={() => setLocation("/pricing")}>{t("home.plans.subscribeNow")}</Button>
+          <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20">
+            <h3 className="text-lg sm:text-xl font-bold mb-3">{t("home.why.biometric.title")}</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">{t("home.why.biometric.desc")}</p>
+          </div>
+          <div className="p-6 sm:p-8 rounded-[15px] bg-card border border-border/20">
+            <h3 className="text-lg sm:text-xl font-bold mb-3">{t("home.why.autoBackup.title")}</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">{t("home.why.autoBackup.desc")}</p>
           </div>
         </div>
       </section>
@@ -230,9 +201,62 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/20 bg-card/50 py-6 sm:py-8 mt-12 sm:mt-20">
-        <div className="container text-center text-muted-foreground text-xs sm:text-sm px-4">
-          <p>&copy; 2024 EterBox. {t("home.footer.rights")}</p>
+      <footer className="border-t border-border/20 bg-card/50 py-8 sm:py-12 mt-12 sm:mt-20">
+        <div className="container px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <img src="/logo.png" alt="EterBox Logo" className="w-6 h-6" />
+                <span className="text-lg font-bold">EterBox</span>
+              </div>
+              <p className="text-sm text-muted-foreground">{t("home.footer.tagline")}</p>
+            </div>
+            
+            {/* Product */}
+            <div>
+              <h4 className="font-semibold mb-3">{t("home.footer.product")}</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><button onClick={() => setLocation("/pricing")} className="hover:text-accent transition-colors">{t("home.footer.pricing")}</button></li>
+                <li><button onClick={() => setLocation("/register")} className="hover:text-accent transition-colors">{t("home.footer.signUp")}</button></li>
+                <li><button onClick={() => setLocation("/login")} className="hover:text-accent transition-colors">{t("home.footer.login")}</button></li>
+              </ul>
+            </div>
+            
+            {/* Support */}
+            <div>
+              <h4 className="font-semibold mb-3">{t("home.footer.support")}</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><button onClick={() => setLocation("/support")} className="hover:text-accent transition-colors">{t("home.footer.helpCenter")}</button></li>
+                <li><button onClick={() => setLocation("/terms")} className="hover:text-accent transition-colors">{t("home.footer.terms")}</button></li>
+                <li><button onClick={() => setLocation("/privacy")} className="hover:text-accent transition-colors">{t("home.footer.privacy")}</button></li>
+                <li><button onClick={() => setLocation("/cookies")} className="hover:text-accent transition-colors">{t("home.footer.cookies")}</button></li>
+              </ul>
+            </div>
+            
+            {/* Newsletter */}
+            <div>
+              <h4 className="font-semibold mb-3">{t("home.footer.newsletter")}</h4>
+              <p className="text-sm text-muted-foreground mb-3">{t("home.footer.newsletterDesc")}</p>
+              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                <input 
+                  type="email" 
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  placeholder={t("home.footer.emailPlaceholder")} 
+                  className="flex-1 px-3 py-2 text-sm rounded-[8px] bg-background border border-border focus:outline-none focus:ring-2 focus:ring-accent"
+                  disabled={isSubscribing}
+                />
+                <Button size="sm" type="submit" disabled={isSubscribing}>
+                  {isSubscribing ? "..." : t("home.footer.subscribe")}
+                </Button>
+              </form>
+            </div>
+          </div>
+          
+          <div className="border-t border-border/20 pt-6 text-center text-muted-foreground text-xs sm:text-sm">
+            <p>&copy; 2024 EterBox. {t("home.footer.rights")}</p>
+          </div>
         </div>
       </footer>
     </div>

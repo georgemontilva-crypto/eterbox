@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE plans \nSET features = '[\"AES-256 Encryption\",\"10 Credentials\",\"2 Folders\",\"10 Generated Passwords\"]'\nWHERE name = 'Free';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute UPDATE plans \nSET features = '[\"AES-256 Encryption\",\"10 Credentials\",\"2 Folders\",\"10 Generated Passwords\"]'\nWHERE name = 'Free';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 56
+}

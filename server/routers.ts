@@ -678,6 +678,31 @@ export const appRouter = router({
         return await db.getUserPaymentHistory(ctx.user.id, limit);
       }),
   }),
+
+  // ============ NEWSLETTER ============
+  newsletter: router({
+    subscribe: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          await db.subscribeToNewsletter(input.email);
+          return { success: true, message: "Successfully subscribed to newsletter" };
+        } catch (error: any) {
+          if (error.code === 'ER_DUP_ENTRY') {
+            throw new TRPCError({ 
+              code: "CONFLICT", 
+              message: "This email is already subscribed" 
+            });
+          }
+          throw new TRPCError({ 
+            code: "INTERNAL_SERVER_ERROR", 
+            message: "Failed to subscribe to newsletter" 
+          });
+        }
+      }),
+  }),
 });
 
 

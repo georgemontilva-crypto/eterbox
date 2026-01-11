@@ -13,7 +13,8 @@ import {
   emailNotifications,
   stripeEvents,
   paymentHistory,
-  InsertPaymentHistory
+  InsertPaymentHistory,
+  newsletterSubscriptions
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -503,4 +504,43 @@ export async function getPaymentByOrderId(orderId: string) {
     .limit(1);
   
   return result.length > 0 ? result[0] : undefined;
+}
+
+// ============ NEWSLETTER ============
+export async function subscribeToNewsletter(email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database connection failed");
+
+  await db.insert(newsletterSubscriptions).values({
+    email,
+    isActive: true,
+  });
+}
+
+export async function unsubscribeFromNewsletter(email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database connection failed");
+
+  await db.update(newsletterSubscriptions)
+    .set({ 
+      isActive: false,
+      unsubscribedAt: new Date(),
+    })
+    .where(eq(newsletterSubscriptions.email, email));
+}
+
+export async function getNewsletterSubscribers(activeOnly: boolean = true) {
+  const db = await getDb();
+  if (!db) return [];
+
+  if (activeOnly) {
+    return await db.select()
+      .from(newsletterSubscriptions)
+      .where(eq(newsletterSubscriptions.isActive, true))
+      .orderBy(desc(newsletterSubscriptions.subscribedAt));
+  }
+
+  return await db.select()
+    .from(newsletterSubscriptions)
+    .orderBy(desc(newsletterSubscriptions.subscribedAt));
 }

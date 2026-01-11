@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, name, features FROM plans WHERE name = 'Free';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute SELECT id, name, features FROM plans WHERE name = 'Free';",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Free",
+      "features": "[\"3 Credentials\", \"1 Folder\", \"AES-256 Encryption\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tfeatures\n1\tFree\t[\"3 Credentials\", \"1 Folder\", \"AES-256 Encryption\"]\n",
+  "stderr": "",
+  "execution_time_ms": 860
+}

@@ -14,9 +14,13 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import ChangePassword from "./pages/ChangePassword";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 import { SplashScreen } from "./components/SplashScreen";
+import { CookieConsent } from "./components/CookieConsent";
 import { useState, useEffect } from "react";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -63,6 +67,9 @@ function Router() {
       <Route path="/register" component={Register} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/support" component={Support} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/cookies" component={Cookies} />
       <Route path="/verify-2fa" component={Verify2FA} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
@@ -107,11 +114,12 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider>
         <LanguageProvider>
-          <TooltipProvider>
+          <ErrorBoundary>
             <Router />
-          </TooltipProvider>
+            <CookieConsent />
+          </ErrorBoundary>
         </LanguageProvider>
       </ThemeProvider>
     </ErrorBoundary>

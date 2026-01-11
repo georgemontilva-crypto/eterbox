@@ -472,3 +472,56 @@
 - [x] Splash screen desactivado temporalmente hasta implementar correctamente
 - [x] Probar en dev server: funciona correctamente
 - [ ] Deploy a producción
+
+
+## 🎨 Home Page Redesign & Legal Compliance (Current Sprint)
+- [x] Remove pricing section from home page
+- [x] Expand platform information with more details about features and security
+- [x] Add compelling CTAs (Call-to-Actions) with engaging phrases
+- [x] Improve value proposition and messaging
+
+## 💰 Pricing Plan Updates
+- [x] Remove 2FA (Two-Factor Authentication) from Free plan features
+- [x] Update plan features in database (drizzle schema)
+- [x] Update Pricing page to reflect Free plan without 2FA
+
+## 🔗 Footer Enhancements
+- [x] Add footer navigation links (About, Contact, Support, Legal)
+- [x] Create newsletter subscription form in footer
+- [x] Integrate newsletter subscription with backend (save to database)
+- [ ] Add social media links (optional)
+
+## ⚖️ Legal Pages & Compliance (HIGH PRIORITY - Legal Protection)
+- [x] Create Terms of Service page with comprehensive legal protection
+- [x] Create Privacy Policy page (GDPR compliant)
+- [x] Create Cookie Policy page
+- [x] Add routes for legal pages in App.tsx
+- [x] Link legal pages from footergal disclaimers and liability limitations are included
+- [ ] Add data processing agreements
+- [ ] Include user rights (access, deletion, portability)
+- [ ] Add dispute resolution and governing law clauses
+
+
+## 🍪 Cookie Consent Banner
+- [x] Create cookie consent banner component
+- [x] Implement localStorage to remember user choice
+- [x] Add "Accept All", "Reject", and "Customize" options
+- [x] Link to Cookie Policy from banner
+- [x] Add banner to App.tsx (global)
+- [x] Tested and working correctly
+
+
+## 🌐 Language Consistency Fix (CRITICAL)
+- [ ] Fix registration page showing Spanish when site is in English
+- [ ] Fix login page showing Spanish when site is in English  
+- [ ] Ensure all pages respect selected language (English/Spanish)
+- [ ] Test language switching across all pages
+- [ ] Verify dashboard maintains selected language
+
+
+## 🌓 Dark Mode / Light Mode Toggle
+- [ ] Implement theme toggle button in header
+- [ ] Create dark mode color scheme
+- [ ] Update all pages to support dark mode
+- [ ] Save theme preference in localStorage
+- [ ] Add smooth transition between themes

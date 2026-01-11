@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS newsletterSubscriptions (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  email VARCHAR(320) NOT NULL UNIQUE,\n  isActive BOOLEAN NOT NULL DEFAULT TRUE,\n  subscribedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  unsubscribedAt TIMESTAMP NULL\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2qLUrtGoNx4qi5k.feaf103e2c6e --database KVPx8dhkiRjBe7rJpxWYcJ --execute CREATE TABLE IF NOT EXISTS newsletterSubscriptions (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  email VARCHAR(320) NOT NULL UNIQUE,\n  isActive BOOLEAN NOT NULL DEFAULT TRUE,\n  subscribedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  unsubscribedAt TIMESTAMP NULL\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 148
+}
