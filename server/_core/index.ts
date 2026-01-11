@@ -76,22 +76,30 @@ async function startServer() {
   // Rate limiting - General API
   const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // 100 requests per IP
-    message: 'Too many requests from this IP, please try again later.',
+    max: process.env.NODE_ENV === 'development' ? 1000 : 100, // More lenient in dev
+    message: JSON.stringify({ error: 'Too many requests from this IP, please try again later.' }),
     standardHeaders: true,
     legacyHeaders: false,
+    handler: (req, res) => {
+      res.status(429).json({ error: 'Too many requests from this IP, please try again later.' });
+    },
   });
   
   // Rate limiting - Strict for authentication
   const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Only 5 attempts
+    max: process.env.NODE_ENV === 'development' ? 50 : 5, // More lenient in dev
     skipSuccessfulRequests: true,
-    message: 'Too many authentication attempts, please try again later.',
+    message: JSON.stringify({ error: 'Too many authentication attempts, please try again later.' }),
+    handler: (req, res) => {
+      res.status(429).json({ error: 'Too many authentication attempts, please try again later.' });
+    },
   });
   
-  // Apply rate limiters
-  app.use('/api/', generalLimiter);
+  // Apply rate limiters (disabled in development)
+  if (process.env.NODE_ENV !== 'development') {
+    app.use('/api/', generalLimiter);
+  }
   
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
