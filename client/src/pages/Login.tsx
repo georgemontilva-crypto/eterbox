@@ -34,7 +34,7 @@ export default function Login() {
     setError("");
 
     if (!formData.email || !formData.password) {
-      setError("Please complete all fields");
+      setError(t("login.completeFields"));
       return;
     }
 
@@ -60,7 +60,7 @@ export default function Login() {
         window.location.href = "/dashboard";
       }
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      setError(err.message || t("login.failed"));
     } finally {
       setLoading(false);
     }
@@ -97,11 +97,11 @@ export default function Login() {
       
       // Handle specific errors
       if (err.message && err.message.includes("Credential not found")) {
-        setError(`Your ${getBiometricTypeName(platform)} credential was not found. If you registered biometrics before, please go to Settings after logging in with password and re-register to enable the new secure login.`);
+        setError(`${t("login.your")} ${getBiometricTypeName(platform)} ${t("login.credentialNotFound")}`);
       } else if (err.message && err.message.includes("not found or expired")) {
-        setError("Authentication session expired. Please try again.");
+        setError(t("login.sessionExpired"));
       } else {
-        setError(err.message || `Could not authenticate with ${getBiometricTypeName(platform)}. Make sure you have registered it first.`);
+        setError(err.message || `${t("login.biometricFailed")}`);
       }
     } finally {
       setLoading(false);

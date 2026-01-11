@@ -6,8 +6,10 @@ import { useLocation } from "wouter";
 import { startRegistration } from "@simplewebauthn/browser";
 import { Welcome2FAModal } from "@/components/Welcome2FAModal";
 import { BiometricSetupModal } from "@/components/BiometricSetupModal";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Register() {
+  const { t } = useLanguage();
   const [, setLocation] = useLocation();
   const [formData, setFormData] = useState({
     name: "",
@@ -29,12 +31,12 @@ export default function Register() {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Las contraseñas no coinciden");
+      setError(t("register.passwordMismatch"));
       return;
     }
 
     if (formData.password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres");
+      setError(t("register.passwordLength"));
       return;
     }
 
@@ -53,7 +55,7 @@ export default function Register() {
       setUserId(result.userId);
       setShowBiometric(true);
     } catch (err: any) {
-      setError(err.message || "Error al crear la cuenta");
+      setError(err.message || t("register.error"));
     }
   };
 
@@ -66,7 +68,7 @@ export default function Register() {
       // Check if WebAuthn is supported
       if (!window.PublicKeyCredential) {
         console.error("[Biometric] WebAuthn not supported");
-        alert("Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID o Chrome/Edge en Android.");
+        alert(t("register.biometricNotSupported"));
         setShowBiometric(false);
         setShow2FAWelcome(true);
         return;
@@ -77,7 +79,7 @@ export default function Register() {
       console.log("[Biometric] Platform authenticator available:", available);
       
       if (!available) {
-        alert("Tu dispositivo no tiene autenticación biométrica disponible (Face ID, Touch ID, o huella digital).");
+        alert(t("register.biometricNotAvailable"));
         setShowBiometric(false);
         setShow2FAWelcome(true);
         return;
@@ -97,18 +99,18 @@ export default function Register() {
       });
       console.log("[Biometric] Registration verified successfully!");
 
-      alert("¡Autenticación biométrica activada exitosamente!");
+      alert(t("register.biometricSuccess"));
       setShowBiometric(false);
       setShow2FAWelcome(true);
     } catch (err: any) {
       console.error("[Biometric] Registration failed:", err);
       console.error("[Biometric] Error details:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
       
-      let errorMessage = "Error al activar biometría";
+      let errorMessage = t("register.biometricError");
       if (err.name === 'NotAllowedError') {
-        errorMessage = "Permiso denegado. Por favor, intenta de nuevo y acepta el prompt de autenticación.";
+        errorMessage = t("register.biometricDenied");
       } else if (err.name === 'InvalidStateError') {
-        errorMessage = "Esta credencial ya está registrada. Intenta desde otro dispositivo o elimina la credencial existente.";
+        errorMessage = t("register.biometricAlreadyRegistered");
       } else if (err.message) {
         errorMessage = `Error: ${err.message}`;
       }
@@ -147,7 +149,7 @@ export default function Register() {
           </div>
           <Button variant="ghost" onClick={() => setLocation("/")}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver
+            {t("register.back")}
           </Button>
         </div>
       </nav>
@@ -157,10 +159,10 @@ export default function Register() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-              Crea tu cuenta <span className="text-accent">segura</span>
+              {t("register.title")} <span className="text-accent">{t("register.titleAccent")}</span>
             </h1>
             <p className="text-muted-foreground">
-              Protege tus credenciales con encriptación militar
+              {t("register.subtitle")}
             </p>
           </div>
 
@@ -174,7 +176,7 @@ export default function Register() {
 
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Nombre completo
+                  {t("register.name")}
                 </label>
                 <input
                   id="name"
@@ -184,14 +186,14 @@ export default function Register() {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:border-accent focus:outline-none transition-colors"
-                  placeholder="Juan Pérez"
+                  placeholder={t("register.namePlaceholder")}
                   required
                 />
               </div>
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
+                  {t("register.email")}
                 </label>
                 <input
                   id="email"
@@ -201,14 +203,14 @@ export default function Register() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:border-accent focus:outline-none transition-colors"
-                  placeholder="tu@email.com"
+                  placeholder={t("register.emailPlaceholder")}
                   required
                 />
               </div>
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium mb-2">
-                  Contraseña
+                  {t("register.password")}
                 </label>
                 <input
                   id="password"
@@ -218,7 +220,7 @@ export default function Register() {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:border-accent focus:outline-none transition-colors"
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder={t("register.passwordPlaceholder")}
                   required
                 />
               </div>
@@ -228,7 +230,7 @@ export default function Register() {
                   htmlFor="confirmPassword"
                   className="block text-sm font-medium mb-2"
                 >
-                  Confirmar contraseña
+                  {t("register.confirmPassword")}
                 </label>
                 <input
                   id="confirmPassword"
@@ -238,7 +240,7 @@ export default function Register() {
                     setFormData({ ...formData, confirmPassword: e.target.value })
                   }
                   className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:border-accent focus:outline-none transition-colors"
-                  placeholder="Repite tu contraseña"
+                  placeholder={t("register.confirmPasswordPlaceholder")}
                   required
                 />
               </div>
@@ -248,17 +250,17 @@ export default function Register() {
                 className="w-full h-12 mt-6"
                 disabled={registerMutation.isPending}
               >
-                {registerMutation.isPending ? "Creando cuenta..." : "Crear Cuenta"}
+                {registerMutation.isPending ? t("register.creating") : t("register.createAccount")}
               </Button>
             </form>
 
             <p className="text-center text-sm text-muted-foreground mt-6">
-              ¿Ya tienes una cuenta?{" "}
+              {t("register.hasAccount")}{" "}
               <button
                 onClick={() => setLocation("/login")}
                 className="text-accent hover:underline font-medium"
               >
-                Inicia sesión
+                {t("register.signIn")}
               </button>
             </p>
           </div>

@@ -125,6 +125,33 @@ export const translations: Translations = {
   "verify2fa.redirecting": { en: "Redirecting to login...", es: "Redirigiendo al inicio de sesión..." },
   "verify2fa.securityNote": { en: "This additional security step helps protect your account from unauthorized access.", es: "Este paso de seguridad adicional ayuda a proteger tu cuenta de accesos no autorizados." },
 
+  // Register Page
+  "register.title": { en: "Create your", es: "Crea tu cuenta" },
+  "register.titleAccent": { en: "secure account", es: "segura" },
+  "register.subtitle": { en: "Protect your credentials with military encryption", es: "Protege tus credenciales con encriptación militar" },
+  "register.name": { en: "Full Name", es: "Nombre completo" },
+  "register.namePlaceholder": { en: "John Doe", es: "Juan Pérez" },
+  "register.email": { en: "Email", es: "Email" },
+  "register.emailPlaceholder": { en: "you@email.com", es: "tu@email.com" },
+  "register.password": { en: "Password", es: "Contraseña" },
+  "register.passwordPlaceholder": { en: "Minimum 8 characters", es: "Mínimo 8 caracteres" },
+  "register.confirmPassword": { en: "Confirm Password", es: "Confirmar contraseña" },
+  "register.confirmPasswordPlaceholder": { en: "Repeat your password", es: "Repite tu contraseña" },
+  "register.createAccount": { en: "Create Account", es: "Crear Cuenta" },
+  "register.creating": { en: "Creating account...", es: "Creando cuenta..." },
+  "register.hasAccount": { en: "Already have an account?", es: "¿Ya tienes una cuenta?" },
+  "register.signIn": { en: "Sign in", es: "Inicia sesión" },
+  "register.back": { en: "Back", es: "Volver" },
+  "register.passwordMismatch": { en: "Passwords do not match", es: "Las contraseñas no coinciden" },
+  "register.passwordLength": { en: "Password must be at least 8 characters", es: "La contraseña debe tener al menos 8 caracteres" },
+  "register.error": { en: "Error creating account", es: "Error al crear la cuenta" },
+  "register.biometricNotSupported": { en: "Your browser does not support biometric authentication. Use Safari on iOS for Face ID or Chrome/Edge on Android.", es: "Tu navegador no soporta autenticación biométrica. Usa Safari en iOS para Face ID o Chrome/Edge en Android." },
+  "register.biometricNotAvailable": { en: "Your device does not have biometric authentication available (Face ID, Touch ID, or fingerprint).", es: "Tu dispositivo no tiene autenticación biométrica disponible (Face ID, Touch ID, o huella digital)." },
+  "register.biometricSuccess": { en: "Biometric authentication activated successfully!", es: "¡Autenticación biométrica activada exitosamente!" },
+  "register.biometricError": { en: "Error activating biometrics", es: "Error al activar biometría" },
+  "register.biometricDenied": { en: "Permission denied. Please try again and accept the authentication prompt.", es: "Permiso denegado. Por favor, intenta de nuevo y acepta el prompt de autenticación." },
+  "register.biometricAlreadyRegistered": { en: "This credential is already registered. Try from another device or delete the existing credential.", es: "Esta credencial ya está registrada. Intenta desde otro dispositivo o elimina la credencial existente." },
+
   // Login Page
   "login.subtitle": { en: "Access your secure vault", es: "Accede a tu bóveda segura" },
   "login.password": { en: "Password", es: "Contraseña" },
@@ -136,6 +163,13 @@ export const translations: Translations = {
   "login.biometricButton": { en: "Authenticate with Biometrics", es: "Autenticar con Biometría" },
   "login.noAccount": { en: "Don't have an account?", es: "¿No tienes una cuenta?" },
   "login.signUp": { en: "Sign Up", es: "Registrarse" },
+  "login.back": { en: "Back", es: "Volver" },
+  "login.completeFields": { en: "Please complete all fields", es: "Por favor completa todos los campos" },
+  "login.failed": { en: "Login failed", es: "Inicio de sesión fallido" },
+  "login.credentialNotFound": { en: "credential was not found. If you registered biometrics before, please go to Settings after logging in with password and re-register to enable the new secure login.", es: "credencial no encontrada. Si registraste biometría antes, por favor ve a Configuración después de iniciar sesión con contraseña y vuelve a registrar para habilitar el nuevo inicio de sesión seguro." },
+  "login.sessionExpired": { en: "Authentication session expired. Please try again.", es: "Sesión de autenticación expirada. Por favor inténtalo de nuevo." },
+  "login.biometricFailed": { en: "Could not authenticate. Make sure you have registered it first.", es: "No se pudo autenticar. Asegúrate de haberlo registrado primero." },
+  "login.your": { en: "Your", es: "Tu" },
 
   // Password Change
   "password.title": { en: "Change Password", es: "Cambiar Contraseña" },
@@ -160,10 +194,15 @@ export const translations: Translations = {
   "plan.currentPlan": { en: "Current Plan", es: "Plan Actual" },
   
   // Home Page
+  "home.nav.home": { en: "Home", es: "Inicio" },
   "home.nav.pricing": { en: "Pricing", es: "Precios" },
   "home.nav.support": { en: "Support", es: "Soporte" },
   "home.nav.login": { en: "Login", es: "Iniciar Sesión" },
   "home.nav.signIn": { en: "Sign Up", es: "Registrarse" },
+  
+  // Settings
+  "settings.theme": { en: "Theme", es: "Tema" },
+  "settings.language": { en: "Language", es: "Idioma" },
   "home.hero.title1": { en: "Your Passwords,", es: "Tus Contraseñas," },
   "home.hero.title2": { en: "Secured", es: "Protegidas" },
   "home.hero.subtitle": { en: "EterBox is a modern, secure password manager that keeps all your credentials safe with military-grade encryption.", es: "EterBox es un gestor de contraseñas moderno y seguro que mantiene todas tus credenciales protegidas con encriptación de grado militar." },

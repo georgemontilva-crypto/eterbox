@@ -549,3 +549,15 @@
 - [x] Use brand colors (blue accent)
 - [x] Add smooth transitions and animations
 - [x] Add language selector in mobile menu
+
+
+## 🐛 Bug Fixes (Current)
+- [ ] Fix missing translation key "home.nav.home" in mobile menu
+- [ ] Fix DialogContent accessibility error (missing DialogTitle)
+- [ ] Add all missing translation keys for new features
+
+
+## 🐛 Bug Fixes (Current)
+- [x] Fix missing translation keys in mobile menu (home.nav.home, settings.theme, settings.language)
+- [x] Fix Register/Login pages language consistency (convert hardcoded Spanish to use t() translation function)
+- [x] Fix DialogContent accessibility error (verified all DialogContent have DialogTitle)
