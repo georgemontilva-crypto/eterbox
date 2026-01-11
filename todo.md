@@ -520,8 +520,32 @@
 
 
 ## 🌓 Dark Mode / Light Mode Toggle
+- [ ] Set dark mode as default theme
 - [ ] Implement theme toggle button in header
 - [ ] Create dark mode color scheme
 - [ ] Update all pages to support dark mode
 - [ ] Save theme preference in localStorage
 - [ ] Add smooth transition between themes
+
+
+## 🌓 Dark Mode / Light Mode Toggle
+- [x] Set dark mode as default theme
+- [x] Implement theme toggle button in header
+- [x] Create dark mode color scheme
+- [x] Update all pages to support dark mode
+- [x] Save theme preference in localStorage
+- [x] Add smooth transition between themes
+- [x] Dynamic logo switching based on theme
+- [x] Update PWA icons with branded logo
+
+
+## 📱 Mobile Menu Redesign (Drawer Style)
+- [x] Create drawer-style mobile menu with slide-in animation
+- [x] Add header with logo and EterBox name
+- [x] Add close button (X) in top right
+- [x] Group menu items in rounded card with dark background
+- [x] Add theme toggle with iOS-style switch at bottom
+- [x] Add primary action button (Contact/Sign Up) at bottom
+- [x] Use brand colors (blue accent)
+- [x] Add smooth transitions and animations
+- [x] Add language selector in mobile menu

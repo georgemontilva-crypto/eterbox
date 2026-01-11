@@ -1,22 +1,31 @@
 import { Button } from "@/components/ui/button";
-import { Lock, Shield, Zap, ArrowRight, Check, Globe, Menu } from "lucide-react";
+import { Lock, Shield, Zap, ArrowRight, Check, Globe, Menu, Sun, Moon, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { language, setLanguage, t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const subscribeNewsletter = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {
@@ -46,12 +55,19 @@ export default function Home() {
       <nav className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-50">
         <div className="container flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-2 sm:gap-3">
-            <img src="/logo.png" alt="EterBox Logo" className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" />
+            <img 
+              src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"} 
+              alt="EterBox Logo" 
+              className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" 
+            />
             <span className="text-xl sm:text-2xl font-bold">EterBox</span>
           </div>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -74,44 +90,138 @@ export default function Home() {
           </div>
 
           {/* Mobile Navigation */}
+          {/* Mobile Menu */}
           <div className="flex md:hidden items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Globe className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLanguage("en")} className={language === "en" ? "bg-accent/20" : ""}>
-                  🇺🇸 English
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage("es")} className={language === "es" ? "bg-accent/20" : ""}>
-                  🇪🇸 Español
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9">
                   <Menu className="w-5 h-5" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => setLocation("/pricing")}>
-                  {t("home.nav.pricing")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLocation("/support")}>
-                  {t("home.nav.support")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLocation('/login')}>
-                  {t("home.nav.login")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLocation('/register')}>
-                  {t("home.nav.signIn")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[280px] sm:w-[320px] p-0 flex flex-col">
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-border/20">
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"} 
+                      alt="EterBox Logo" 
+                      className="w-8 h-8" 
+                    />
+                    <span className="text-xl font-bold">EterBox</span>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="h-8 w-8"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                {/* Menu Items */}
+                <div className="flex-1 p-6">
+                  <div className="bg-card/50 backdrop-blur-sm rounded-[20px] border border-border/20 p-2 space-y-1">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-base h-12 rounded-[15px]"
+                      onClick={() => {
+                        setLocation("/");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      {t("home.nav.home") || "Home"}
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-base h-12 rounded-[15px]"
+                      onClick={() => {
+                        setLocation("/pricing");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      {t("home.nav.pricing")}
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-base h-12 rounded-[15px]"
+                      onClick={() => {
+                        setLocation("/support");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      {t("home.nav.support")}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Bottom Section */}
+                <div className="p-6 space-y-4 border-t border-border/20">
+                  {/* Theme Toggle */}
+                  <div className="bg-card/50 backdrop-blur-sm rounded-[20px] border border-border/20 p-4 flex items-center justify-between">
+                    <span className="text-base font-medium">{t("settings.theme") || "Theme"}</span>
+                    <div className="flex items-center gap-2">
+                      <Sun className="w-4 h-4 text-muted-foreground" />
+                      <Switch 
+                        checked={theme === "dark"} 
+                        onCheckedChange={toggleTheme}
+                        className="data-[state=checked]:bg-primary"
+                      />
+                      <Moon className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                  </div>
+
+                  {/* Language Selector */}
+                  <div className="bg-card/50 backdrop-blur-sm rounded-[20px] border border-border/20 p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-base font-medium">{t("settings.language") || "Language"}</span>
+                      <Globe className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={language === "en" ? "default" : "outline"}
+                        size="sm"
+                        className="flex-1 rounded-[12px]"
+                        onClick={() => setLanguage("en")}
+                      >
+                        🇺🇸 EN
+                      </Button>
+                      <Button
+                        variant={language === "es" ? "default" : "outline"}
+                        size="sm"
+                        className="flex-1 rounded-[12px]"
+                        onClick={() => setLanguage("es")}
+                      >
+                        🇪🇸 ES
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="space-y-2">
+                    <Button 
+                      className="w-full h-12 rounded-[15px] text-base"
+                      onClick={() => {
+                        setLocation("/register");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      {t("home.nav.signIn")}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="w-full h-12 rounded-[15px] text-base"
+                      onClick={() => {
+                        setLocation("/login");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      {t("home.nav.login")}
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </nav>
@@ -207,7 +317,11 @@ export default function Home() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src="/logo.png" alt="EterBox Logo" className="w-6 h-6" />
+                <img 
+                  src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"} 
+                  alt="EterBox Logo" 
+                  className="w-6 h-6" 
+                />
                 <span className="text-lg font-bold">EterBox</span>
               </div>
               <p className="text-sm text-muted-foreground">{t("home.footer.tagline")}</p>
