@@ -10,6 +10,7 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
+// Railway deployment - Fixed redirect on public pages
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
