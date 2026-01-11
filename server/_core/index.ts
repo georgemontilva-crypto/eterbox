@@ -144,19 +144,12 @@ async function startServer() {
     });
   }
   // OAuth removed - using custom authentication (email/password + biometric)
-  // tRPC API with auth rate limiting
-  app.use(
-    "/api/trpc/auth.login",
-    authLimiter
-  );
-  app.use(
-    "/api/trpc/auth.register",
-    authLimiter
-  );
-  app.use(
-    "/api/trpc/twoFactor.verify",
-    authLimiter
-  );
+  // tRPC API with auth rate limiting (disabled in development)
+  if (process.env.NODE_ENV !== 'development') {
+    app.use("/api/trpc/auth.login", authLimiter);
+    app.use("/api/trpc/auth.register", authLimiter);
+    app.use("/api/trpc/twoFactor.verify", authLimiter);
+  }
   
   app.use(
     "/api/trpc",
