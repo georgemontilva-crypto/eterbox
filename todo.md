@@ -7,7 +7,8 @@
 - [x] Corregir todas las queries SQL con subscription_end_date → subscriptionEndDate
 - [x] Corregir acceso a result[0] en todas las queries de admin-service.ts
 - [x] Verificar que botón "Administration" solo se muestra para admins (ya estaba correcto)
-- [ ] Hacer deployment a Railway
+- [x] Guardar checkpoint con todas las correcciones (21dc5d17)
+- [ ] Railway hará deployment automático desde GitHub
 - [ ] Verificar que admin panel funciona correctamente en producción
 
 ## ✅ Completado
