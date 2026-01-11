@@ -761,7 +761,16 @@
 - [ ] Verificar que los planes se actualicen correctamente
 
 ## 🐛 Bug - Panel de Administración no muestra datos
-- [ ] Verificar permisos del usuario admin@eterbox.com en Railway
-- [ ] Actualizar todos los permisos a 1 (actualmente algunos están en 0)
-- [ ] Hacer logout y login nuevamente para refrescar token JWT
-- [ ] Verificar que el panel muestre usuarios y estadísticas correctamente
+- [x] Verificar permisos del usuario admin@eterbox.com en Railway
+- [x] Actualizar todos los permisos a 1 (actualmente algunos están en 0)
+- [x] Corregir conversión de tinyint a boolean en getAdminPermissions()
+- [x] Deploy a producción (checkpoint e3e66180)
+- [ ] Verificar en producción que el panel muestre usuarios y estadísticas correctamente
+
+## 🔒 Seguridad - Proteger ruta /admin
+- [x] Crear endpoint tRPC para verificar si el usuario es admin (ya existía)
+- [x] Agregar verificación en la página AdminDashboard.tsx
+- [x] Redirigir a 404 si el usuario no es admin
+- [x] Probar localmente que funcione correctamente
+- [x] Deploy a producción (commit afd51b6)
+- [ ] Verificar en producción que usuarios no-admin sean redirigidos a 404

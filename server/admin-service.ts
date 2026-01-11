@@ -69,17 +69,24 @@ export async function getAdminPermissions(userId: number): Promise<AdminPermissi
 
     if (!result || result.length === 0) return null;
 
-    const row = result[0];
-    // Convert tinyint(1) to boolean
+    // MySQL2 returns result as [rows, fields], we need the first row from rows array
+    const rows = result[0];
+    if (!Array.isArray(rows) || rows.length === 0) return null;
+    
+    const row = rows[0];
+    console.log('[Admin] getAdminPermissions - RAW row data:', row);
+    console.log('[Admin] getAdminPermissions - can_view_users RAW:', row.can_view_users, 'type:', typeof row.can_view_users);
+    // Convert tinyint(1) to boolean - MySQL may return 0/1 as numbers or strings
+    // Use explicit comparison to handle both cases
     return {
-      is_super_admin: Boolean(row.is_super_admin),
-      can_view_users: Boolean(row.can_view_users),
-      can_edit_users: Boolean(row.can_edit_users),
-      can_delete_users: Boolean(row.can_delete_users),
-      can_send_bulk_emails: Boolean(row.can_send_bulk_emails),
-      can_view_revenue: Boolean(row.can_view_revenue),
-      can_manage_admins: Boolean(row.can_manage_admins),
-      can_view_analytics: Boolean(row.can_view_analytics),
+      is_super_admin: row.is_super_admin === 1 || row.is_super_admin === true || row.is_super_admin === '1',
+      can_view_users: row.can_view_users === 1 || row.can_view_users === true || row.can_view_users === '1',
+      can_edit_users: row.can_edit_users === 1 || row.can_edit_users === true || row.can_edit_users === '1',
+      can_delete_users: row.can_delete_users === 1 || row.can_delete_users === true || row.can_delete_users === '1',
+      can_send_bulk_emails: row.can_send_bulk_emails === 1 || row.can_send_bulk_emails === true || row.can_send_bulk_emails === '1',
+      can_view_revenue: row.can_view_revenue === 1 || row.can_view_revenue === true || row.can_view_revenue === '1',
+      can_manage_admins: row.can_manage_admins === 1 || row.can_manage_admins === true || row.can_manage_admins === '1',
+      can_view_analytics: row.can_view_analytics === 1 || row.can_view_analytics === true || row.can_view_analytics === '1',
     };
   } catch (error) {
     console.error('[Admin] Error getting permissions:', error);

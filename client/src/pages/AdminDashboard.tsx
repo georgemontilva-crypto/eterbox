@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   // Redirect if not admin
   useEffect(() => {
     if (!checkingAdmin && !adminCheck?.isAdmin) {
-      setLocation('/dashboard');
+      setLocation('/404');
     }
   }, [adminCheck, checkingAdmin, setLocation]);
 

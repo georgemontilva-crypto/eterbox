@@ -52,6 +52,10 @@ export const adminRouter = router({
     )
     .query(async ({ ctx, input }) => {
       const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      console.log('[Admin] getAnalytics - User ID:', ctx.user.id);
+      console.log('[Admin] getAnalytics - Permissions:', JSON.stringify(permissions));
+      console.log('[Admin] getAnalytics - can_view_analytics value:', permissions?.can_view_analytics);
+      console.log('[Admin] getAnalytics - can_view_analytics type:', typeof permissions?.can_view_analytics);
       if (!permissions?.can_view_analytics) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -76,6 +80,10 @@ export const adminRouter = router({
     )
     .query(async ({ ctx, input }) => {
       const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      console.log('[Admin] listUsers - User ID:', ctx.user.id);
+      console.log('[Admin] listUsers - Permissions:', JSON.stringify(permissions));
+      console.log('[Admin] listUsers - can_view_users value:', permissions?.can_view_users);
+      console.log('[Admin] listUsers - can_view_users type:', typeof permissions?.can_view_users);
       if (!permissions?.can_view_users) {
         throw new TRPCError({
           code: "FORBIDDEN",
