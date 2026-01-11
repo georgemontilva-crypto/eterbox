@@ -44,6 +44,18 @@ const PLANS = [
     yearlyPrice: 319.20,
     yearlyDiscount: 8,
   },
+  {
+    id: 4,
+    name: "Enterprise",
+    descriptionKey: "pricing.enterpriseDesc",
+    maxKeys: -1,
+    maxFolders: -1,
+    maxGeneratedKeys: -1,
+    maxMembers: 20,
+    price: 99,
+    yearlyPrice: 1080,
+    yearlyDiscount: 9,
+  },
 ];
 
 export default function Pricing() {
@@ -195,7 +207,7 @@ export default function Pricing() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {plans?.map((plan: any) => {
             const price = getPrice(plan);
             const discount = getDiscount(plan);
@@ -205,7 +217,7 @@ export default function Pricing() {
                 key={plan.id}
                 className={`p-8 border rounded-[15px] transition-all duration-300 ${
                   plan.name === "Basic"
-                    ? "border-accent bg-accent/5 scale-105"
+                    ? "border-accent bg-accent/5"
                     : isCurrentPlan(plan.id)
                     ? "border-green-500/50 bg-green-500/5"
                     : "border-border/20 hover:border-accent/50"
@@ -279,6 +291,28 @@ export default function Pricing() {
                     <Check className="w-5 h-5 text-accent flex-shrink-0" />
                     <span className="text-sm">{t("pricing.twoFactorAuth")}</span>
                   </div>
+                  {(plan.name === "Corporate" || plan.name === "Enterprise") && (
+                    <>
+                      <div className="flex items-center gap-3">
+                        <Check className="w-5 h-5 text-accent flex-shrink-0" />
+                        <span className="text-sm">{t("pricing.automaticBackup")}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Check className="w-5 h-5 text-accent flex-shrink-0" />
+                        <span className="text-sm">{t("pricing.audits")}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Check className="w-5 h-5 text-accent flex-shrink-0" />
+                        <span className="text-sm">{t("pricing.support24")}</span>
+                      </div>
+                    </>
+                  )}
+                  {plan.name === "Enterprise" && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-sm">{t("pricing.multiUserAdvanced")}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* CTA Button */}

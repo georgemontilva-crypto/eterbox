@@ -710,3 +710,36 @@
 - [ ] Crear buzones en Hostinger Mail: noreply@eterbox.com, join@eterbox.com, sales@eterbox.com, contact@eterbox.com
 - [ ] Configurar SMTP_USER=noreply@eterbox.com en Railway
 - [ ] Probar todos los flujos de correo en producción
+
+
+## 🎨 Mejoras de Menú y Planes
+
+- [ ] Eliminar logo/candado del header del menú desplegable de PC
+- [ ] Agregar botón X para cerrar el menú desplegable de PC
+- [ ] Actualizar plan Corporate: agregar auditorías, backup automático, soporte 24/7
+- [ ] Crear nuevo plan Enterprise: $99/mes ($90/año anual)
+- [ ] Plan Enterprise: Multiusuario avanzado (hasta 20 miembros)
+- [ ] Plan Enterprise: Auditorías completas y cumplimiento normativo
+- [ ] Plan Enterprise: Soporte dedicado 24/7
+- [ ] Corregir Dashboard: mostrar límites reales según plan (no infinito para Corporate)
+- [ ] Actualizar base de datos: Corporate 1000 credenciales/100 carpetas
+- [ ] Crear plan Enterprise en base de datos con límites correctos
+
+
+## ✅ Mejoras UI/UX y Planes - Enero 11, 2026
+- [x] Menú desplegable de PC: Logo eliminado del header, botón X agregado
+- [x] Plan Corporate actualizado con nuevas características:
+  - [x] Auditorías completas y cumplimiento normativo
+  - [x] Backup automático
+  - [x] Soporte dedicado 24/7
+- [x] Plan Enterprise creado ($99/mes, $1080/año):
+  - [x] Credenciales ilimitadas
+  - [x] Carpetas ilimitadas
+  - [x] Multiusuario avanzado (hasta 20 miembros)
+  - [x] Todas las características del plan Corporate
+  - [x] Integraciones personalizadas
+  - [x] Gerente de cuenta dedicado
+- [x] Página de Pricing actualizada con 4 planes (grid 2x2 en desktop)
+- [x] Traducciones agregadas para nuevas características
+- [x] Dashboard ya muestra correctamente límites (∞ para ilimitado)
+- [x] Script SQL creado para actualizar producción (update-plans-production.sql)

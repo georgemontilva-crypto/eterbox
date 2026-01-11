@@ -293,6 +293,11 @@ export const translations: Translations = {
   "pricing.freeDesc": { en: "Perfect for getting started", es: "Perfecto para comenzar" },
   "pricing.basicDesc": { en: "For freelancers and professionals", es: "Para freelancers y profesionales" },
   "pricing.corporateDesc": { en: "For teams and small businesses", es: "Para equipos y pequeñas empresas" },
+  "pricing.enterpriseDesc": { en: "For corporations and clients with critical security needs", es: "Para corporaciones y clientes con necesidades críticas de seguridad" },
+  "pricing.automaticBackup": { en: "Automatic backup", es: "Backup automático" },
+  "pricing.audits": { en: "Complete audits and compliance", es: "Auditorías completas y cumplimiento normativo" },
+  "pricing.support24": { en: "24/7 dedicated support", es: "Soporte dedicado 24/7" },
+  "pricing.multiUserAdvanced": { en: "Advanced multi-user (up to 20 members)", es: "Multiusuario avanzado (hasta 20 miembros)" },
   "pricing.securePayment": { en: "Secure payment powered by PayPal", es: "Pago seguro con PayPal" },
   
   // Support
