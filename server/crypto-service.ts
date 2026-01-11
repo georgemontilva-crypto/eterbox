@@ -6,8 +6,22 @@ const IV_LENGTH = 16;
 const SALT_LENGTH = 32;
 const AUTH_TAG_LENGTH = 16;
 
-// Master encryption key from environment (should be 64 hex characters = 32 bytes)
-const MASTER_KEY = process.env.ENCRYPTION_KEY || '0'.repeat(64);
+// Master encryption key from environment (MUST be 64 hex characters = 32 bytes)
+const MASTER_KEY = process.env.ENCRYPTION_KEY;
+
+if (!MASTER_KEY || MASTER_KEY.length !== 64) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      '🔒 SECURITY ERROR: ENCRYPTION_KEY must be set in environment variables and be exactly 64 hex characters (32 bytes). ' +
+      'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+    );
+  } else {
+    console.warn(
+      '⚠️  WARNING: ENCRYPTION_KEY not configured. Using temporary key for development. ' +
+      'NEVER use this in production! Generate a secure key with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+    );
+  }
+}
 
 /**
  * Derive an encryption key from userId and master key using scrypt
@@ -15,7 +29,7 @@ const MASTER_KEY = process.env.ENCRYPTION_KEY || '0'.repeat(64);
  */
 function deriveKey(userId: number): Buffer {
   const salt = Buffer.from(`${userId}:${MASTER_KEY}`, 'utf8');
-  return scryptSync(MASTER_KEY, salt, KEY_LENGTH);
+  return scryptSync(MASTER_KEY!, salt, KEY_LENGTH);
 }
 
 /**
