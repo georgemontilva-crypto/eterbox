@@ -1,5 +1,6 @@
 import { eq, and, or, like, desc, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import { gte } from "drizzle-orm";
 import { 
   InsertUser, 
@@ -19,14 +20,19 @@ import {
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _pool: any = null;
 
 export async function getDb() {
   const dbUrl = process.env.DATABASE_URL || process.env.MYSQL_URL || process.env.MYSQL_PUBLIC_URL;
   if (!_db && dbUrl) {
     try {
-      _db = drizzle(dbUrl);
+      // Create connection pool
+      _pool = mysql.createPool(dbUrl);
+      // Initialize drizzle with the pool
+      _db = drizzle(_pool);
+      console.log("[Database] Connection established successfully");
     } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
+      console.error("[Database] Failed to connect:", error);
       _db = null;
     }
   }
