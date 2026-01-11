@@ -36,6 +36,9 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
   
+  // Trust proxy - required for rate limiting behind reverse proxy (Manus, Cloudflare, etc.)
+  app.set('trust proxy', true);
+  
   // Security headers with Helmet
   app.use(helmet({
     contentSecurityPolicy: {
