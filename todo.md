@@ -4,7 +4,8 @@
 - [x] Revisar endpoint admin.isAdmin - devuelve true incorrectamente (bug encontrado)
 - [x] Corregir lógica de verificación de permisos (isAdmin y isSuperAdmin)
 - [x] Verificar protección de ruta /admin (ya estaba correcta - redirige a 404)
-- [ ] Probar con usuario no-admin en local
+- [x] Probar con usuario no-admin en local
+- [x] Mejorar página 404 con tema y traducciones
 - [ ] Deployment a Railway
 - [ ] Verificar en producción
 
@@ -808,3 +809,10 @@
 - [ ] getAdminPermissions() devuelve null en lugar de los permisos
 - [ ] Revisar query SQL en admin-service.ts
 - [ ] Corregir y hacer deployment urgente
+
+## 🔧 Redirección /admin para usuarios sin login
+- [x] Revisar ProtectedRoute - ahora redirige a /login si no hay sesión
+- [x] Corregir import de useLocation en App.tsx
+- [x] Flujo correcto: sin login → /admin → /login
+- [ ] Deployment a Railway
+- [ ] Verificar en producción
