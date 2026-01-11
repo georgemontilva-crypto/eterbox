@@ -743,3 +743,10 @@
 - [x] Traducciones agregadas para nuevas características
 - [x] Dashboard ya muestra correctamente límites (∞ para ilimitado)
 - [x] Script SQL creado para actualizar producción (update-plans-production.sql)
+
+
+## 🎨 Alineación de Botones en Pricing - Enero 11, 2026
+- [x] Alinear todos los botones "Subscribe Now" y "Get Started" a la misma altura
+- [x] Usar flex-grow para que las tarjetas tengan altura consistente
+- [x] Asegurar que el botón esté siempre al final de cada tarjeta
+- [x] Eliminar sección "Secure payment powered by PayPal" del footer de Pricing

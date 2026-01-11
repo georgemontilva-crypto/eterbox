@@ -215,7 +215,7 @@ export default function Pricing() {
             return (
               <Card
                 key={plan.id}
-                className={`p-8 border rounded-[15px] transition-all duration-300 ${
+                className={`p-8 border rounded-[15px] transition-all duration-300 flex flex-col ${
                   plan.name === "Basic"
                     ? "border-accent bg-accent/5"
                     : isCurrentPlan(plan.id)
@@ -264,7 +264,7 @@ export default function Pricing() {
                 </div>
 
                 {/* Features */}
-                <div className="space-y-4 mb-8">
+                <div className="space-y-4 mb-8 flex-grow">
                   <div className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-accent flex-shrink-0" />
                     <span className="text-sm">
@@ -316,6 +316,7 @@ export default function Pricing() {
                 </div>
 
                 {/* CTA Button */}
+                <div className="mt-auto">
                 <Button
                   className="w-full"
                   variant={plan.name === "Free" ? "outline" : "default"}
@@ -341,24 +342,13 @@ export default function Pricing() {
                     t("pricing.subscribeNow")
                   )}
                 </Button>
+                </div>
               </Card>
             );
           })}
         </div>
 
-        {/* Payment Info */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-muted-foreground">
-            {t("pricing.securePayment")}
-          </p>
-          <div className="flex items-center justify-center gap-4 mt-4">
-            <img 
-              src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_74x46.jpg" 
-              alt="PayPal" 
-              className="h-8 rounded"
-            />
-          </div>
-        </div>
+
       </main>
 
       {/* PayPal Checkout Modal */}
