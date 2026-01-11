@@ -392,7 +392,8 @@ export default function Dashboard() {
             <div>
               <MobileMenu 
                 planName={planName} 
-                onLogout={logout} 
+                onLogout={logout}
+                userEmail={user?.email}
                 onAddCredentialWithPassword={(password) => {
                   setDefaultPassword(password);
                   setSelectedFolderId(undefined);

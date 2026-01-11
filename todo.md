@@ -679,3 +679,8 @@
 - [x] Fix getDb() initialization issue ✅
 - [x] Ensure mysql2 pool is created properly ✅
 - [x] Add Express 'trust proxy' setting for rate limiter ✅
+
+- [x] Mejorar diseño del menú desplegable de escritorio para que sea igual al de móvil
+- [x] Agregar botón de "Administración" que solo aparezca para admin@eterbox.com
+- [x] Agregar logo en el menú desplegable
+- [x] Fix ERR_ERL_PERMISSIVE_TRUST_PROXY error by configuring trust proxy correctly for Railway (trust proxy: 1)

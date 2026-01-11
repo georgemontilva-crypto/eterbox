@@ -25,6 +25,7 @@ export const translations: Translations = {
   "menu.security": { en: "Security", es: "Seguridad" },
   "menu.password": { en: "Password", es: "Contraseña" },
   "menu.subscription": { en: "Subscription", es: "Suscripción" },
+  "menu.administration": { en: "Administration", es: "Administración" },
   
   // Dashboard
   "dashboard.welcome": { en: "Welcome back", es: "Bienvenido de nuevo" },

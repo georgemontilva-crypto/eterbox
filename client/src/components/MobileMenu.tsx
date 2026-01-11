@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt } from "lucide-react";
+import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -217,11 +217,12 @@ interface MobileMenuProps {
   onLogout: () => void;
   twoFactorEnabled?: boolean;
   onAddCredentialWithPassword?: (password: string) => void;
+  userEmail?: string;
 }
 
 type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "language" | "generator" | "payments" | null;
 
-export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword }: MobileMenuProps) {
+export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword, userEmail }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [, setLocation] = useLocation();
@@ -875,9 +876,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
         {/* Menu Header */}
         <div className="p-6 border-b border-border/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[15px] bg-accent/20 flex items-center justify-center">
-              <Lock className="w-5 h-5 text-accent" />
-            </div>
+            <img src="/logo.png" alt="EterBox" className="w-10 h-10" />
             <div>
               <h2 className="text-lg font-bold">EterBox</h2>
               <p className="text-xs text-muted-foreground">Security Vault</p>
@@ -886,7 +885,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
         </div>
 
         {/* Dashboard Link */}
-        <div className="p-4 border-b border-border/20">
+        <div className="p-4 border-b border-border/20 space-y-2">
           <button
             onClick={handleGoToDashboard}
             className="w-full flex items-center gap-4 p-4 rounded-[15px] bg-accent/10 border border-accent/30 text-left"
@@ -894,6 +893,18 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
             <Home className="w-5 h-5 text-accent" />
             <span className="font-medium">{t("menu.dashboard")}</span>
           </button>
+          {userEmail === "admin@eterbox.com" && (
+            <button
+              onClick={() => {
+                setOpen(false);
+                setLocation("/admin");
+              }}
+              className="w-full flex items-center gap-4 p-4 rounded-[15px] bg-purple-500/10 border border-purple-500/30 text-left"
+            >
+              <UserCog className="w-5 h-5 text-purple-400" />
+              <span className="font-medium text-purple-400">{t("menu.administration") || "Administration"}</span>
+            </button>
+          )}
         </div>
 
         {/* Menu Items */}
