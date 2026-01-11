@@ -759,3 +759,9 @@
 - [ ] Hacer deploy a Railway vía GitHub
 - [ ] Ejecutar `pnpm migrate` en Railway
 - [ ] Verificar que los planes se actualicen correctamente
+
+## 🐛 Bug - Panel de Administración no muestra datos
+- [ ] Verificar permisos del usuario admin@eterbox.com en Railway
+- [ ] Actualizar todos los permisos a 1 (actualmente algunos están en 0)
+- [ ] Hacer logout y login nuevamente para refrescar token JWT
+- [ ] Verificar que el panel muestre usuarios y estadísticas correctamente

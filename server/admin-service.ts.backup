@@ -69,18 +69,7 @@ export async function getAdminPermissions(userId: number): Promise<AdminPermissi
 
     if (!result || result.length === 0) return null;
 
-    const row = result[0];
-    // Convert tinyint(1) to boolean
-    return {
-      is_super_admin: Boolean(row.is_super_admin),
-      can_view_users: Boolean(row.can_view_users),
-      can_edit_users: Boolean(row.can_edit_users),
-      can_delete_users: Boolean(row.can_delete_users),
-      can_send_bulk_emails: Boolean(row.can_send_bulk_emails),
-      can_view_revenue: Boolean(row.can_view_revenue),
-      can_manage_admins: Boolean(row.can_manage_admins),
-      can_view_analytics: Boolean(row.can_view_analytics),
-    };
+    return result[0] as AdminPermissions;
   } catch (error) {
     console.error('[Admin] Error getting permissions:', error);
     return null;
