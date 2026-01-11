@@ -1,6 +1,14 @@
 # EterBox - Security Vault TODO
 
-## 🚨 URGENTE - Errores SQL en Producción
+## 🚨 URGENTE - Botón Admin Visible para No-Admin
+- [x] Revisar endpoint admin.isAdmin - devuelve true incorrectamente (bug encontrado)
+- [x] Corregir lógica de verificación de permisos (isAdmin y isSuperAdmin)
+- [x] Verificar protección de ruta /admin (ya estaba correcta - redirige a 404)
+- [ ] Probar con usuario no-admin en local
+- [ ] Deployment a Railway
+- [ ] Verificar en producción
+
+## ✅ COMPLETADO - Errores SQL en Producción
 - [x] Corregir todas las queries SQL con created_at → createdAt
 - [x] Corregir todas las queries SQL con updated_at → updatedAt  
 - [x] Corregir todas las queries SQL con plan_id → planId

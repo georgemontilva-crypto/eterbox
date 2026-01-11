@@ -25,7 +25,9 @@ export async function isAdmin(userId: number): Promise<boolean> {
       WHERE user_id = ${userId}
     `);
 
-    return result && result.length > 0;
+    // MySQL2 returns result as [rows, fields], we need the rows array
+    const rows = result[0];
+    return Array.isArray(rows) && rows.length > 0;
   } catch (error) {
     console.error('[Admin] Error checking admin status:', error);
     return false;
@@ -45,7 +47,9 @@ export async function isSuperAdmin(userId: number): Promise<boolean> {
       WHERE user_id = ${userId} AND is_super_admin = true
     `);
 
-    return result && result.length > 0;
+    // MySQL2 returns result as [rows, fields], we need the rows array
+    const rows = result[0];
+    return Array.isArray(rows) && rows.length > 0;
   } catch (error) {
     console.error('[Admin] Error checking super admin status:', error);
     return false;
