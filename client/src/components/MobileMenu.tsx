@@ -906,9 +906,8 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
             </button>
           )}
         </div>
-
         {/* Menu Items */}
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-hide">
           {menuItems.map((item, index) => (
             <button
               key={index}
