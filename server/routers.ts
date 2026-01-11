@@ -14,6 +14,7 @@ import { TRPCError } from "@trpc/server";
 import { authRouter } from "./api/routers/auth";
 import { webauthnRouter } from "./api/routers/webauthn";
 import { adminRouter } from "./api/routers/admin";
+import { notificationsRouter } from "./api/routers/notifications";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -21,6 +22,7 @@ export const appRouter = router({
   auth: authRouter,
   webauthn: webauthnRouter,
   admin: adminRouter,
+  notifications: notificationsRouter,
 
   // ============ PLANS ============
   plans: router({

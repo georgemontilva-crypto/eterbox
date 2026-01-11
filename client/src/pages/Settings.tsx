@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Lock, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
+import { NotificationSettings } from "@/components/NotificationSettings";
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -42,7 +43,7 @@ export default function Settings() {
           </div>
         </Card>
 
-        <Card className="p-8 border border-border/20">
+        <Card className="p-8 border border-border/20 mb-6">
           <h3 className="text-xl font-bold mb-4">Security</h3>
           <Button variant="outline" className="mb-4">Enable Two-Factor Authentication</Button>
           <Button 
@@ -52,6 +53,10 @@ export default function Settings() {
           >
             Change Password
           </Button>
+        </Card>
+
+        <Card className="p-8 border border-border/20">
+          <NotificationSettings />
         </Card>
 
         <div className="mt-8">
