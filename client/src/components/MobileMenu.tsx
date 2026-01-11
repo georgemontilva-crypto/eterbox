@@ -873,17 +873,6 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
     // Default menu view
     return (
       <div className="flex flex-col h-full">
-        {/* Menu Header */}
-        <div className="p-6 border-b border-border/20">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="EterBox" className="w-10 h-10" />
-            <div>
-              <h2 className="text-lg font-bold">EterBox</h2>
-              <p className="text-xs text-muted-foreground">Security Vault</p>
-            </div>
-          </div>
-        </div>
-
         {/* Dashboard Link */}
         <div className="p-4 border-b border-border/20 space-y-2">
           <button
@@ -949,8 +938,10 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
 
   return (
     <>
-      <Button variant="ghost" size="icon" onClick={handleOpenMenu}>
-        <Menu className="w-6 h-6" />
+      <Button variant="ghost" className="hover:bg-accent/10 flex items-center gap-2 px-2" onClick={handleOpenMenu}>
+        <Menu className="w-5 h-5" />
+        <img src="/logo.png" alt="EterBox" className="w-6 h-6" />
+        <span className="text-sm font-bold hidden sm:inline">EterBox</span>
       </Button>
       
       <Sheet open={open} onOpenChange={setOpen}>

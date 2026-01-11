@@ -402,7 +402,7 @@ export default function Dashboard() {
               />
             </div>
             
-            {/* Logo y Admin Button */}
+            {/* Admin Button - only on desktop */}
             <div className="flex items-center gap-3">
               {adminCheck?.isAdmin && (
                 <Button
@@ -415,8 +415,6 @@ export default function Dashboard() {
                   Admin
                 </Button>
               )}
-              <img src="/logo.png" alt="EterBox Logo" className="w-5 h-5 md:w-6 md:h-6" />
-              <span className="text-lg md:text-xl font-bold">EterBox</span>
             </div>
           </div>
         </div>

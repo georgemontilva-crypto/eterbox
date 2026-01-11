@@ -690,3 +690,6 @@
 - [x] Verificar y completar traducciones de planes en inglés y español
 - [x] Actualizar características de todos los planes según nueva especificación
 - [x] Ocultar scrollbar del menú desplegable manteniendo funcionalidad
+
+- [x] Reorganizar header del menú móvil: eliminar texto "EterBox" duplicado arriba y mover logo+texto del header inferior a la posición superior
+- [x] Arreglar botón de Administration para que navegue correctamente a /admin
