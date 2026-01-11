@@ -750,3 +750,12 @@
 - [x] Usar flex-grow para que las tarjetas tengan altura consistente
 - [x] Asegurar que el botón esté siempre al final de cada tarjeta
 - [x] Eliminar sección "Secure payment powered by PayPal" del footer de Pricing
+
+
+## 🗄️ Migración de Base de Datos - Enero 11, 2026
+- [x] Crear script de migración migrate-plans.mjs
+- [x] Actualizar package.json con comando de migración
+- [x] Crear MIGRATION-README.md con instrucciones
+- [ ] Hacer deploy a Railway vía GitHub
+- [ ] Ejecutar `pnpm migrate` en Railway
+- [ ] Verificar que los planes se actualicen correctamente
