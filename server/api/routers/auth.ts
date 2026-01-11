@@ -5,6 +5,7 @@ import { getDb } from "../../db";
 import { users } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword, generateToken, generateVerificationToken } from "../../auth-service";
+import { sendWelcomeEmail, sendNewRegistrationNotification } from "../../email-service";
 
 export const authRouter = router({
   /**
@@ -47,7 +48,14 @@ export const authRouter = router({
         planId: 1, // Free plan by default
       });
 
-      // TODO: Send verification email
+      // Send welcome email and admin notification
+      try {
+        await sendWelcomeEmail(input.email, input.name, 'en'); // Default to English, can be customized
+        await sendNewRegistrationNotification(input.name, input.email, 'Free');
+      } catch (emailError) {
+        console.error('[Auth] Failed to send welcome emails:', emailError);
+        // Don't fail registration if email fails
+      }
 
       // Generate JWT token for immediate authentication
       const token = generateToken({

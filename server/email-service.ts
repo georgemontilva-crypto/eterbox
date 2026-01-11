@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
+import { emailTemplateService } from "./email-template-service";
 
 let transporter: any = null;
 
@@ -290,8 +291,7 @@ export async function sendSupportTicketConfirmation(
       </body>
     </html>
   `;
-
-  return sendEmail(email, "✓ Your Support Ticket Has Been Received", htmlContent);
+  return sendEmail(email, "✓ Support Ticket #" + ticketId + " Received", htmlContent);
 }
 
 /**
@@ -299,164 +299,118 @@ export async function sendSupportTicketConfirmation(
  */
 export async function sendWelcomeEmail(
   email: string,
-  userName: string
+  userName: string,
+  lang: 'en' | 'es' = 'en'
 ): Promise<boolean> {
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>
-          body { font-family: 'Montserrat', sans-serif; background-color: #f5f5f5; }
-          .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 15px; }
-          .header { color: #000000; text-align: center; margin-bottom: 20px; }
-          .welcome { background: linear-gradient(135deg, #000000 0%, #1f2937 100%); color: #ffffff; padding: 30px; border-radius: 15px; text-align: center; margin: 20px 0; }
-          .welcome h2 { margin: 0; font-size: 28px; }
-          .features { margin: 20px 0; }
-          .feature { background-color: #f3f4f6; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #3b82f6; }
-          .button { background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 15px; }
-          .footer { text-align: center; color: #9ca3af; font-size: 12px; margin-top: 20px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="welcome">
-            <h2>Welcome to EterBox! 🔒</h2>
-            <p>Your secure password vault is ready</p>
-          </div>
-          <p>Hi ${userName},</p>
-          <p>Thank you for joining EterBox! We're excited to help you manage your passwords securely.</p>
-          <div class="features">
-            <div class="feature">
-              <strong>🔐 Military-Grade Encryption</strong>
-              <p>Your passwords are encrypted with AES-256 encryption</p>
-            </div>
-            <div class="feature">
-              <strong>🔑 Two-Factor Authentication</strong>
-              <p>Add an extra layer of security with 2FA</p>
-            </div>
-            <div class="feature">
-              <strong>📁 Organize Your Passwords</strong>
-              <p>Create folders to organize your credentials by category</p>
-            </div>
-          </div>
-          <p>Get started by:</p>
-          <ol>
-            <li>Setting up two-factor authentication</li>
-            <li>Creating your first password folder</li>
-            <li>Adding your first credential</li>
-          </ol>
-          <a href="https://eterbox.com/dashboard" class="button">Go to Dashboard</a>
-          <div class="footer">
-            <p>© 2024 EterBox. All rights reserved.</p>
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
-
-  return sendEmail(email, "Welcome to EterBox - Your Secure Password Vault", htmlContent);
+  try {
+    const data = emailTemplateService.getWelcomeEmailData(userName, lang);
+    const htmlContent = await emailTemplateService.renderTemplate('welcome', data);
+    const subject = lang === 'es' ? '¡Bienvenido a EterBox!' : 'Welcome to EterBox!';
+    return sendEmail(email, subject, htmlContent);
+  } catch (error) {
+    console.error('[EmailService] Failed to send welcome email:', error);
+    return false;
+  }
 }
 
+/**
+ * Send new registration notification to admin
+ */
+export async function sendNewRegistrationNotification(
+  userName: string,
+  userEmail: string,
+  userPlan: string
+): Promise<boolean> {
+  try {
+    const adminEmail = process.env.ADMIN_JOIN_EMAIL || 'join@eterbox.com';
+    const data = emailTemplateService.getNewRegistrationAdminData(userName, userEmail, userPlan);
+    const htmlContent = await emailTemplateService.renderTemplate('new-registration-admin', data);
+    return sendEmail(adminEmail, `🎉 New User Registration: ${userName}`, htmlContent);
+  } catch (error) {
+    console.error('[EmailService] Failed to send new registration notification:', error);
+    return false;
+  }
+}
 
 /**
- * Send subscription confirmation email
+ * Send purchase confirmation to customer
  */
-export async function sendSubscriptionConfirmation(
+export async function sendPurchaseConfirmation(
   email: string,
   userName: string,
   planName: string,
-  amount: string,
-  period: "monthly" | "yearly",
-  renewalDate: Date,
-  transactionId: string
+  amount: number,
+  transactionId: string,
+  lang: 'en' | 'es' = 'en'
 ): Promise<boolean> {
-  const periodText = period === "yearly" ? "year" : "month";
-  const periodTextEs = period === "yearly" ? "año" : "mes";
-  
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>
-          body { font-family: 'Montserrat', sans-serif; background-color: #0a0a0f; color: #ffffff; margin: 0; padding: 20px; }
-          .container { max-width: 600px; margin: 0 auto; background-color: #111118; padding: 30px; border-radius: 20px; border: 1px solid #1e1e2e; }
-          .header { text-align: center; margin-bottom: 30px; }
-          .logo { font-size: 28px; font-weight: bold; color: #3b82f6; }
-          .success-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-          .success-icon svg { width: 40px; height: 40px; fill: white; }
-          h1 { color: #ffffff; font-size: 24px; margin: 0 0 10px; }
-          .subtitle { color: #9ca3af; font-size: 16px; margin: 0; }
-          .plan-card { background: linear-gradient(135deg, #1e1e2e 0%, #252532 100%); border-radius: 15px; padding: 25px; margin: 25px 0; border: 1px solid #3b82f6; }
-          .plan-name { font-size: 22px; font-weight: bold; color: #3b82f6; margin-bottom: 15px; }
-          .plan-details { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-          .plan-price { font-size: 28px; font-weight: bold; color: #ffffff; }
-          .plan-period { color: #9ca3af; font-size: 14px; }
-          .details-grid { margin-top: 20px; }
-          .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #2e2e3e; }
-          .detail-row:last-child { border-bottom: none; }
-          .detail-label { color: #9ca3af; }
-          .detail-value { color: #ffffff; font-weight: 500; }
-          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #2e2e3e; }
-          .footer p { color: #6b7280; font-size: 12px; margin: 5px 0; }
-          .button { display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; margin-top: 20px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <div class="logo">🔒 EterBox</div>
-          </div>
-          
-          <div style="text-align: center;">
-            <div class="success-icon">
-              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-            </div>
-            <h1>¡Pago Confirmado!</h1>
-            <p class="subtitle">Gracias por tu suscripción, ${userName}</p>
-          </div>
-          
-          <div class="plan-card">
-            <div class="plan-name">${planName} Plan</div>
-            <div class="plan-details">
-              <div>
-                <div class="plan-price">$${amount}</div>
-                <div class="plan-period">por ${periodTextEs}</div>
-              </div>
-            </div>
-            
-            <div class="details-grid">
-              <div class="detail-row">
-                <span class="detail-label">ID de Transacción</span>
-                <span class="detail-value">${transactionId}</span>
-              </div>
-              <div class="detail-row">
-                <span class="detail-label">Fecha de Pago</span>
-                <span class="detail-value">${new Date().toLocaleDateString()}</span>
-              </div>
-              <div class="detail-row">
-                <span class="detail-label">Próxima Renovación</span>
-                <span class="detail-value">${renewalDate.toLocaleDateString()}</span>
-              </div>
-              <div class="detail-row">
-                <span class="detail-label">Método de Pago</span>
-                <span class="detail-value">PayPal</span>
-              </div>
-            </div>
-          </div>
-          
-          <div style="text-align: center;">
-            <p style="color: #9ca3af;">Tu plan ha sido activado exitosamente. Ya puedes disfrutar de todas las características premium.</p>
-            <a href="https://eterbox.com/dashboard" class="button">Ir al Dashboard</a>
-          </div>
-          
-          <div class="footer">
-            <p>Si tienes alguna pregunta, contacta a nuestro equipo de soporte.</p>
-            <p>© ${new Date().getFullYear()} EterBox. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
+  try {
+    const data = emailTemplateService.getPurchaseConfirmationData(userName, planName, amount, transactionId, lang);
+    const htmlContent = await emailTemplateService.renderTemplate('purchase-confirmation', data);
+    const subject = lang === 'es' ? '✓ Compra Confirmada - EterBox' : '✓ Purchase Confirmed - EterBox';
+    return sendEmail(email, subject, htmlContent);
+  } catch (error) {
+    console.error('[EmailService] Failed to send purchase confirmation:', error);
+    return false;
+  }
+}
 
-  return sendEmail(email, `✓ Confirmación de Pago - ${planName} Plan | EterBox`, htmlContent);
+/**
+ * Send new sale notification to admin
+ */
+export async function sendNewSaleNotification(
+  customerName: string,
+  customerEmail: string,
+  planName: string,
+  amount: number,
+  transactionId: string,
+  planFeatures: string
+): Promise<boolean> {
+  try {
+    const adminEmail = process.env.ADMIN_SALES_EMAIL || 'sales@eterbox.com';
+    const data = emailTemplateService.getNewSaleAdminData(customerName, customerEmail, planName, amount, transactionId, planFeatures);
+    const htmlContent = await emailTemplateService.renderTemplate('new-sale-admin', data);
+    return sendEmail(adminEmail, `💰 New Sale: ${planName} - $${amount.toFixed(2)}`, htmlContent);
+  } catch (error) {
+    console.error('[EmailService] Failed to send new sale notification:', error);
+    return false;
+  }
+}
+
+/**
+ * Send contact form notification to admin
+ */
+export async function sendContactFormNotification(
+  contactName: string,
+  contactEmail: string,
+  contactSubject: string,
+  contactMessage: string
+): Promise<boolean> {
+  try {
+    const adminEmail = process.env.ADMIN_CONTACT_EMAIL || 'contact@eterbox.com';
+    const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
+    const htmlContent = await emailTemplateService.renderTemplate('contact-form', data);
+    return sendEmail(adminEmail, `📨 New Contact Message: ${contactSubject}`, htmlContent);
+  } catch (error) {
+    console.error('[EmailService] Failed to send contact form notification:', error);
+    return false;
+  }
+}
+
+/**
+ * Send newsletter subscription notification to admin
+ */
+export async function sendNewsletterNotification(
+  subscriberEmail: string,
+  source: string,
+  totalSubscribers: number
+): Promise<boolean> {
+  try {
+    const adminEmail = process.env.ADMIN_CONTACT_EMAIL || 'contact@eterbox.com';
+    const data = emailTemplateService.getNewsletterSubscriptionData(subscriberEmail, source, totalSubscribers);
+    const htmlContent = await emailTemplateService.renderTemplate('newsletter-subscription', data);
+    return sendEmail(adminEmail, `📰 New Newsletter Subscription: ${subscriberEmail}`, htmlContent);
+  } catch (error) {
+    console.error('[EmailService] Failed to send newsletter notification:', error);
+    return false;
+  }
 }

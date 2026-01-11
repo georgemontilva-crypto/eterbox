@@ -693,3 +693,20 @@
 
 - [x] Reorganizar header del menú móvil: eliminar texto "EterBox" duplicado arriba y mover logo+texto del header inferior a la posición superior
 - [x] Arreglar botón de Administration para que navegue correctamente a /admin
+
+
+## 📧 Sistema de Correos Profesional con Hostinger Mail
+- [x] Crear plantillas HTML profesionales para correos (bienvenida, compra, contacto, newsletter)
+- [x] Crear servicio de plantillas de correo (EmailTemplateService)
+- [x] Implementar correo de bienvenida al cliente cuando se registra
+- [x] Enviar notificación a join@eterbox.com cuando alguien se registra
+- [x] Implementar correo de confirmación de compra con invoice al cliente
+- [x] Enviar notificación a sales@eterbox.com cuando alguien compra un plan
+- [x] Crear router de contacto con endpoint submitContactForm
+- [x] Implementar formulario de contacto que envíe a contact@eterbox.com
+- [x] Crear endpoint subscribeNewsletter
+- [x] Implementar newsletter subscription que envíe a contact@eterbox.com
+- [ ] Configurar variables de entorno en Railway: ADMIN_JOIN_EMAIL, ADMIN_SALES_EMAIL, ADMIN_CONTACT_EMAIL
+- [ ] Crear buzones en Hostinger Mail: noreply@eterbox.com, join@eterbox.com, sales@eterbox.com, contact@eterbox.com
+- [ ] Configurar SMTP_USER=noreply@eterbox.com en Railway
+- [ ] Probar todos los flujos de correo en producción

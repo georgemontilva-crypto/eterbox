@@ -15,6 +15,7 @@ import { authRouter } from "./api/routers/auth";
 import { webauthnRouter } from "./api/routers/webauthn";
 import { adminRouter } from "./api/routers/admin";
 import { notificationsRouter } from "./api/routers/notifications";
+import { contactRouter } from "./api/routers/contact";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -23,6 +24,7 @@ export const appRouter = router({
   webauthn: webauthnRouter,
   admin: adminRouter,
   notifications: notificationsRouter,
+  contact: contactRouter,
 
   // ============ PLANS ============
   plans: router({
@@ -628,19 +630,35 @@ export const appRouter = router({
                   description: `${planName} Plan - ${subscriptionPeriod === "yearly" ? "Annual" : "Monthly"} subscription`,
                 });
                 
-                // Send confirmation email
+                // Send confirmation email to customer and admin
                 const user = await db.getUserById(ctx.user.id);
                 if (user?.email) {
                   const emailService = await import("./email-service");
-                  await emailService.sendSubscriptionConfirmation(
-                    user.email,
-                    user.name || "Customer",
-                    planName,
-                    amount,
-                    subscriptionPeriod,
-                    endDate,
-                    transactionId
-                  );
+                  try {
+                    // Send purchase confirmation to customer
+                    await emailService.sendPurchaseConfirmation(
+                      user.email,
+                      user.name || "Customer",
+                      planName,
+                      amount,
+                      transactionId,
+                      'en' // Default to English, can be customized
+                    );
+                    
+                    // Send sale notification to admin
+                    const planFeatures = `${planName} Plan - ${subscriptionPeriod === "yearly" ? "Annual" : "Monthly"} subscription`;
+                    await emailService.sendNewSaleNotification(
+                      user.name || "Customer",
+                      user.email,
+                      planName,
+                      amount,
+                      transactionId,
+                      planFeatures
+                    );
+                  } catch (emailError) {
+                    console.error('[Payment] Failed to send purchase emails:', emailError);
+                    // Don't fail payment if email fails
+                  }
                 }
               }
             }

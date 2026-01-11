@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a; color: #ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111111; border-radius: 16px; border: 1px solid #1f1f1f; overflow: hidden;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px; text-align: center; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+                            <img src="https://eterbox.com/logo.png" alt="EterBox" style="width: 60px; height: 60px; margin-bottom: 16px;">
+                            <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">{{welcome_title}}</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #e5e5e5;">
+                                {{greeting}} <strong>{{user_name}}</strong>,
+                            </p>
+                            
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #e5e5e5;">
+                                {{welcome_message}}
+                            </p>
+                            
+                            <!-- Features -->
+                            <div style="background-color: #1a1a1a; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #262626;">
+                                <h2 style="margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #ffffff;">{{features_title}}</h2>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: inline-block; width: 32px; height: 32px; background-color: #1e3a8a; border-radius: 8px; text-align: center; line-height: 32px; margin-right: 12px; vertical-align: middle;">🔐</div>
+                                    <span style="font-size: 15px; color: #e5e5e5; vertical-align: middle;">{{feature_1}}</span>
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: inline-block; width: 32px; height: 32px; background-color: #1e3a8a; border-radius: 8px; text-align: center; line-height: 32px; margin-right: 12px; vertical-align: middle;">📁</div>
+                                    <span style="font-size: 15px; color: #e5e5e5; vertical-align: middle;">{{feature_2}}</span>
+                                </div>
+                                
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: inline-block; width: 32px; height: 32px; background-color: #1e3a8a; border-radius: 8px; text-align: center; line-height: 32px; margin-right: 12px; vertical-align: middle;">🔒</div>
+                                    <span style="font-size: 15px; color: #e5e5e5; vertical-align: middle;">{{feature_3}}</span>
+                                </div>
+                                
+                                <div>
+                                    <div style="display: inline-block; width: 32px; height: 32px; background-color: #1e3a8a; border-radius: 8px; text-align: center; line-height: 32px; margin-right: 12px; vertical-align: middle;">📱</div>
+                                    <span style="font-size: 15px; color: #e5e5e5; vertical-align: middle;">{{feature_4}}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- CTA Button -->
+                            <div style="text-align: center; margin: 32px 0;">
+                                <a href="https://eterbox.com/dashboard" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px;">
+                                    {{cta_button}}
+                                </a>
+                            </div>
+                            
+                            <p style="margin: 24px 0 0; font-size: 14px; line-height: 1.6; color: #a3a3a3;">
+                                {{closing}}<br>
+                                <strong style="color: #e5e5e5;">{{team_name}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 24px 40px; background-color: #0a0a0a; border-top: 1px solid #1f1f1f; text-align: center;">
+                            <p style="margin: 0 0 8px; font-size: 13px; color: #737373;">
+                                © 2026 EterBox. {{footer_rights}}
+                            </p>
+                            <p style="margin: 0; font-size: 12px; color: #525252;">
+                                <a href="https://eterbox.com/support" style="color: #3b82f6; text-decoration: none;">{{footer_support}}</a> | 
+                                <a href="https://eterbox.com/privacy" style="color: #3b82f6; text-decoration: none;">{{footer_privacy}}</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

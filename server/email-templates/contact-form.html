@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Form Submission</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a; color: #ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111111; border-radius: 16px; border: 1px solid #1f1f1f; overflow: hidden;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 32px; text-align: center; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📨</div>
+                            <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff;">New Contact Message</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 32px;">
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #e5e5e5;">
+                                You have received a new message from the contact form:
+                            </p>
+                            
+                            <!-- Contact Details -->
+                            <div style="background-color: #1a1a1a; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #262626;">
+                                <h3 style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #ffffff; border-bottom: 1px solid #262626; padding-bottom: 12px;">Contact Information</h3>
+                                <table width="100%" cellpadding="8" cellspacing="0">
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px; width: 100px;">Name:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px;">{{contact_name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">Email:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px;">
+                                            <a href="mailto:{{contact_email}}" style="color: #3b82f6; text-decoration: none;">{{contact_email}}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">Subject:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px; font-weight: 600;">{{contact_subject}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">Date:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px;">{{contact_date}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Message -->
+                            <div style="background-color: #1a1a1a; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #262626;">
+                                <h3 style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #ffffff;">Message</h3>
+                                <div style="font-size: 15px; color: #e5e5e5; line-height: 1.6; white-space: pre-wrap;">{{contact_message}}</div>
+                            </div>
+                            
+                            <!-- Quick Reply Button -->
+                            <div style="text-align: center; margin: 32px 0;">
+                                <a href="mailto:{{contact_email}}?subject=Re: {{contact_subject}}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px;">
+                                    Reply to {{contact_name}}
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 24px 32px; background-color: #0a0a0a; border-top: 1px solid #1f1f1f; text-align: center;">
+                            <p style="margin: 0; font-size: 13px; color: #737373;">
+                                EterBox Contact Form Notification System
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
