@@ -58,6 +58,24 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
 /**
+ * Active sessions table for JWT token revocation
+ */
+export const sessions = mysqlTable("sessions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  token: text("token").notNull(), // JWT token (hashed for security)
+  deviceInfo: text("deviceInfo"), // User agent, device name, etc.
+  ipAddress: varchar("ipAddress", { length: 45 }), // IPv4 or IPv6
+  location: varchar("location", { length: 255 }), // City, Country
+  lastActivity: timestamp("lastActivity").defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Session = typeof sessions.$inferSelect;
+export type InsertSession = typeof sessions.$inferInsert;
+
+/**
  * Plans table defining subscription tiers
  */
 export const plans = mysqlTable("plans", {

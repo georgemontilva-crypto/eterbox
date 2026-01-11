@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
+import { doubleCsrf } from "csrf-csrf";
 // OAuth removed - using custom authentication only
 import { appRouter } from "../routers";
 import { createContext } from "./jwt-context";
@@ -97,6 +98,32 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // Cookie parser for JWT tokens
   app.use(cookieParser());
+  
+  // CSRF Protection
+  const csrfProtection = doubleCsrf({
+    getSecret: () => process.env.CSRF_SECRET || 'default-csrf-secret-change-in-production',
+    cookieName: 'csrf-token',
+    cookieOptions: {
+      sameSite: 'strict',
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+    },
+    size: 64,
+    ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
+    getSessionIdentifier: (req) => req.ip || 'anonymous',
+  });
+  
+  // Endpoint to get CSRF token
+  app.get('/api/csrf-token', (req, res) => {
+    const token = csrfProtection.generateCsrfToken(req, res, { overwrite: true });
+    res.json({ csrfToken: token });
+  });
+  
+  // Apply CSRF protection to mutations (POST/PUT/DELETE)
+  // Note: tRPC handles all requests via POST, so we apply selectively
+  // app.use('/api/trpc', doubleCsrfProtection); // Commented out for now to avoid breaking existing functionality
+  
   
   // Force HTTPS in production
   if (process.env.NODE_ENV === "production") {

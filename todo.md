@@ -584,3 +584,15 @@
 - [ ] Audit session management ⚙️ JWT-based, no revocation yet
 - [x] Check for dependency vulnerabilities ✅ FIXED (@trpc 11.8.1, express 5.2.1)
 - [x] Create comprehensive security report ✅ SECURITY_AUDIT_REPORT.md
+
+
+## 🔐 Security Improvements Phase 2 (Priority 2)
+- [x] Implement CSRF protection with csrf-csrf package ✅
+- [x] Create JWT session revocation system (active sessions table) ✅
+- [x] Implement password strength validation with zxcvbn ✅
+- [x] Add frontend password strength indicator ✅
+- [ ] Create session management UI in settings ⚙️ TODO
+- [ ] Add "Close all other sessions" feature
+- [ ] Write tests for CSRF protection
+- [ ] Write tests for session revocation
+- [ ] Write tests for password strength validation

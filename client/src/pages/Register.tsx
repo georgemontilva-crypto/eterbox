@@ -7,6 +7,7 @@ import { startRegistration } from "@simplewebauthn/browser";
 import { Welcome2FAModal } from "@/components/Welcome2FAModal";
 import { BiometricSetupModal } from "@/components/BiometricSetupModal";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
 
 export default function Register() {
   const { t } = useLanguage();
@@ -21,6 +22,7 @@ export default function Register() {
   const [showBiometric, setShowBiometric] = useState(false);
   const [show2FAWelcome, setShow2FAWelcome] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
+  const [isPasswordStrong, setIsPasswordStrong] = useState(false);
 
   const registerMutation = trpc.auth.register.useMutation();
   const webauthnRegisterMutation = trpc.webauthn.generateRegistrationOptions.useMutation();
@@ -37,6 +39,11 @@ export default function Register() {
 
     if (formData.password.length < 8) {
       setError(t("register.passwordLength"));
+      return;
+    }
+
+    if (!isPasswordStrong) {
+      setError("Por favor, usa una contraseña más fuerte (puntuación mínima: 3/4)");
       return;
     }
 
@@ -222,6 +229,11 @@ export default function Register() {
                   className="w-full px-4 py-3 rounded-lg bg-background border border-border focus:border-accent focus:outline-none transition-colors"
                   placeholder={t("register.passwordPlaceholder")}
                   required
+                />
+                <PasswordStrengthIndicator
+                  password={formData.password}
+                  userInputs={[formData.name, formData.email]}
+                  onStrengthChange={(isStrong) => setIsPasswordStrong(isStrong)}
                 />
               </div>
 
