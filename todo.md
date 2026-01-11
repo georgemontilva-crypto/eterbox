@@ -773,4 +773,13 @@
 - [x] Redirigir a 404 si el usuario no es admin
 - [x] Probar localmente que funcione correctamente
 - [x] Deploy a producción (commit afd51b6)
+- [x] BUG: La redirección no funciona correctamente - se queda en "Cargando datos..."
+- [x] Corregir: Mejorar lógica de redirección para manejar todos los casos (commit b8e4362)
 - [ ] Verificar en producción que usuarios no-admin sean redirigidos a 404
+
+## 🐛 Bug - Verificación de email impide login
+- [ ] Investigar por qué aparece "Please verify your email before logging in"
+- [ ] Verificar si los usuarios tienen emailVerified en false
+- [ ] Marcar usuarios existentes como verificados en Railway
+- [ ] Probar que el login funcione sin problemas
+- [x] Ocultar botón "Admin" en el menú hamburguesa para usuarios no-admin (commit 5d015ef)

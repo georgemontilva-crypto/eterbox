@@ -230,6 +230,9 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
   const [platform] = useState<Platform>(detectPlatform());
   const biometricName = getBiometricTypeName(platform);
   
+  // Check if user is admin
+  const { data: adminCheck } = trpc.admin.isAdmin.useQuery();
+  
   // 2FA states
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [secret, setSecret] = useState<string | null>(null);
@@ -882,7 +885,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
             <Home className="w-5 h-5 text-accent" />
             <span className="font-medium">{t("menu.dashboard")}</span>
           </button>
-          {userEmail === "admin@eterbox.com" && (
+          {adminCheck?.isAdmin && (
             <button
               onClick={() => {
                 setOpen(false);

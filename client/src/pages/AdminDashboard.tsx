@@ -28,8 +28,11 @@ export default function AdminDashboard() {
 
   // Redirect if not admin
   useEffect(() => {
-    if (!checkingAdmin && !adminCheck?.isAdmin) {
-      setLocation('/404');
+    if (!checkingAdmin && adminCheck) {
+      if (adminCheck.isAdmin === false) {
+        console.log('[AdminDashboard] User is not admin, redirecting to 404');
+        setLocation('/404');
+      }
     }
   }, [adminCheck, checkingAdmin, setLocation]);
 
@@ -44,8 +47,22 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!adminCheck?.isAdmin) {
+  // If adminCheck loaded but user is not admin, redirect
+  if (adminCheck && adminCheck.isAdmin === false) {
+    setLocation('/404');
     return null;
+  }
+
+  // If adminCheck is still loading or undefined, show loading
+  if (!adminCheck || !adminCheck.isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Verificando permisos...</p>
+        </div>
+      </div>
+    );
   }
 
   const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
