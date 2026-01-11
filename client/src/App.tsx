@@ -17,6 +17,12 @@ import ChangePassword from "./pages/ChangePassword";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Cookies from "./pages/Cookies";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
+import RefundPolicy from "./pages/RefundPolicy";
+import AboutUs from "./pages/AboutUs";
+import Security from "./pages/Security";
+import FAQ from "./pages/FAQ";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 import { SplashScreen } from "./components/SplashScreen";
@@ -70,6 +76,12 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/cookies" component={Cookies} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/cookie-policy" component={CookiePolicy} />
+      <Route path="/refund-policy" component={RefundPolicy} />
+      <Route path="/about" component={AboutUs} />
+      <Route path="/security" component={Security} />
+      <Route path="/faq" component={FAQ} />
       <Route path="/verify-2fa" component={Verify2FA} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />

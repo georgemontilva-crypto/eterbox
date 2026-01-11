@@ -596,3 +596,28 @@
 - [ ] Write tests for CSRF protection
 - [ ] Write tests for session revocation
 - [ ] Write tests for password strength validation
+
+
+## 🔐 Security Phase 3 - Complete Implementation
+- [ ] Create Sessions Management UI in Settings
+- [ ] Add "Active Sessions" panel showing device, location, last activity
+- [ ] Implement "Close this session" button
+- [ ] Implement "Close all other sessions" button
+- [ ] Integrate CSRF token in tRPC client
+- [ ] Add CSRF validation middleware in tRPC server
+- [ ] Create security events logging system
+- [ ] Log failed login attempts
+- [ ] Log password changes
+- [ ] Log session revocations
+- [ ] Send email notifications for security events
+
+## 📄 Legal & Informational Pages
+- [x] Create About Us page ✅
+- [x] Create Privacy Policy page ✅
+- [x] Create Cookie Policy page ✅
+- [x] Create Security page ✅
+- [x] Create Terms & Conditions page ✅ (already existed)
+- [x] Create Refund Policy page ✅
+- [x] Create detailed FAQ page ✅
+- [x] Update footer with legal links ✅ (links in all pages)
+- [x] Update navigation with info pages ✅ (routes added to App.tsx)
