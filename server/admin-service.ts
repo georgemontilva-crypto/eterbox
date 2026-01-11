@@ -128,7 +128,7 @@ export async function createSuperAdmin(userId: number, createdBy?: number): Prom
         can_view_revenue = true,
         can_manage_admins = true,
         can_view_analytics = true,
-        updated_at = NOW()
+        updatedAt = NOW()
     `);
 
     return true;
@@ -195,7 +195,7 @@ export async function addAdmin(
         can_view_revenue = EXCLUDED.can_view_revenue,
         can_manage_admins = EXCLUDED.can_manage_admins,
         can_view_analytics = EXCLUDED.can_view_analytics,
-        updated_at = NOW()
+        updatedAt = NOW()
     `);
 
     return { success: true };
@@ -246,16 +246,20 @@ export async function getAllAdmins() {
     if (!db) return [];
 
     const result: any = await db.execute(sql`
-      SELECT u.id, u.name, u.email, u.created_at,
+      SELECT u.id, u.name, u.email, u.createdAt,
              ap.is_super_admin, ap.can_view_users, ap.can_edit_users, ap.can_delete_users,
              ap.can_send_bulk_emails, ap.can_view_revenue, ap.can_manage_admins, ap.can_view_analytics,
-             ap.created_at as admin_since
+             ap.createdAt as admin_since
       FROM users u
       INNER JOIN admin_permissions ap ON u.id = ap.user_id
-      ORDER BY ap.is_super_admin DESC, u.created_at ASC
+      ORDER BY ap.is_super_admin DESC, u.createdAt ASC
     `);
 
-    return result || [];
+    // MySQL2 returns result as [rows, fields], we need the rows array
+    const rows = result[0];
+    if (!Array.isArray(rows)) return [];
+    
+    return rows;
   } catch (error) {
     console.error('[Admin] Error getting admins:', error);
     return [];
@@ -297,7 +301,7 @@ export async function getAnalytics(period: 'day' | 'week' | 'month' | 'year' = '
     // New users in period
     const newUsersResult: any = await db.execute(sql`
       SELECT COUNT(*) as count FROM users
-      WHERE created_at >= ${startDate.toISOString()}
+      WHERE createdAt >= ${startDate.toISOString()}
     `);
     const newUsers = newUsersResult?.[0]?.count || 0;
 
@@ -311,14 +315,14 @@ export async function getAnalytics(period: 'day' | 'week' | 'month' | 'year' = '
     // Revenue in period
     const periodRevenueResult: any = await db.execute(sql`
       SELECT COALESCE(SUM(amount), 0) as total FROM payment_history
-      WHERE status = 'completed' AND created_at >= ${startDate.toISOString()}
+      WHERE status = 'completed' AND createdAt >= ${startDate.toISOString()}
     `);
     const periodRevenue = parseFloat(periodRevenueResult?.[0]?.total || '0');
 
     // Active subscriptions
     const activeSubsResult: any = await db.execute(sql`
       SELECT COUNT(*) as count FROM users
-      WHERE plan_id IS NOT NULL AND plan_id != 1
+      WHERE planId IS NOT NULL AND planId != 1
     `);
     const activeSubscriptions = activeSubsResult?.[0]?.count || 0;
 
@@ -326,26 +330,26 @@ export async function getAnalytics(period: 'day' | 'week' | 'month' | 'year' = '
     const usersByPlanResult: any = await db.execute(sql`
       SELECT p.name, COUNT(u.id) as count
       FROM plans p
-      LEFT JOIN users u ON p.id = u.plan_id
+      LEFT JOIN users u ON p.id = u.planId
       GROUP BY p.id, p.name
       ORDER BY p.id
     `);
 
     // Daily registrations (last 30 days)
     const dailyRegsResult: any = await db.execute(sql`
-      SELECT DATE(created_at) as date, COUNT(*) as count
+      SELECT DATE(createdAt) as date, COUNT(*) as count
       FROM users
-      WHERE created_at >= ${new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()}
-      GROUP BY DATE(created_at)
+      WHERE createdAt >= ${new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()}
+      GROUP BY DATE(createdAt)
       ORDER BY date ASC
     `);
 
     // Daily revenue (last 30 days)
     const dailyRevenueResult: any = await db.execute(sql`
-      SELECT DATE(created_at) as date, COALESCE(SUM(amount), 0) as total
+      SELECT DATE(createdAt) as date, COALESCE(SUM(amount), 0) as total
       FROM payment_history
-      WHERE status = 'completed' AND created_at >= ${new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()}
-      GROUP BY DATE(created_at)
+      WHERE status = 'completed' AND createdAt >= ${new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()}
+      GROUP BY DATE(createdAt)
       ORDER BY date ASC
     `);
 
@@ -378,13 +382,13 @@ export async function getUsersWithExpiringSubscriptions(daysBeforeExpiry: number
     targetDate.setDate(targetDate.getDate() + daysBeforeExpiry);
 
     const result: any = await db.execute(sql`
-      SELECT u.id, u.name, u.email, u.subscription_end_date, p.name as plan_name, p.price
+      SELECT u.id, u.name, u.email, u.subscriptionEndDate, p.name as plan_name, p.price
       FROM users u
-      INNER JOIN plans p ON u.plan_id = p.id
-      WHERE u.subscription_end_date IS NOT NULL
-        AND u.subscription_end_date <= ${targetDate.toISOString()}
-        AND u.subscription_end_date > NOW()
-      ORDER BY u.subscription_end_date ASC
+      INNER JOIN plans p ON u.planId = p.id
+      WHERE u.subscriptionEndDate IS NOT NULL
+        AND u.subscriptionEndDate <= ${targetDate.toISOString()}
+        AND u.subscriptionEndDate > NOW()
+      ORDER BY u.subscriptionEndDate ASC
     `);
 
     return result || [];

@@ -1,5 +1,15 @@
 # EterBox - Security Vault TODO
 
+## 🚨 URGENTE - Errores SQL en Producción
+- [x] Corregir todas las queries SQL con created_at → createdAt
+- [x] Corregir todas las queries SQL con updated_at → updatedAt  
+- [x] Corregir todas las queries SQL con plan_id → planId
+- [x] Corregir todas las queries SQL con subscription_end_date → subscriptionEndDate
+- [x] Corregir acceso a result[0] en todas las queries de admin-service.ts
+- [x] Verificar que botón "Administration" solo se muestra para admins (ya estaba correcto)
+- [ ] Hacer deployment a Railway
+- [ ] Verificar que admin panel funciona correctamente en producción
+
 ## ✅ Completado
 
 ### Panel de Administración Básico
@@ -783,3 +793,9 @@
 - [ ] Marcar usuarios existentes como verificados en Railway
 - [ ] Probar que el login funcione sin problemas
 - [x] Ocultar botón "Admin" en el menú hamburguesa para usuarios no-admin (commit 5d015ef)
+
+## 🚨 BUG CRÍTICO - getAdminPermissions devuelve null
+- [ ] Error SQL en Railway: ER_BAD_FIELD_ERROR - columna desconocida
+- [ ] getAdminPermissions() devuelve null en lugar de los permisos
+- [ ] Revisar query SQL en admin-service.ts
+- [ ] Corregir y hacer deployment urgente

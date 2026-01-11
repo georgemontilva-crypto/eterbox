@@ -233,7 +233,7 @@ export const adminRouter = router({
       } else if (input.targetUsers === 'free') {
         targetUsersList = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.planId, 1));
       } else {
-        targetUsersList = await db.select({ id: users.id, email: users.email }).from(users).where(sql`plan_id IS NOT NULL AND plan_id != 1`);
+        targetUsersList = await db.select({ id: users.id, email: users.email }).from(users).where(sql`planId IS NOT NULL AND planId != 1`);
       }
 
       // Send emails
@@ -338,7 +338,7 @@ export const adminRouter = router({
       
       let sent = 0;
       for (const user of expiringUsers) {
-        const daysLeft = Math.ceil((new Date(user.subscription_end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        const daysLeft = Math.ceil((new Date(user.subscriptionEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
         
         await emailService.sendMarketingEmail({
           userId: user.id,
@@ -347,7 +347,7 @@ export const adminRouter = router({
           title: 'Recordatorio de Renovación',
           body: `
             <p>Hola ${user.name},</p>
-            <p>Tu suscripción al plan <strong>${user.plan_name}</strong> vencerá el <strong>${new Date(user.subscription_end_date).toLocaleDateString('es-ES')}</strong>.</p>
+            <p>Tu suscripción al plan <strong>${user.plan_name}</strong> vencerá el <strong>${new Date(user.subscriptionEndDate).toLocaleDateString('es-ES')}</strong>.</p>
             <p>Para continuar disfrutando de todas las características premium, renueva tu suscripción antes de que expire.</p>
             <p><strong>Precio:</strong> $${user.price}/mes</p>
           `,
