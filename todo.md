@@ -816,3 +816,10 @@
 - [x] Flujo correcto: sin login → /admin → /login
 - [ ] Deployment a Railway
 - [ ] Verificar en producción
+
+## 🎨 Mejorar página 404 para usuarios logueados
+- [x] Detectar si usuario está autenticado en NotFound.tsx
+- [x] Cambiar botón "Go Home" a "Go to Dashboard" si está logueado
+- [x] Redirigir a /dashboard en lugar de /
+- [x] Agregar traducción goDashboard
+- [ ] Deployment a Railway

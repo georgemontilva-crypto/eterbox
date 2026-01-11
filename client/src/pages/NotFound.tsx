@@ -1,14 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Home, Shield } from "lucide-react";
+import { AlertCircle, Home, LayoutDashboard, Shield } from "lucide-react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function NotFound() {
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
+  const { isAuthenticated } = useAuth();
 
-  const handleGoHome = () => {
-    setLocation("/");
+  const handleGoBack = () => {
+    if (isAuthenticated) {
+      setLocation("/dashboard");
+    } else {
+      setLocation("/");
+    }
   };
 
   return (
@@ -47,12 +53,21 @@ export default function NotFound() {
           {/* Action Button */}
           <div className="pt-4">
             <Button
-              onClick={handleGoHome}
+              onClick={handleGoBack}
               size="lg"
               className="bg-accent hover:bg-accent/90 text-white px-8 py-6 text-lg rounded-[15px] transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              <Home className="w-5 h-5 mr-2" />
-              {t("notFound.goHome") || "Go Home"}
+              {isAuthenticated ? (
+                <>
+                  <LayoutDashboard className="w-5 h-5 mr-2" />
+                  {t("notFound.goDashboard") || "Go to Dashboard"}
+                </>
+              ) : (
+                <>
+                  <Home className="w-5 h-5 mr-2" />
+                  {t("notFound.goHome") || "Go Home"}
+                </>
+              )}
             </Button>
           </div>
         </div>
