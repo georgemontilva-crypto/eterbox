@@ -639,11 +639,11 @@ export default function Dashboard() {
                 return (
                   <Card key={folder.id} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(folder.id)}>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Folder className="w-5 h-5 text-accent" />
-                        <div>
+                      <div className="flex items-start gap-3">
+                        <Folder className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div className="flex flex-wrap items-baseline gap-2">
                           <p className="font-semibold">{folder.name}</p>
-                          <p className="text-sm text-muted-foreground">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
+                          <p className="text-sm text-muted-foreground whitespace-nowrap">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">

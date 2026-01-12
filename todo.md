@@ -883,3 +883,9 @@
 - [x] Aplicar Math.round() al precio principal en Pricing.tsx
 - [x] Verificar que funcione en planes mensuales y anuales
 - [ ] Deployment a Railway
+
+## 📁 Ajustar Layout de Carpetas
+- [x] Contador de credenciales al lado del nombre de carpeta (misma línea)
+- [x] Si el nombre es muy largo, el contador pasa abajo
+- [x] Ícono de carpeta siempre alineado verticalmente con el título
+- [ ] Deployment a Railway
