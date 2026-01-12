@@ -17,5 +17,6 @@ export const ENV = {
   supportEmail: process.env.SUPPORT_EMAIL ?? "support@eterbox.com",
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY ?? "",
   adminContactEmail: process.env.ADMIN_CONTACT_EMAIL ?? "contact@eterbox.com",
+  resendApiKey: process.env.RESEND_API_KEY ?? "",
 };
 

@@ -410,17 +410,21 @@ export async function sendContactFormNotification(
 ): Promise<boolean> {
   try {
     const adminEmail = ENV.adminContactEmail;
-    console.log('[EmailService] Sending contact form notification to:', adminEmail);
+    console.log('[EmailService] Sending contact form notification');
+    console.log('[EmailService] From:', contactEmail);
+    console.log('[EmailService] To:', adminEmail);
+    console.log('[EmailService] Subject:', contactSubject);
     
     // Try using Resend first if API key is available
-    if (process.env.RESEND_API_KEY) {
+    if (ENV.resendApiKey) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        console.log('[EmailService] Using Resend API');
+        const resend = new Resend(ENV.resendApiKey);
         
         const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
         const htmlContent = await emailTemplateService.renderTemplate('contact-form', data);
         
-        await resend.emails.send({
+        const result = await resend.emails.send({
           from: ENV.supportEmail,
           to: adminEmail,
           subject: `📨 New Contact Message: ${contactSubject}`,
@@ -428,12 +432,16 @@ export async function sendContactFormNotification(
           replyTo: contactEmail,
         });
         
+        console.log('[EmailService] Resend response:', JSON.stringify(result));
         console.log('[EmailService] Contact form notification sent successfully via Resend');
         return true;
       } catch (resendError) {
-        console.error('[EmailService] Resend failed, falling back to SMTP:', resendError);
+        console.error('[EmailService] Resend failed:', resendError);
+        console.error('[EmailService] Resend error details:', JSON.stringify(resendError, null, 2));
         // Fall back to SMTP if Resend fails
       }
+    } else {
+      console.log('[EmailService] Resend API key not configured, using SMTP');
     }
     
     // Fallback to SMTP
