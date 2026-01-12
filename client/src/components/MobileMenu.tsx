@@ -883,13 +883,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
     if (activeView === "notifications") {
       return (
         <div className="flex flex-col h-full">
-          <div className="p-6 border-b border-border/20">
-            <button onClick={handleBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4">
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">{t("common.back")}</span>
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-6">
             <NotificationSettings />
           </div>
         </div>

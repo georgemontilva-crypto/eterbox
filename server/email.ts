@@ -777,3 +777,131 @@ export async function sendNewDeviceEmail(
 
   return sendEmail({ to: email, subject, html });
 }
+
+
+// ============ SUPPORT TICKET EMAIL ============
+
+export function getSupportTicketConfirmationTemplate(
+  userName: string,
+  ticketId: number,
+  subject: string,
+  language: 'en' | 'es' = 'en'
+) {
+  const translations = {
+    en: {
+      subject: `${APP_NAME} - Support Ticket Confirmation`,
+      greeting: `Hello ${userName},`,
+      intro: `Thank you for contacting ${APP_NAME} support. We have received your message and created a support ticket for you.`,
+      ticketInfo: 'Ticket Information:',
+      ticketId: `Ticket ID: #${ticketId}`,
+      ticketSubject: `Subject: ${subject}`,
+      response: 'Our support team will review your request and get back to you as soon as possible, usually within 24 hours.',
+      tracking: 'You can use your Ticket ID to track the status of your request.',
+      footer: `Thank you for choosing ${APP_NAME}!<br>The ${APP_NAME} Team`,
+    },
+    es: {
+      subject: `${APP_NAME} - Confirmación de Ticket de Soporte`,
+      greeting: `Hola ${userName},`,
+      intro: `Gracias por contactar al soporte de ${APP_NAME}. Hemos recibido tu mensaje y creado un ticket de soporte para ti.`,
+      ticketInfo: 'Información del Ticket:',
+      ticketId: `ID del Ticket: #${ticketId}`,
+      ticketSubject: `Asunto: ${subject}`,
+      response: 'Nuestro equipo de soporte revisará tu solicitud y te responderá lo antes posible, generalmente dentro de 24 horas.',
+      tracking: 'Puedes usar tu ID de Ticket para rastrear el estado de tu solicitud.',
+      footer: `¡Gracias por elegir ${APP_NAME}!<br>El equipo de ${APP_NAME}`,
+    },
+  };
+
+  const t = translations[language];
+
+  return `
+    <!DOCTYPE html>
+    <html lang="${language}">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${t.subject}</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a; color: #e5e5e5;">
+      <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td align="center" style="padding: 40px 0;">
+            <table role="presentation" style="width: 600px; max-width: 100%; border-collapse: collapse; background-color: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;">
+              <!-- Header -->
+              <tr>
+                <td style="padding: 40px 40px 20px; text-align: center;">
+                  <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #3b82f6;">📋 ${APP_NAME}</h1>
+                </td>
+              </tr>
+              
+              <!-- Content -->
+              <tr>
+                <td style="padding: 20px 40px;">
+                  <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.5; color: #e5e5e5;">
+                    ${t.greeting}
+                  </p>
+                  <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.5; color: #a3a3a3;">
+                    ${t.intro}
+                  </p>
+                  
+                  <!-- Ticket Info Box -->
+                  <div style="margin: 30px 0; padding: 20px; background-color: #2a2a2a; border-left: 4px solid #3b82f6; border-radius: 4px;">
+                    <p style="margin: 0 0 15px; font-size: 16px; font-weight: 600; color: #e5e5e5;">
+                      ${t.ticketInfo}
+                    </p>
+                    <p style="margin: 0 0 10px; font-size: 14px; color: #a3a3a3;">
+                      <strong>${t.ticketId}</strong>
+                    </p>
+                    <p style="margin: 0; font-size: 14px; color: #a3a3a3;">
+                      <strong>${t.ticketSubject}</strong>
+                    </p>
+                  </div>
+                  
+                  <p style="margin: 30px 0 20px; font-size: 16px; line-height: 1.5; color: #a3a3a3;">
+                    ${t.response}
+                  </p>
+                  
+                  <p style="margin: 20px 0 0; font-size: 14px; line-height: 1.5; color: #737373;">
+                    ${t.tracking}
+                  </p>
+                </td>
+              </tr>
+              
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 30px 40px; border-top: 1px solid #2a2a2a;">
+                  <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #737373;">
+                    ${t.footer}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+export async function sendSupportTicketConfirmation(
+  email: string,
+  userName: string,
+  ticketId: number,
+  subject: string,
+  language: 'en' | 'es' = 'en'
+) {
+  const t = language === 'en' ? {
+    subject: `${APP_NAME} - Support Ticket Confirmation`,
+  } : {
+    subject: `${APP_NAME} - Confirmación de Ticket de Soporte`,
+  };
+
+  const html = getSupportTicketConfirmationTemplate(userName, ticketId, subject, language);
+
+  return sendEmail({
+    to: email,
+    subject: t.subject,
+    html,
+  });
+}

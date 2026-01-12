@@ -444,6 +444,22 @@ export const appRouter = router({
         // Send confirmation email
         await emailService.sendSupportTicketConfirmation(input.email, input.name, result?.insertId || 0, input.subject);
 
+        // Send email to support team
+        try {
+          const { Resend } = require('resend');
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          const supportEmail = process.env.SUPPORT_EMAIL || 'support@eterbox.com';
+          
+          await resend.emails.send({
+            from: supportEmail,
+            to: supportEmail,
+            subject: `New Support Ticket: ${input.subject}`,
+            html: `<h2>New Support Ticket</h2><p><strong>Ticket ID:</strong> #${result?.insertId || 0}</p><p><strong>From:</strong> ${input.name}</p><p><strong>Email:</strong> ${input.email}</p><p><strong>Subject:</strong> ${input.subject}</p><p><strong>Category:</strong> ${input.category || 'general'}</p><hr><h3>Message:</h3><p>${input.message.replace(/\n/g, '<br>')}</p>`
+          });
+        } catch (error) {
+          console.error('Error sending support email:', error);
+        }
+
         // Queue notification to support email
         await db.createEmailNotification({
           email: process.env.SUPPORT_EMAIL,

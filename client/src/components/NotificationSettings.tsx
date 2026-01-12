@@ -45,13 +45,13 @@ export function NotificationSettings() {
     setSaving(true);
     try {
       await updateMutation.mutateAsync({ [key]: newValue });
-      setSaveMessage('✓ Preferencias guardadas');
+      setSaveMessage(t('notifications.saved'));
       setTimeout(() => setSaveMessage(''), 2000);
     } catch (error) {
       console.error('Error updating preferences:', error);
       // Revert on error
       setPreferences(prev => ({ ...prev, [key]: !newValue }));
-      setSaveMessage('✗ Error al guardar');
+      setSaveMessage(t('notifications.error'));
       setTimeout(() => setSaveMessage(''), 2000);
     } finally {
       setSaving(false);
@@ -67,10 +67,10 @@ export function NotificationSettings() {
 
     try {
       await testNotificationMutation.mutateAsync({ type });
-      alert(`✓ Notificación de prueba enviada. Revisa tu email.`);
+      alert(t('notifications.testSent'));
     } catch (error) {
       console.error('Error sending test notification:', error);
-      alert('✗ Error al enviar notificación de prueba');
+      alert(t('notifications.testError'));
     } finally {
       setTestingSecurity(false);
       setTestingMarketing(false);
@@ -84,9 +84,9 @@ export function NotificationSettings() {
         <div className="flex items-center gap-3">
           <Bell className="w-6 h-6 text-accent" />
           <div>
-            <h2 className="text-xl font-bold">Notificaciones</h2>
+            <h2 className="text-xl font-bold">{t('notifications.title')}</h2>
             <p className="text-xs text-muted-foreground mt-1">
-              Configura tus alertas por email
+              {t('notifications.subtitle')}
             </p>
           </div>
         </div>
@@ -106,9 +106,9 @@ export function NotificationSettings() {
               <Shield className="w-5 h-5 text-red-500" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold">Alertas de Seguridad</h3>
+              <h3 className="font-semibold">{t('notifications.security.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
-                Actividad sospechosa, cambios críticos
+                {t('notifications.security.desc')}
               </p>
             </div>
           </div>
@@ -121,7 +121,7 @@ export function NotificationSettings() {
               disabled={testingSecurity || !preferences.security_alerts}
               className="px-2 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {testingSecurity ? '...' : 'Probar'}
+              {testingSecurity ? '...' : t('notifications.security.test')}
             </button>
             <button
               onClick={(e) => {
@@ -144,12 +144,9 @@ export function NotificationSettings() {
         </button>
         {expandedSecurity && (
           <div className="px-4 pb-4 pt-0 border-t border-border/20">
-            <ul className="text-xs text-muted-foreground space-y-1.5 mt-3">
-              <li>• Nuevos inicios de sesión desde dispositivos desconocidos</li>
-              <li>• Cambios en tu contraseña maestra</li>
-              <li>• Activación/desactivación de 2FA</li>
-              <li>• Actividad sospechosa detectada</li>
-            </ul>
+            <p className="text-xs text-muted-foreground whitespace-pre-line mt-3">
+              {t('notifications.security.items')}
+            </p>
           </div>
         )}
       </div>
@@ -165,9 +162,9 @@ export function NotificationSettings() {
               <TrendingUp className="w-5 h-5 text-blue-500" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold">Promociones</h3>
+              <h3 className="font-semibold">{t('notifications.marketing.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
-                Ofertas especiales y descuentos
+                {t('notifications.marketing.desc')}
               </p>
             </div>
           </div>
@@ -180,7 +177,7 @@ export function NotificationSettings() {
               disabled={testingMarketing || !preferences.marketing_promos}
               className="px-2 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {testingMarketing ? '...' : 'Probar'}
+              {testingMarketing ? '...' : t('notifications.security.test')}
             </button>
             <button
               onClick={(e) => {
@@ -203,12 +200,9 @@ export function NotificationSettings() {
         </button>
         {expandedMarketing && (
           <div className="px-4 pb-4 pt-0 border-t border-border/20">
-            <ul className="text-xs text-muted-foreground space-y-1.5 mt-3">
-              <li>• Ofertas y descuentos exclusivos</li>
-              <li>• Anuncios de nuevas características</li>
-              <li>• Consejos y mejores prácticas</li>
-              <li>• Eventos y webinars</li>
-            </ul>
+            <p className="text-xs text-muted-foreground mt-3">
+              {t('notifications.marketing.desc')}
+            </p>
           </div>
         )}
       </div>
@@ -224,9 +218,9 @@ export function NotificationSettings() {
               <Mail className="w-5 h-5 text-green-500" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold">Actualizaciones</h3>
+              <h3 className="font-semibold">{t('notifications.updates.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
-                Nuevas versiones y mejoras
+                {t('notifications.updates.desc')}
               </p>
             </div>
           </div>
@@ -252,12 +246,9 @@ export function NotificationSettings() {
         </button>
         {expandedUpdates && (
           <div className="px-4 pb-4 pt-0 border-t border-border/20">
-            <ul className="text-xs text-muted-foreground space-y-1.5 mt-3">
-              <li>• Nuevas versiones y actualizaciones</li>
-              <li>• Cambios en términos y políticas</li>
-              <li>• Mejoras de seguridad importantes</li>
-              <li>• Mantenimiento programado</li>
-            </ul>
+            <p className="text-xs text-muted-foreground mt-3">
+              {t('notifications.updates.desc')}
+            </p>
           </div>
         )}
       </div>
@@ -273,9 +264,9 @@ export function NotificationSettings() {
               <Activity className="w-5 h-5 text-purple-500" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold">Actividad de Cuenta</h3>
+              <h3 className="font-semibold">{t('notifications.activity.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
-                Resúmenes y recordatorios
+                {t('notifications.activity.desc')}
               </p>
             </div>
           </div>
@@ -301,27 +292,22 @@ export function NotificationSettings() {
         </button>
         {expandedActivity && (
           <div className="px-4 pb-4 pt-0 border-t border-border/20">
-            <ul className="text-xs text-muted-foreground space-y-1.5 mt-3">
-              <li>• Resúmenes semanales de actividad</li>
-              <li>• Recordatorios de renovación de suscripción</li>
-              <li>• Confirmaciones de pago</li>
-              <li>• Notificaciones de soporte</li>
-            </ul>
+            <p className="text-xs text-muted-foreground mt-3">
+              {t('notifications.activity.desc')}
+            </p>
           </div>
         )}
       </div>
 
-      {/* Info Box */}
-      <div className="bg-accent/5 border border-accent/20 rounded-xl p-3 mt-4">
+      {/* About Notifications */}
+      <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-border/50">
         <div className="flex items-start gap-2">
-          <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-          <div className="text-xs text-muted-foreground">
-            <p className="font-medium text-foreground mb-1">Sobre las notificaciones</p>
-            <ul className="space-y-0.5">
-              <li>• Se envían a tu email registrado</li>
-              <li>• Las alertas de seguridad son recomendadas</li>
-              <li>• Puedes cambiar estas preferencias cuando quieras</li>
-            </ul>
+          <Check className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="text-xs font-medium">{t('notifications.about')}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {t('notifications.aboutText')}
+            </p>
           </div>
         </div>
       </div>

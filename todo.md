@@ -946,3 +946,11 @@
 - [ ] Mejorar distribución de botones en vista de carpeta móvil
 - [ ] Quitar ícono de rosca de vista interna de carpeta
 - [ ] Corregir envío de emails de prueba en configuración de alertas
+
+## 🔧 Correcciones y Mejoras UX
+
+- [ ] Corregir traducciones de notificaciones (aparecen en español con idioma inglés)
+- [ ] Unificar botones Back (quitar botón inferior, usar solo flecha superior)
+- [ ] Implementar envío de email en formulario de Support a support@eterbox.com
+- [ ] Agregar sección de FAQs en Support
+- [ ] Agregar sección About Us con información del sistema en Support

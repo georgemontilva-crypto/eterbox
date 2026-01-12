@@ -463,6 +463,30 @@ export const translations: Translations = {
   "resetPassword.invalidLink": { en: "Invalid Reset Link", es: "Enlace Inválido" },
   "resetPassword.requestNewLink": { en: "Request New Link", es: "Solicitar Nuevo Enlace" },
   "resetPassword.verifying": { en: "Verifying reset link...", es: "Verificando enlace..." },
+  
+  // Notifications
+  "notifications.title": { en: "Notifications", es: "Notificaciones" },
+  "notifications.subtitle": { en: "Configure your email alerts", es: "Configura tus alertas por email" },
+  "notifications.about": { en: "About Notifications", es: "Sobre las notificaciones" },
+  "notifications.aboutText": { en: "Emails are sent to your registered email", es: "Se envían a tu email registrado" },
+  "notifications.saved": { en: "✓ Preferences saved", es: "✓ Preferencias guardadas" },
+  "notifications.error": { en: "✗ Error saving", es: "✗ Error al guardar" },
+  "notifications.testSent": { en: "✓ Test notification sent. Check your email.", es: "✓ Notificación de prueba enviada. Revisa tu email." },
+  "notifications.testError": { en: "✗ Error sending test notification", es: "✗ Error al enviar notificación de prueba" },
+  
+  "notifications.security.title": { en: "Security Alerts", es: "Alertas de Seguridad" },
+  "notifications.security.desc": { en: "Receive notifications about suspicious activity, new logins, password changes, and security settings.", es: "Recibe notificaciones sobre actividad sospechosa, nuevos inicios de sesión, cambios de contraseña y configuración de seguridad." },
+  "notifications.security.items": { en: "• New logins from unknown devices\n• Changes to your master password\n• 2FA activation/deactivation\n• Suspicious activity detected", es: "• Nuevos inicios de sesión desde dispositivos desconocidos\n• Cambios en tu contraseña maestra\n• Activación/desactivación de 2FA\n• Actividad sospechosa detectada" },
+  "notifications.security.test": { en: "Test", es: "Probar" },
+  
+  "notifications.marketing.title": { en: "Promotions and Marketing", es: "Promociones y Marketing" },
+  "notifications.marketing.desc": { en: "Receive special offers, exclusive discounts and news about new features.", es: "Recibe ofertas especiales, descuentos exclusivos y noticias sobre nuevas funciones." },
+  
+  "notifications.updates.title": { en: "Updates", es: "Actualizaciones" },
+  "notifications.updates.desc": { en: "New versions and improvements", es: "Nuevas versiones y mejoras" },
+  
+  "notifications.activity.title": { en: "Account Activity", es: "Actividad de Cuenta" },
+  "notifications.activity.desc": { en: "Summaries and reminders", es: "Resúmenes y recordatorios" },
 };
 
 interface LanguageContextType {
