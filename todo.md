@@ -928,3 +928,13 @@
 - [ ] Detectar nuevo dispositivo en login y enviar notificación
 - [x] Traducciones EN/ES para todos los emails
 - [ ] Deployment a Railway
+
+## 🔧 Configuración de Resend API Key
+- [x] Configurar RESEND_API_KEY en variables de entorno
+- [ ] Probar envío de email de recuperación de contraseña
+- [ ] Verificar que emails lleguen correctamente
+
+## 🔧 Fix URLs en Emails - Apuntar a Producción
+- [x] Agregar variable FRONTEND_URL para configurar dominio
+- [x] Actualizar email.ts para usar FRONTEND_URL en lugar de localhost
+- [ ] Probar envío de email con URL correcta
