@@ -254,7 +254,7 @@ export default function Pricing() {
                   ) : (
                     <>
                       <div className="flex items-baseline gap-2">
-                        <p className="text-4xl font-bold">${price}</p>
+                        <p className="text-4xl font-bold">${Math.round(Number(price))}</p>
                         {discount > 0 && (
                           <span className="bg-green-500/20 text-green-400 text-xs font-semibold px-2 py-1 rounded-full">
                             -{discount}%

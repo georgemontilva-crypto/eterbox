@@ -877,3 +877,9 @@
 - [x] Quitar decimales de precios ($319 en lugar de $319.2)
 - [x] Usar Math.round() en lugar de toFixed(2) en Pricing.tsx
 - [ ] Deployment a Railway
+
+## 🔢 Eliminar Decimales de Precios Principales
+- [x] Encontrar donde se muestran los precios principales ($139.08, $319.2)
+- [x] Aplicar Math.round() al precio principal en Pricing.tsx
+- [x] Verificar que funcione en planes mensuales y anuales
+- [ ] Deployment a Railway
