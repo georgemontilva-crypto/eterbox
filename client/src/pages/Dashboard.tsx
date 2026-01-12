@@ -492,23 +492,23 @@ export default function Dashboard() {
           <p className="text-muted-foreground">Manage your passwords and credentials securely</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="p-4 md:p-6 border border-border/20">
-            <div className="flex items-center justify-between md:flex-col md:items-start">
-              <p className="text-sm text-muted-foreground">Current Plan</p>
-              <p className="text-xl md:text-2xl font-bold text-accent">{planName}</p>
+        <div className="grid grid-cols-3 gap-3 md:gap-4 mb-8">
+          <Card className="p-3 md:p-4 border border-border/20">
+            <div className="flex flex-col items-start">
+              <p className="text-xs md:text-sm text-muted-foreground mb-1">Current Plan</p>
+              <p className="text-base md:text-xl font-bold text-accent">{planName}</p>
             </div>
           </Card>
-          <Card className="p-4 md:p-6 border border-border/20">
-            <div className="flex items-center justify-between md:flex-col md:items-start">
-              <p className="text-sm text-muted-foreground">Credentials Used</p>
-              <p className="text-xl md:text-2xl font-bold">{credentials.length}/{(maxKeys === -1 || maxKeys >= 999999) ? "∞" : maxKeys}</p>
+          <Card className="p-3 md:p-4 border border-border/20">
+            <div className="flex flex-col items-start">
+              <p className="text-xs md:text-sm text-muted-foreground mb-1">Credentials Used</p>
+              <p className="text-base md:text-xl font-bold">{credentials.length}/{(maxKeys === -1 || maxKeys >= 999999) ? "∞" : maxKeys}</p>
             </div>
           </Card>
-          <Card className="p-4 md:p-6 border border-border/20">
-            <div className="flex items-center justify-between md:flex-col md:items-start">
-              <p className="text-sm text-muted-foreground">Folders Used</p>
-              <p className="text-xl md:text-2xl font-bold">{folders.length}/{(maxFolders === -1 || maxFolders >= 999999) ? "∞" : maxFolders}</p>
+          <Card className="p-3 md:p-4 border border-border/20">
+            <div className="flex flex-col items-start">
+              <p className="text-xs md:text-sm text-muted-foreground mb-1">Folders Used</p>
+              <p className="text-base md:text-xl font-bold">{folders.length}/{(maxFolders === -1 || maxFolders >= 999999) ? "∞" : maxFolders}</p>
             </div>
           </Card>
         </div>
@@ -620,12 +620,12 @@ export default function Dashboard() {
 
         {searchQuery.length === 0 && planName !== "Corporate" && (
           <div className="mb-8 p-4 rounded-[15px] bg-accent/10 border border-accent/30">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="pr-4 md:pr-8">
                 <p className="font-semibold">Upgrade Your Plan</p>
-                <p className="text-sm text-muted-foreground">Get more credentials and folders with a paid plan</p>
+                <p className="text-sm text-muted-foreground">Get more credentials and folders</p>
               </div>
-              <Button onClick={() => setLocation("/pricing")}>Upgrade Now</Button>
+              <Button onClick={() => setLocation("/pricing")} className="shrink-0">Upgrade Now</Button>
             </div>
           </div>
         )}

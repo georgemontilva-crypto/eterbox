@@ -864,3 +864,16 @@
 - [x] Icono ChevronDown con rotación animada
 - [x] Reducir tamaño de botones de acción (h-7 w-7)
 - [ ] Deployment a Railway
+
+## 🎨 Reorganización Tarjetas Estadísticas y Banner
+- [x] Reorganizar tarjetas de estadísticas en una sola fila horizontal (grid-cols-3)
+- [x] Cada tarjeta con título arriba y dato abajo (layout vertical flex-col)
+- [x] Eliminar grid de 2 filas, usar una sola fila
+- [x] Reducir padding (p-3 en móvil, p-4 en desktop)
+- [x] Ajustar banner "Upgrade Your Plan" con texto más corto ("Get more credentials and folders")
+- [x] Agregar padding a la derecha del texto para separar del botón (pr-4 md:pr-8)
+- [x] Agregar gap-4 entre texto y botón
+- [x] Botón con shrink-0 para evitar que se achique
+- [x] Quitar decimales de precios ($319 en lugar de $319.2)
+- [x] Usar Math.round() en lugar de toFixed(2) en Pricing.tsx
+- [ ] Deployment a Railway

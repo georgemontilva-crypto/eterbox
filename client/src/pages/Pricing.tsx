@@ -266,7 +266,7 @@ export default function Pricing() {
                       </p>
                       {billingPeriod === "yearly" && discount > 0 && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          {t("pricing.equivalentTo")} ${(Number(price) / 12).toFixed(2)}/{t("pricing.month")}
+                          {t("pricing.equivalentTo")} ${Math.round(Number(price) / 12)}/{t("pricing.month")}
                         </p>
                       )}
                     </>
