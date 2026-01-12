@@ -842,3 +842,12 @@
 - [x] Mencionar exportar/importar en features de planes pagos
 - [x] Agregar traducciones para badges y features
 - [ ] Deployment a Railway
+
+## 📱 Optimización Interfaz Móvil
+- [x] Mejorar layout de tarjetas de estadísticas (Current Plan, Credentials Used, Folders Used)
+- [x] Poner texto al lado del título en lugar de abajo para ahorrar espacio vertical
+- [x] Optimizar tarjeta de credencial dentro de carpetas para móvil
+- [x] Mejorar espaciado y organización en vista móvil
+- [x] Reducir padding y usar truncate para textos largos
+- [x] Mejorar tamaños de fuente para móvil
+- [ ] Deployment a Railway

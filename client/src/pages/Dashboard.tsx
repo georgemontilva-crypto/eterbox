@@ -233,17 +233,17 @@ export default function Dashboard() {
   };
 
   const renderCredentialCard = (cred: any, showMoveOption: boolean = true) => (
-    <Card key={cred.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <p className="font-semibold">{cred.platformName}</p>
+    <Card key={cred.id} className="p-3 md:p-4 border border-border/20 hover:border-accent/50 transition-colors">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm md:text-base mb-2">{cred.platformName}</p>
           
           {/* Username with copy button */}
           {cred.username && (
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-sm text-muted-foreground">Username:</span>
-              <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20 flex-1">{cred.username}</code>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(cred.username)}>
+            <div className="flex items-center gap-1 mb-1.5">
+              <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Username:</span>
+              <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.username}</code>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.username)}>
                 <Copy className="w-3 h-3" />
               </Button>
             </div>
@@ -251,34 +251,34 @@ export default function Dashboard() {
           
           {/* Email with copy button */}
           {cred.email && (
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-sm text-muted-foreground">Email:</span>
-              <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20 flex-1">{cred.email}</code>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(cred.email)}>
+            <div className="flex items-center gap-1 mb-1.5">
+              <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Email:</span>
+              <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.email}</code>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.email)}>
                 <Copy className="w-3 h-3" />
               </Button>
             </div>
           )}
           
           {/* Password with eye and copy buttons */}
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-sm text-muted-foreground">Password:</span>
-            <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20 flex-1">
+          <div className="flex items-center gap-1 mb-1.5">
+            <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Password:</span>
+            <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">
               {visiblePasswords.has(cred.id) ? cred.encryptedPassword : "••••••••••••"}
             </code>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => togglePasswordVisibility(cred.id)}>
+            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => togglePasswordVisibility(cred.id)}>
               {visiblePasswords.has(cred.id) ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
             </Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(cred.encryptedPassword)}>
+            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.encryptedPassword)}>
               <Copy className="w-3 h-3" />
             </Button>
           </div>
           
           {/* Notes */}
           {cred.notes && (
-            <div className="mt-3 pt-3 border-t border-border/20">
-              <p className="text-xs text-muted-foreground mb-1">Notes:</p>
-              <p className="text-sm text-foreground/80">{cred.notes}</p>
+            <div className="mt-2 pt-2 border-t border-border/20">
+              <p className="text-xs text-muted-foreground mb-0.5">Notes:</p>
+              <p className="text-xs md:text-sm text-foreground/80 break-words">{cred.notes}</p>
             </div>
           )}
         </div>
@@ -468,17 +468,23 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="p-6 border border-border/20">
-            <p className="text-sm text-muted-foreground">Current Plan</p>
-            <p className="text-2xl font-bold text-accent">{planName}</p>
+          <Card className="p-4 md:p-6 border border-border/20">
+            <div className="flex items-center justify-between md:flex-col md:items-start">
+              <p className="text-sm text-muted-foreground">Current Plan</p>
+              <p className="text-xl md:text-2xl font-bold text-accent">{planName}</p>
+            </div>
           </Card>
-          <Card className="p-6 border border-border/20">
-            <p className="text-sm text-muted-foreground">Credentials Used</p>
-            <p className="text-2xl font-bold">{credentials.length}/{(maxKeys === -1 || maxKeys >= 999999) ? "∞" : maxKeys}</p>
+          <Card className="p-4 md:p-6 border border-border/20">
+            <div className="flex items-center justify-between md:flex-col md:items-start">
+              <p className="text-sm text-muted-foreground">Credentials Used</p>
+              <p className="text-xl md:text-2xl font-bold">{credentials.length}/{(maxKeys === -1 || maxKeys >= 999999) ? "∞" : maxKeys}</p>
+            </div>
           </Card>
-          <Card className="p-6 border border-border/20">
-            <p className="text-sm text-muted-foreground">Folders Used</p>
-            <p className="text-2xl font-bold">{folders.length}/{(maxFolders === -1 || maxFolders >= 999999) ? "∞" : maxFolders}</p>
+          <Card className="p-4 md:p-6 border border-border/20">
+            <div className="flex items-center justify-between md:flex-col md:items-start">
+              <p className="text-sm text-muted-foreground">Folders Used</p>
+              <p className="text-xl md:text-2xl font-bold">{folders.length}/{(maxFolders === -1 || maxFolders >= 999999) ? "∞" : maxFolders}</p>
+            </div>
           </Card>
         </div>
 
