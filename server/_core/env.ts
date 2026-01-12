@@ -15,5 +15,7 @@ export const ENV = {
   smtpUser: process.env.SMTP_USER ?? "",
   smtpPassword: process.env.SMTP_PASSWORD ?? "",
   supportEmail: process.env.SUPPORT_EMAIL ?? "support@eterbox.com",
+  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY ?? "",
+  adminContactEmail: process.env.ADMIN_CONTACT_EMAIL ?? "contact@eterbox.com",
 };
 

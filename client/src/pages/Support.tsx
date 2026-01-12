@@ -3,9 +3,16 @@ import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Lock, Mail, MessageSquare, ChevronDown, Shield, Zap, Users } from "lucide-react";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+// Declare global grecaptcha type
+declare global {
+  interface Window {
+    grecaptcha: any;
+  }
+}
 
 const FAQs = [
   {
@@ -130,16 +137,59 @@ export default function Support() {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState("Getting Started");
+  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
   const submitMutation = trpc.support.submitTicket.useMutation();
+
+  // Load reCAPTCHA script
+  useEffect(() => {
+    const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+    if (!recaptchaSiteKey) return;
+
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
+    script.async = true;
+    script.onload = () => setRecaptchaLoaded(true);
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     try {
-      await submitMutation.mutateAsync(formData);
-      toast.success("Support ticket submitted successfully!");
+      let recaptchaToken: string | undefined;
+      
+      // Get reCAPTCHA token if available
+      const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+      if (recaptchaLoaded && recaptchaSiteKey && window.grecaptcha) {
+        try {
+          recaptchaToken = await window.grecaptcha.execute(recaptchaSiteKey, { action: 'submit_support' });
+        } catch (error) {
+          console.error('reCAPTCHA error:', error);
+          // Continue without reCAPTCHA if it fails
+        }
+      }
+      
+      await submitMutation.mutateAsync({
+        ...formData,
+        recaptchaToken,
+      });
+      
+      toast.success("Message sent successfully! We'll get back to you soon.", {
+        duration: 4000,
+        position: "top-center",
+      });
+      
       setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
-      toast.error("Failed to submit support ticket");
+    } catch (error: any) {
+      const errorMessage = error?.message || "Failed to send message. Please try again.";
+      toast.error(errorMessage, {
+        duration: 4000,
+        position: "top-center",
+      });
     }
   };
 

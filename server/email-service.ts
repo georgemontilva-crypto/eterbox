@@ -32,16 +32,38 @@ export async function sendEmail(
   from: string = ENV.smtpUser
 ): Promise<boolean> {
   try {
+    // Check if SMTP is configured
+    if (!ENV.smtpHost || !ENV.smtpUser || !ENV.smtpPassword) {
+      console.warn('[Email] SMTP not configured. Email not sent.');
+      console.warn('[Email] Missing:', {
+        host: !ENV.smtpHost,
+        user: !ENV.smtpUser,
+        password: !ENV.smtpPassword
+      });
+      return false;
+    }
+
     const transporter = getTransporter();
-    await transporter.sendMail({
-      from,
+    const info = await transporter.sendMail({
+      from: from || ENV.smtpUser,
       to,
       subject,
       html: htmlContent,
     });
+    
+    console.log('[Email] Email sent successfully:', {
+      to,
+      subject,
+      messageId: info.messageId
+    });
+    
     return true;
   } catch (error) {
-    console.error("Failed to send email:", error);
+    console.error('[Email] Failed to send email:', {
+      to,
+      subject,
+      error: error instanceof Error ? error.message : String(error)
+    });
     return false;
   }
 }
@@ -386,10 +408,21 @@ export async function sendContactFormNotification(
   contactMessage: string
 ): Promise<boolean> {
   try {
-    const adminEmail = process.env.ADMIN_CONTACT_EMAIL || 'contact@eterbox.com';
+    const adminEmail = ENV.adminContactEmail;
+    console.log('[EmailService] Sending contact form notification to:', adminEmail);
+    
     const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
     const htmlContent = await emailTemplateService.renderTemplate('contact-form', data);
-    return sendEmail(adminEmail, `📨 New Contact Message: ${contactSubject}`, htmlContent);
+    
+    const result = await sendEmail(adminEmail, `📨 New Contact Message: ${contactSubject}`, htmlContent, ENV.smtpUser);
+    
+    if (result) {
+      console.log('[EmailService] Contact form notification sent successfully');
+    } else {
+      console.error('[EmailService] Contact form notification failed to send');
+    }
+    
+    return result;
   } catch (error) {
     console.error('[EmailService] Failed to send contact form notification:', error);
     return false;

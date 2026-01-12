@@ -431,8 +431,31 @@ export const appRouter = router({
         subject: z.string().min(1).max(255),
         message: z.string().min(1).max(5000),
         category: z.string().optional(),
+        recaptchaToken: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
+        // Verify reCAPTCHA if token is provided
+        if (input.recaptchaToken && process.env.RECAPTCHA_SECRET_KEY) {
+          try {
+            const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${input.recaptchaToken}`
+            });
+            const recaptchaData = await recaptchaResponse.json();
+            
+            if (!recaptchaData.success || recaptchaData.score < 0.5) {
+              throw new TRPCError({
+                code: "BAD_REQUEST",
+                message: "reCAPTCHA verification failed. Please try again.",
+              });
+            }
+          } catch (error) {
+            console.error('[Support] reCAPTCHA verification error:', error);
+            // Continue even if reCAPTCHA fails to not block legitimate users
+          }
+        }
+
         const result = await db.createSupportTicket({
           email: input.email,
           name: input.name,
@@ -442,7 +465,12 @@ export const appRouter = router({
         });
 
         // Send confirmation email
-        await emailService.sendSupportTicketConfirmation(input.email, input.name, result?.insertId || 0, input.subject);
+        try {
+          await emailService.sendSupportTicketConfirmation(input.email, input.name, result?.insertId || 0, input.subject);
+        } catch (emailError) {
+          console.error('[Support] Failed to send confirmation email:', emailError);
+          // Don't fail the request if email fails
+        }
 
         // Send email to support team
         try {
