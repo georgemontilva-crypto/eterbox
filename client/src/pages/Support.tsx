@@ -159,6 +159,31 @@ export default function Support() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validación del lado del cliente
+    if (formData.name.length < 2) {
+      toast.error("Name must be at least 2 characters", {
+        duration: 4000,
+        position: "top-center",
+      });
+      return;
+    }
+    
+    if (formData.subject.length < 5) {
+      toast.error("Subject must be at least 5 characters", {
+        duration: 4000,
+        position: "top-center",
+      });
+      return;
+    }
+    
+    if (formData.message.length < 10) {
+      toast.error("Message must be at least 10 characters", {
+        duration: 4000,
+        position: "top-center",
+      });
+      return;
+    }
+    
     try {
       let recaptchaToken: string | undefined;
       
@@ -315,6 +340,8 @@ export default function Support() {
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-3 py-2 text-sm rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
                     required
+                    minLength={2}
+                    placeholder="Enter your name"
                   />
                 </div>
                 <div>
@@ -335,6 +362,8 @@ export default function Support() {
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     className="w-full px-3 py-2 text-sm rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent"
                     required
+                    minLength={5}
+                    placeholder="What is this about?"
                   />
                 </div>
                 <div>
@@ -344,6 +373,8 @@ export default function Support() {
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full px-3 py-2 text-sm rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent min-h-24"
                     required
+                    minLength={10}
+                    placeholder="Tell us how we can help you (at least 10 characters)"
                   />
                 </div>
                 <Button type="submit" className="w-full text-sm" disabled={submitMutation.isPending}>
