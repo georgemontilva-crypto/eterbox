@@ -425,6 +425,13 @@ export const translations: Translations = {
   "notFound.description": { en: "Sorry, the page you are looking for doesn't exist. It may have been moved or deleted.", es: "Lo sentimos, la página que buscas no existe. Puede haber sido movida o eliminada." },
   "notFound.goHome": { en: "Go Home", es: "Ir al Inicio" },
   "notFound.goDashboard": { en: "Go to Dashboard", es: "Ir al Panel" },
+  
+  // Inactivity Modal
+  "inactivity.title": { en: "Session Expiring Soon", es: "Sesión Por Expirar" },
+  "inactivity.description": { en: "You've been inactive for a while. For your security, your session will automatically end soon.", es: "Has estado inactivo por un tiempo. Por tu seguridad, tu sesión finalizará automáticamente pronto." },
+  "inactivity.secondsRemaining": { en: "seconds remaining", es: "segundos restantes" },
+  "inactivity.stayLoggedIn": { en: "Stay Logged In", es: "Mantener Sesión" },
+  "inactivity.logoutNow": { en: "Logout Now", es: "Cerrar Sesión" },
 };
 
 interface LanguageContextType {

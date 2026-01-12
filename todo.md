@@ -889,3 +889,13 @@
 - [x] Si el nombre es muy largo, el contador pasa abajo
 - [x] Ícono de carpeta siempre alineado verticalmente con el título
 - [ ] Deployment a Railway
+
+## 🔐 Sistema de Auto-Logout por Inactividad
+- [x] Crear hook useInactivityTimer (detecta mouse, teclado, scroll, touch)
+- [x] Timer de 15 minutos de inactividad
+- [x] Modal de advertencia 1 minuto antes del logout
+- [x] Botón "Stay Logged In" para extender sesión
+- [x] Logout automático al cumplir tiempo
+- [x] Traducciones EN/ES completas
+- [x] Integrar en rutas protegidas (Dashboard, Settings, Admin)
+- [ ] Deployment a Railway

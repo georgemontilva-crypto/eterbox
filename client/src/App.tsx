@@ -28,10 +28,44 @@ import { Loader2 } from "lucide-react";
 import { SplashScreen } from "./components/SplashScreen";
 import { CookieConsent } from "./components/CookieConsent";
 import { useState, useEffect } from "react";
+import { useInactivityTimer } from "./hooks/useInactivityTimer";
+import { InactivityWarningModal } from "./components/InactivityWarningModal";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, logout } = useAuth();
   const [, setLocation] = useLocation();
+  const [showWarning, setShowWarning] = useState(false);
+
+  // 15 minutos de inactividad total, advertencia 1 minuto antes
+  const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutos
+  const WARNING_TIME = 60 * 1000; // 1 minuto antes
+
+  const handleWarning = () => {
+    setShowWarning(true);
+  };
+
+  const handleTimeout = () => {
+    logout();
+    setLocation('/login');
+  };
+
+  const handleStayLoggedIn = () => {
+    setShowWarning(false);
+    extendSession();
+  };
+
+  const handleLogoutNow = () => {
+    setShowWarning(false);
+    logout();
+    setLocation('/login');
+  };
+
+  const { extendSession } = useInactivityTimer({
+    timeout: INACTIVITY_TIMEOUT,
+    warningTime: WARNING_TIME,
+    onWarning: handleWarning,
+    onTimeout: handleTimeout,
+  });
 
   if (loading) {
     return (
@@ -46,7 +80,17 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     return null;
   }
 
-  return <Component />;
+  return (
+    <>
+      <Component />
+      <InactivityWarningModal
+        isOpen={showWarning}
+        onStayLoggedIn={handleStayLoggedIn}
+        onLogout={handleLogoutNow}
+        remainingSeconds={60}
+      />
+    </>
+  );
 }
 
 function AdminRoute({ component: Component }: { component: React.ComponentType }) {
