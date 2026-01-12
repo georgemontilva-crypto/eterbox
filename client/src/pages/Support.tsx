@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ContactSuccessModal } from "@/components/ContactSuccessModal";
 
 // Declare global grecaptcha type
 declare global {
@@ -138,6 +139,7 @@ export default function Support() {
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState("Getting Started");
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const submitMutation = trpc.contact.submitContactForm.useMutation();
 
   // Load reCAPTCHA script
@@ -205,11 +207,10 @@ export default function Support() {
         message: formData.message,
       });
       
-      toast.success("Message sent successfully! We'll get back to you soon.", {
-        duration: 4000,
-        position: "top-center",
-      });
+      // Show success modal
+      setShowSuccessModal(true);
       
+      // Clear form
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error: any) {
       const errorMessage = error?.message || "Failed to send message. Please try again.";
@@ -405,6 +406,12 @@ export default function Support() {
           </div>
         </div>
       </main>
+      
+      {/* Success Modal */}
+      <ContactSuccessModal 
+        isOpen={showSuccessModal} 
+        onClose={() => setShowSuccessModal(false)} 
+      />
     </div>
   );
 }
