@@ -4,7 +4,7 @@ import { sql } from 'drizzle-orm';
 // Email service configuration (using Resend which is already configured in ENV)
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = process.env.SUPPORT_EMAIL || 'noreply@eterbox.com';
-const APP_URL = process.env.VITE_APP_URL || 'https://eterbox.com';
+const APP_URL = process.env.FRONTEND_URL || 'https://eterbox.com';
 
 export type NotificationType = 'security' | 'marketing' | 'update' | 'activity';
 

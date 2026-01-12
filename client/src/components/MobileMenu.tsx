@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog } from "lucide-react";
+import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { detectPlatform, getBiometricTypeName, type Platform } from "@/lib/platform";
+import { NotificationSettings } from "./NotificationSettings";
 
 // Inline Payment History Component
 function PaymentHistoryInline() {
@@ -220,7 +221,7 @@ interface MobileMenuProps {
   userEmail?: string;
 }
 
-type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "language" | "generator" | "payments" | null;
+type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "notifications" | "language" | "generator" | "payments" | null;
 
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword, userEmail }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -339,6 +340,12 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
       icon: Settings,
       label: t("menu.settings"),
       description: t("menu.settingsDesc"),
+    },
+    {
+      id: "notifications" as ActiveView,
+      icon: Bell,
+      label: "Email Alerts",
+      description: "Configure email notifications",
     },
     {
       id: "language" as ActiveView,
@@ -868,6 +875,22 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
           </div>
           <div className="flex-1 overflow-y-auto p-4">
             <PaymentHistoryInline />
+          </div>
+        </div>
+      );
+    }
+
+    if (activeView === "notifications") {
+      return (
+        <div className="flex flex-col h-full">
+          <div className="p-6 border-b border-border/20">
+            <button onClick={handleBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">{t("common.back")}</span>
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <NotificationSettings />
           </div>
         </div>
       );

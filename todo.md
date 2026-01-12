@@ -938,3 +938,11 @@
 - [x] Agregar variable FRONTEND_URL para configurar dominio
 - [x] Actualizar email.ts para usar FRONTEND_URL en lugar de localhost
 - [ ] Probar envío de email con URL correcta
+
+## 📱 Mejoras UX Móvil
+- [ ] Contador de credenciales al lado del título de carpeta en móvil
+- [ ] Mover configuración de alertas del ícono rosca al menú desplegable
+- [x] Hacer alertas collapsibles (desplegables)
+- [ ] Mejorar distribución de botones en vista de carpeta móvil
+- [ ] Quitar ícono de rosca de vista interna de carpeta
+- [ ] Corregir envío de emails de prueba en configuración de alertas
