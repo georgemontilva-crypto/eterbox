@@ -851,3 +851,16 @@
 - [x] Reducir padding y usar truncate para textos largos
 - [x] Mejorar tamaños de fuente para móvil
 - [ ] Deployment a Railway
+
+## 📱 Vista Colapsable y Header Carpetas Móvil
+- [x] Reducir tamaño del nombre de carpeta en móvil (text-lg en móvil, text-2xl en desktop)
+- [x] Apilar botones verticalmente (Add New Credential sobre Add Existing)
+- [x] Reducir altura y ancho de botones en móvil (h-9 en móvil, h-10 en desktop)
+- [x] Implementar estado colapsado/expandido para credenciales
+- [x] Por defecto mostrar solo título/plataforma (colapsado)
+- [x] Click para expandir y ver username, email, password, notas
+- [x] Aplicar a credenciales en Dashboard
+- [x] Aplicar a credenciales dentro de carpetas
+- [x] Icono ChevronDown con rotación animada
+- [x] Reducir tamaño de botones de acción (h-7 w-7)
+- [ ] Deployment a Railway

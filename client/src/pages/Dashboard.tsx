@@ -10,7 +10,7 @@ import { ExportCredentialsModal } from "@/components/ExportCredentialsModal";
 import { ImportCredentialsModal } from "@/components/ImportCredentialsModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus, Shield } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { RenewalBanner } from "@/components/RenewalBanner";
 import { useLocation } from "wouter";
@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [showBiometricSetup, setShowBiometricSetup] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [expandedCredentials, setExpandedCredentials] = useState<Set<number>>(new Set());
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -58,6 +59,16 @@ export default function Dashboard() {
       newSet.add(id);
     }
     setVisiblePasswords(newSet);
+  };
+
+  const toggleCredentialExpansion = (id: number) => {
+    const newSet = new Set(expandedCredentials);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setExpandedCredentials(newSet);
   };
 
   const copyToClipboard = async (text: string) => {
@@ -232,70 +243,84 @@ export default function Dashboard() {
     setFolderSearchQuery("");
   };
 
-  const renderCredentialCard = (cred: any, showMoveOption: boolean = true) => (
-    <Card key={cred.id} className="p-3 md:p-4 border border-border/20 hover:border-accent/50 transition-colors">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm md:text-base mb-2">{cred.platformName}</p>
-          
-          {/* Username with copy button */}
-          {cred.username && (
-            <div className="flex items-center gap-1 mb-1.5">
-              <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Username:</span>
-              <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.username}</code>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.username)}>
-                <Copy className="w-3 h-3" />
-              </Button>
+  const renderCredentialCard = (cred: any, showMoveOption: boolean = true) => {
+    const isExpanded = expandedCredentials.has(cred.id);
+    
+    return (
+      <Card key={cred.id} className="p-3 md:p-4 border border-border/20 hover:border-accent/50 transition-colors">
+        <div className="flex items-start justify-between gap-2">
+          <div 
+            className="flex-1 min-w-0 cursor-pointer" 
+            onClick={() => toggleCredentialExpansion(cred.id)}
+          >
+            <div className="flex items-center gap-2">
+              <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+              <p className="font-semibold text-sm md:text-base">{cred.platformName}</p>
             </div>
-          )}
-          
-          {/* Email with copy button */}
-          {cred.email && (
-            <div className="flex items-center gap-1 mb-1.5">
-              <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Email:</span>
-              <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.email}</code>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.email)}>
-                <Copy className="w-3 h-3" />
-              </Button>
-            </div>
-          )}
-          
-          {/* Password with eye and copy buttons */}
-          <div className="flex items-center gap-1 mb-1.5">
-            <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Password:</span>
-            <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">
-              {visiblePasswords.has(cred.id) ? cred.encryptedPassword : "••••••••••••"}
-            </code>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => togglePasswordVisibility(cred.id)}>
-              {visiblePasswords.has(cred.id) ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-            </Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.encryptedPassword)}>
-              <Copy className="w-3 h-3" />
-            </Button>
+            
+            {isExpanded && (
+              <div className="mt-3 space-y-1.5" onClick={(e) => e.stopPropagation()}>
+                {/* Username with copy button */}
+                {cred.username && (
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Username:</span>
+                    <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.username}</code>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.username)}>
+                      <Copy className="w-3 h-3" />
+                    </Button>
+                  </div>
+                )}
+                
+                {/* Email with copy button */}
+                {cred.email && (
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Email:</span>
+                    <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.email}</code>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.email)}>
+                      <Copy className="w-3 h-3" />
+                    </Button>
+                  </div>
+                )}
+                
+                {/* Password with eye and copy buttons */}
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Password:</span>
+                  <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">
+                    {visiblePasswords.has(cred.id) ? cred.encryptedPassword : "••••••••••••"}
+                  </code>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => togglePasswordVisibility(cred.id)}>
+                    {visiblePasswords.has(cred.id) ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.encryptedPassword)}>
+                    <Copy className="w-3 h-3" />
+                  </Button>
+                </div>
+                
+                {/* Notes */}
+                {cred.notes && (
+                  <div className="mt-2 pt-2 border-t border-border/20">
+                    <p className="text-xs text-muted-foreground mb-0.5">Notes:</p>
+                    <p className="text-xs md:text-sm text-foreground/80 break-words">{cred.notes}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           
-          {/* Notes */}
-          {cred.notes && (
-            <div className="mt-2 pt-2 border-t border-border/20">
-              <p className="text-xs text-muted-foreground mb-0.5">Notes:</p>
-              <p className="text-xs md:text-sm text-foreground/80 break-words">{cred.notes}</p>
-            </div>
-          )}
-        </div>
-        
-        <div className="flex flex-col items-center gap-1 ml-4">
-          {showMoveOption && (
-            <Button variant="ghost" size="sm" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
-              <Folder className="w-4 h-4" />
+          <div className="flex flex-col items-center gap-1 ml-2">
+            {showMoveOption && (
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
+                <Folder className="w-4 h-4" />
+              </Button>
+            )}
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDeleteCredential(cred.id)}>
+              <Trash2 className="w-4 h-4 text-destructive" />
             </Button>
-          )}
-          <Button variant="ghost" size="sm" onClick={() => handleDeleteCredential(cred.id)}>
-            <Trash2 className="w-4 h-4 text-destructive" />
-          </Button>
+          </div>
         </div>
-      </div>
-    </Card>
-  );
+      </Card>
+    );
+  };
 
   // Folder Detail View
   if (activeFolderView && activeFolder) {
@@ -325,19 +350,19 @@ export default function Dashboard() {
             <ArrowLeft className="w-4 h-4 mr-2" />Back to Dashboard
           </Button>
 
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
             <div className="flex items-center gap-3">
-              <Folder className="w-8 h-8 text-accent" />
+              <Folder className="w-6 h-6 md:w-8 md:h-8 text-accent flex-shrink-0" />
               <div>
-                <h1 className="text-2xl font-bold">{activeFolder.name}</h1>
-                <p className="text-sm text-muted-foreground">{activeFolderCredentials.length} credential{activeFolderCredentials.length !== 1 ? 's' : ''}</p>
+                <h1 className="text-lg md:text-2xl font-bold">{activeFolder.name}</h1>
+                <p className="text-xs md:text-sm text-muted-foreground">{activeFolderCredentials.length} credential{activeFolderCredentials.length !== 1 ? 's' : ''}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full md:w-auto">
+              <Button className="h-9 md:h-10 text-sm" onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
                 <Plus className="w-4 h-4 mr-2" />Add New Credential
               </Button>
-              <Button variant="outline" onClick={() => setShowAddExistingModal(true)}>
+              <Button variant="outline" className="h-9 md:h-10 text-sm" onClick={() => setShowAddExistingModal(true)}>
                 <FolderPlus className="w-4 h-4 mr-2" />Add Existing
               </Button>
             </div>
