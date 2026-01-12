@@ -214,6 +214,16 @@ export default function Login() {
                   />
                 </div>
 
+                <div className="text-right mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setLocation("/forgot-password")}
+                    className="text-sm text-accent hover:underline"
+                  >
+                    {t("login.forgotPassword")}
+                  </button>
+                </div>
+
                 <Button
                   type="submit"
                   disabled={loading}

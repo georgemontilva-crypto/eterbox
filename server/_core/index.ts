@@ -155,6 +155,10 @@ async function startServer() {
   app.use("/api/trpc/auth.register", authLimiter);
   app.use("/api/trpc/twoFactor.verify", authLimiter);
   
+  // Password reset routes (Express)
+  const passwordResetRouter = (await import('../auth.password-reset')).default;
+  app.use("/api/auth", authLimiter, passwordResetRouter);
+  
   app.use(
     "/api/trpc",
     createExpressMiddleware({

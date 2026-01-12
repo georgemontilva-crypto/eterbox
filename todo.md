@@ -899,3 +899,19 @@
 - [x] Traducciones EN/ES completas
 - [x] Integrar en rutas protegidas (Dashboard, Settings, Admin)
 - [ ] Deployment a Railway
+
+## 🔑 Sistema de Recuperación de Contraseña (Forgot Password)
+- [x] Usar campos existentes resetToken y resetTokenExpiry en tabla users
+- [x] Endpoint POST /api/auth/forgot-password (recibe email, genera token, envía email)
+- [x] Endpoint POST /api/auth/reset-password (valida token, actualiza contraseña)
+- [x] Endpoint POST /api/auth/verify-reset-token (valida si token es válido)
+- [x] Servicio de envío de emails con Resend (email.ts)
+- [x] Template HTML para email de recuperación
+- [x] Página ForgotPassword.tsx (formulario para ingresar email)
+- [x] Página ResetPassword.tsx (formulario para nueva contraseña)
+- [x] Link "Forgot Password?" en Login.tsx
+- [x] Validación 2FA si el usuario tiene 2FA activado
+- [x] Traducciones EN/ES completas (forgotPassword.*, resetPassword.*)
+- [x] Expiración de tokens (15 minutos)
+- [x] Invalidar tokens después de usarlos
+- [ ] Deployment a Railway

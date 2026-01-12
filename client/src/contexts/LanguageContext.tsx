@@ -432,6 +432,37 @@ export const translations: Translations = {
   "inactivity.secondsRemaining": { en: "seconds remaining", es: "segundos restantes" },
   "inactivity.stayLoggedIn": { en: "Stay Logged In", es: "Mantener Sesión" },
   "inactivity.logoutNow": { en: "Logout Now", es: "Cerrar Sesión" },
+  
+  // Forgot Password
+  "login.forgotPassword": { en: "Forgot password?", es: "¿Olvidaste tu contraseña?" },
+  "forgotPassword.title": { en: "Reset Password", es: "Restablecer Contraseña" },
+  "forgotPassword.description": { en: "Enter your email address and we'll send you a link to reset your password.", es: "Ingresa tu dirección de email y te enviaremos un enlace para restablecer tu contraseña." },
+  "forgotPassword.sendResetLink": { en: "Send Reset Link", es: "Enviar Enlace" },
+  "forgotPassword.sending": { en: "Sending...", es: "Enviando..." },
+  "forgotPassword.backToLogin": { en: "Back to Login", es: "Volver al Login" },
+  "forgotPassword.checkEmail": { en: "Check Your Email", es: "Revisa Tu Email" },
+  "forgotPassword.emailSent": { en: "If an account exists with this email, you'll receive a password reset link shortly. Please check your inbox and spam folder.", es: "Si existe una cuenta con este email, recibirás un enlace para restablecer tu contraseña en breve. Por favor revisa tu bandeja de entrada y carpeta de spam." },
+  
+  // Reset Password
+  "resetPassword.title": { en: "Create New Password", es: "Crear Nueva Contraseña" },
+  "resetPassword.description": { en: "Enter your new password below.", es: "Ingresa tu nueva contraseña abajo." },
+  "resetPassword.newPassword": { en: "New Password", es: "Nueva Contraseña" },
+  "resetPassword.newPasswordPlaceholder": { en: "Minimum 8 characters", es: "Mínimo 8 caracteres" },
+  "resetPassword.confirmPassword": { en: "Confirm New Password", es: "Confirmar Nueva Contraseña" },
+  "resetPassword.confirmPasswordPlaceholder": { en: "Repeat your new password", es: "Repite tu nueva contraseña" },
+  "resetPassword.twoFactorCode": { en: "2FA Code", es: "Código 2FA" },
+  "resetPassword.twoFactorPlaceholder": { en: "000000", es: "000000" },
+  "resetPassword.twoFactorHelp": { en: "Enter the 6-digit code from your authenticator app", es: "Ingresa el código de 6 dígitos de tu aplicación de autenticación" },
+  "resetPassword.twoFactorRequired": { en: "2FA code is required", es: "El código 2FA es requerido" },
+  "resetPassword.resetPassword": { en: "Reset Password", es: "Restablecer Contraseña" },
+  "resetPassword.resetting": { en: "Resetting...", es: "Restableciendo..." },
+  "resetPassword.passwordMismatch": { en: "Passwords do not match", es: "Las contraseñas no coinciden" },
+  "resetPassword.passwordTooShort": { en: "Password must be at least 8 characters", es: "La contraseña debe tener al menos 8 caracteres" },
+  "resetPassword.success": { en: "Password Reset Successful", es: "Contraseña Restablecida" },
+  "resetPassword.successMessage": { en: "Your password has been reset successfully. You can now log in with your new password.", es: "Tu contraseña ha sido restablecida exitosamente. Ahora puedes iniciar sesión con tu nueva contraseña." },
+  "resetPassword.invalidLink": { en: "Invalid Reset Link", es: "Enlace Inválido" },
+  "resetPassword.requestNewLink": { en: "Request New Link", es: "Solicitar Nuevo Enlace" },
+  "resetPassword.verifying": { en: "Verifying reset link...", es: "Verificando enlace..." },
 };
 
 interface LanguageContextType {
