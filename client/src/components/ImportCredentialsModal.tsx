@@ -80,7 +80,7 @@ export function ImportCredentialsModal({ open, onOpenChange }: ImportCredentials
   };
 
   const parseCSV = (text: string): any[] => {
-    const lines = text.split('\\n').filter(line => line.trim());
+    const lines = text.split(/\r?\n/).filter(line => line.trim());
     if (lines.length < 2) return [];
 
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));

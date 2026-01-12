@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CreateCredentialModal } from "@/components/CreateCredentialModal";
+import { EditCredentialModal } from "@/components/EditCredentialModal";
 import { CreateFolderModal } from "@/components/CreateFolderModal";
+import { EditFolderModal } from "@/components/EditFolderModal";
 import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { DeleteFolderDialog } from "@/components/DeleteFolderDialog";
 import { BiometricSetupModal } from "@/components/BiometricSetupModal";
@@ -10,7 +12,7 @@ import { ExportCredentialsModal } from "@/components/ExportCredentialsModal";
 import { ImportCredentialsModal } from "@/components/ImportCredentialsModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { RenewalBanner } from "@/components/RenewalBanner";
 import { useLocation } from "wouter";
@@ -40,6 +42,10 @@ export default function Dashboard() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [expandedCredentials, setExpandedCredentials] = useState<Set<number>>(new Set());
+  const [showEditCredentialModal, setShowEditCredentialModal] = useState(false);
+  const [selectedCredentialForEdit, setSelectedCredentialForEdit] = useState<any>(null);
+  const [showEditFolderModal, setShowEditFolderModal] = useState(false);
+  const [selectedFolderForEdit, setSelectedFolderForEdit] = useState<any>(null);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -308,6 +314,9 @@ export default function Dashboard() {
           </div>
           
           <div className="flex flex-col items-center gap-1 ml-2">
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}>
+              <Edit className="w-4 h-4" />
+            </Button>
             {showMoveOption && (
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
                 <Folder className="w-4 h-4" />
@@ -650,6 +659,9 @@ export default function Dashboard() {
                         <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}>
                           <Plus className="w-4 h-4" />
                         </Button>
+                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFolderForEdit(folder); setShowEditFolderModal(true); }}>
+                          <Edit className="w-4 h-4" />
+                        </Button>
                         <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}>
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
@@ -714,6 +726,17 @@ export default function Dashboard() {
       <ImportCredentialsModal
         open={showImportModal}
         onOpenChange={setShowImportModal}
+      />
+      <EditCredentialModal
+        open={showEditCredentialModal}
+        onOpenChange={setShowEditCredentialModal}
+        credential={selectedCredentialForEdit}
+        folders={folders}
+      />
+      <EditFolderModal
+        open={showEditFolderModal}
+        onOpenChange={setShowEditFolderModal}
+        folder={selectedFolderForEdit}
       />
     </div>
   );
