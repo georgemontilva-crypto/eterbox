@@ -1,6 +1,29 @@
 # Configuración de Email y reCAPTCHA
 
-## 📧 Configuración de Email (SMTP)
+## 📧 Configuración de Email
+
+### Opción recomendada: Resend (más fácil y confiable)
+
+1. Crear cuenta en: https://resend.com/
+2. Verificar tu dominio (o usar el dominio de prueba que te dan)
+3. Ir a **API Keys** y crear una nueva clave
+4. Copiar la clave API
+
+**Configurar en Railway:**
+```bash
+RESEND_API_KEY=re_tu_clave_api_aqui
+SUPPORT_EMAIL=onboarding@resend.dev  # O tu dominio verificado
+ADMIN_CONTACT_EMAIL=tu-email@gmail.com  # Email donde recibirás los mensajes
+```
+
+**Nota importante sobre Resend:**
+- El campo `from` debe ser un email de tu dominio verificado
+- Para pruebas, usa `onboarding@resend.dev`
+- Para producción, verifica tu dominio en Resend
+
+---
+
+## 📧 Configuración alternativa: SMTP
 
 ### Opción 1: Gmail
 1. Ir a tu cuenta de Google: https://myaccount.google.com/
@@ -64,7 +87,19 @@ VITE_RECAPTCHA_SITE_KEY=tu-site-key-aqui
 4. Agrega las siguientes variables:
 
 ```
-# Email
+# Email con Resend (RECOMENDADO)
+RESEND_API_KEY=re_tu_clave_api
+SUPPORT_EMAIL=onboarding@resend.dev
+ADMIN_CONTACT_EMAIL=tu-email@gmail.com
+
+# reCAPTCHA
+RECAPTCHA_SECRET_KEY=tu-secret-key
+VITE_RECAPTCHA_SITE_KEY=tu-site-key
+```
+
+**O si prefieres usar SMTP:**
+```
+# Email con SMTP
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=tu-email@gmail.com

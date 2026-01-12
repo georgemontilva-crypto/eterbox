@@ -411,13 +411,39 @@ export async function sendContactFormNotification(
     const adminEmail = ENV.adminContactEmail;
     console.log('[EmailService] Sending contact form notification to:', adminEmail);
     
+    // Try using Resend first if API key is available
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const { Resend } = require('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        
+        const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
+        const htmlContent = await emailTemplateService.renderTemplate('contact-form', data);
+        
+        await resend.emails.send({
+          from: ENV.supportEmail,
+          to: adminEmail,
+          subject: `📨 New Contact Message: ${contactSubject}`,
+          html: htmlContent,
+          replyTo: contactEmail,
+        });
+        
+        console.log('[EmailService] Contact form notification sent successfully via Resend');
+        return true;
+      } catch (resendError) {
+        console.error('[EmailService] Resend failed, falling back to SMTP:', resendError);
+        // Fall back to SMTP if Resend fails
+      }
+    }
+    
+    // Fallback to SMTP
     const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
     const htmlContent = await emailTemplateService.renderTemplate('contact-form', data);
     
     const result = await sendEmail(adminEmail, `📨 New Contact Message: ${contactSubject}`, htmlContent, ENV.smtpUser);
     
     if (result) {
-      console.log('[EmailService] Contact form notification sent successfully');
+      console.log('[EmailService] Contact form notification sent successfully via SMTP');
     } else {
       console.error('[EmailService] Contact form notification failed to send');
     }
