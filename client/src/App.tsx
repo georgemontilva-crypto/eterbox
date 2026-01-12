@@ -32,6 +32,7 @@ import { CookieConsent } from "./components/CookieConsent";
 import { useState, useEffect } from "react";
 import { useInactivityTimer } from "./hooks/useInactivityTimer";
 import { InactivityWarningModal } from "./components/InactivityWarningModal";
+import { Toaster } from "@/components/ui/sonner";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, loading, logout } = useAuth();
@@ -182,6 +183,7 @@ function App() {
           <ErrorBoundary>
             <Router />
             <CookieConsent />
+            <Toaster />
           </ErrorBoundary>
         </LanguageProvider>
       </ThemeProvider>

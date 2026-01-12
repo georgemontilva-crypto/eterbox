@@ -138,7 +138,7 @@ export default function Support() {
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState("Getting Started");
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
-  const submitMutation = trpc.support.submitTicket.useMutation();
+  const submitMutation = trpc.contact.submitContactForm.useMutation();
 
   // Load reCAPTCHA script
   useEffect(() => {
@@ -174,8 +174,10 @@ export default function Support() {
       }
       
       await submitMutation.mutateAsync({
-        ...formData,
-        recaptchaToken,
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
       });
       
       toast.success("Message sent successfully! We'll get back to you soon.", {
