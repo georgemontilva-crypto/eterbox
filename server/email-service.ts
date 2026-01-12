@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
 import { emailTemplateService } from "./email-template-service";
+import { Resend } from "resend";
 
 let transporter: any = null;
 
@@ -414,7 +415,6 @@ export async function sendContactFormNotification(
     // Try using Resend first if API key is available
     if (process.env.RESEND_API_KEY) {
       try {
-        const { Resend } = require('resend');
         const resend = new Resend(process.env.RESEND_API_KEY);
         
         const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
