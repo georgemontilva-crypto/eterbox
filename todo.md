@@ -823,3 +823,22 @@
 - [x] Redirigir a /dashboard en lugar de /
 - [x] Agregar traducción goDashboard
 - [ ] Deployment a Railway
+
+## 🎯 Mejoras UX Credenciales + Exportar/Importar
+- [x] Mostrar campo "Notes" en la vista de credencial
+- [x] Agregar botón copiar al lado de Username
+- [x] Agregar botón copiar al lado de Email
+- [x] Mejorar layout de credenciales con labels claros
+- [x] Implementar exportar credenciales (JSON/CSV) - Solo Basic, Corporate, Enterprise
+- [x] Crear ExportCredentialsModal con opciones JSON y CSV
+- [x] Agregar botón de exportar en Dashboard (solo planes pagos)
+- [x] Advertencia de seguridad en modal de exportación
+- [x] Implementar importar credenciales
+- [x] Crear ImportCredentialsModal con soporte JSON y CSV
+- [x] Agregar botón de importar en Dashboard (solo planes pagos)
+- [x] Mostrar resultados de importación (exitosos/fallidos)
+- [x] Agregar badge "Para Pequeñas Empresas" en plan Corporate
+- [x] Agregar badge "Para Grandes Empresas" en plan Enterprise
+- [x] Mencionar exportar/importar en features de planes pagos
+- [x] Agregar traducciones para badges y features
+- [ ] Deployment a Railway

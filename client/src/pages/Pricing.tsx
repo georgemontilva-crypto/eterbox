@@ -233,6 +233,16 @@ export default function Pricing() {
                     {t("pricing.popular")}
                   </div>
                 )}
+                {plan.name === "Corporate" && !isCurrentPlan(plan.id) && (
+                  <div className="bg-blue-500/20 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4">
+                    {t("pricing.forSmallBusinesses")}
+                  </div>
+                )}
+                {plan.name === "Enterprise" && !isCurrentPlan(plan.id) && (
+                  <div className="bg-purple-500/20 text-purple-400 text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4">
+                    {t("pricing.forLargeBusinesses")}
+                  </div>
+                )}
                 
                 <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                 <p className="text-muted-foreground mb-6 text-sm">{t(plan.descriptionKey)}</p>
@@ -291,6 +301,12 @@ export default function Pricing() {
                     <Check className="w-5 h-5 text-accent flex-shrink-0" />
                     <span className="text-sm">{t("pricing.twoFactorAuth")}</span>
                   </div>
+                  {plan.name !== "Free" && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-sm">{t("pricing.exportImport")}</span>
+                    </div>
+                  )}
                   {(plan.name === "Corporate" || plan.name === "Enterprise") && (
                     <>
                       <div className="flex items-center gap-3">

@@ -6,6 +6,8 @@ import { MoveToFolderDialog } from "@/components/MoveToFolderDialog";
 import { DeleteFolderDialog } from "@/components/DeleteFolderDialog";
 import { BiometricSetupModal } from "@/components/BiometricSetupModal";
 import { PasswordGeneratorModal } from "@/components/PasswordGeneratorModal";
+import { ExportCredentialsModal } from "@/components/ExportCredentialsModal";
+import { ImportCredentialsModal } from "@/components/ImportCredentialsModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ArrowLeft, FolderPlus, Shield } from "lucide-react";
@@ -35,6 +37,8 @@ export default function Dashboard() {
   const [folderToDelete, setFolderToDelete] = useState<{ id: number; name: string; credentialCount: number } | null>(null);
   const [defaultPassword, setDefaultPassword] = useState<string | undefined>(undefined);
   const [showBiometricSetup, setShowBiometricSetup] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: credentials = [] } = trpc.credentials.list.useQuery();
@@ -233,24 +237,53 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="font-semibold">{cred.platformName}</p>
-          <p className="text-sm text-muted-foreground">
-            {cred.username && `Username: ${cred.username}`}
-            {cred.email && cred.username && " • "}
-            {cred.email && `Email: ${cred.email}`}
-          </p>
+          
+          {/* Username with copy button */}
+          {cred.username && (
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-sm text-muted-foreground">Username:</span>
+              <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20 flex-1">{cred.username}</code>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(cred.username)}>
+                <Copy className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
+          
+          {/* Email with copy button */}
+          {cred.email && (
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-sm text-muted-foreground">Email:</span>
+              <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20 flex-1">{cred.email}</code>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(cred.email)}>
+                <Copy className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
+          
+          {/* Password with eye and copy buttons */}
           <div className="flex items-center gap-2 mt-2">
-            <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20">
+            <span className="text-sm text-muted-foreground">Password:</span>
+            <code className="text-xs bg-card/50 px-2 py-1 rounded border border-border/20 flex-1">
               {visiblePasswords.has(cred.id) ? cred.encryptedPassword : "••••••••••••"}
             </code>
+            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => togglePasswordVisibility(cred.id)}>
+              {visiblePasswords.has(cred.id) ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+            </Button>
+            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(cred.encryptedPassword)}>
+              <Copy className="w-3 h-3" />
+            </Button>
           </div>
+          
+          {/* Notes */}
+          {cred.notes && (
+            <div className="mt-3 pt-3 border-t border-border/20">
+              <p className="text-xs text-muted-foreground mb-1">Notes:</p>
+              <p className="text-sm text-foreground/80">{cred.notes}</p>
+            </div>
+          )}
         </div>
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" onClick={() => togglePasswordVisibility(cred.id)}>
-            {visiblePasswords.has(cred.id) ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => copyToClipboard(cred.encryptedPassword)}>
-            <Copy className="w-4 h-4" />
-          </Button>
+        
+        <div className="flex flex-col items-center gap-1 ml-4">
           {showMoveOption && (
             <Button variant="ghost" size="sm" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
               <Folder className="w-4 h-4" />
@@ -465,6 +498,38 @@ export default function Dashboard() {
             </svg>
             Generate Password
           </Button>
+          
+          {/* Export/Import buttons - Only for paid plans */}
+          {userPlan && userPlan.name !== "Free" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="w-full" 
+                onClick={() => setShowExportModal(true)}
+              >
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Export Credentials
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="w-full" 
+                onClick={() => setShowImportModal(true)}
+              >
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Import Credentials
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="mb-8">
@@ -609,6 +674,15 @@ export default function Dashboard() {
         open={showBiometricSetup}
         onClose={() => setShowBiometricSetup(false)}
         onEnable={handleActivateBiometric}
+      />
+      <ExportCredentialsModal
+        open={showExportModal}
+        onOpenChange={setShowExportModal}
+        credentials={credentials}
+      />
+      <ImportCredentialsModal
+        open={showImportModal}
+        onOpenChange={setShowImportModal}
       />
     </div>
   );
