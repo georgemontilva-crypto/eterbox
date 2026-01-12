@@ -915,3 +915,16 @@
 - [x] Expiración de tokens (15 minutos)
 - [x] Invalidar tokens después de usarlos
 - [ ] Deployment a Railway
+
+## 📧 Sistema de Notificaciones por Email
+- [x] Configurar RESEND_API_KEY en Railway (documentación)
+- [x] Template de email de bienvenida (Welcome Email)
+- [x] Template de notificación de cambio de contraseña)
+- [x] Template de notificación de activación/desactivación 2FA
+- [x] Template de notificación de nuevo dispositivo detectado
+- [x] Integrar email de bienvenida en registro (auth.register)
+- [x] Notificación al cambiar contraseña (ChangePassword + ResetPassword)
+- [ ] Notificación al activar/desactivar 2FA
+- [ ] Detectar nuevo dispositivo en login y enviar notificación
+- [x] Traducciones EN/ES para todos los emails
+- [ ] Deployment a Railway

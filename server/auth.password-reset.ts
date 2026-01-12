@@ -4,7 +4,7 @@ import { users } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { sendPasswordResetEmail } from './email';
+import { sendPasswordResetEmail, sendPasswordChangedEmail } from './email';
 
 const router = Router();
 
@@ -190,6 +190,20 @@ router.post('/reset-password', async (req, res) => {
         resetTokenExpiry: null,
       })
       .where(eq(users.id, user.id));
+
+    // Send password changed notification email
+    try {
+      const ipAddress = req.ip || req.headers['x-forwarded-for'] as string || 'Unknown';
+      await sendPasswordChangedEmail(
+        user.email,
+        user.name || 'User',
+        ipAddress,
+        user.language as 'en' | 'es' || 'en'
+      );
+    } catch (emailError) {
+      console.error('Error sending password changed email:', emailError);
+      // Don't fail password reset if email fails
+    }
 
     res.json({ 
       success: true, 

@@ -5,7 +5,7 @@ import { getDb } from "../../db";
 import { users } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword, generateToken, generateVerificationToken } from "../../auth-service";
-import { sendWelcomeEmail, sendNewRegistrationNotification } from "../../email-service";
+import { sendWelcomeEmail, sendPasswordChangedEmail } from "../../email";
 
 export const authRouter = router({
   /**
@@ -48,12 +48,11 @@ export const authRouter = router({
         planId: 1, // Free plan by default
       });
 
-      // Send welcome email and admin notification
+      // Send welcome email
       try {
         await sendWelcomeEmail(input.email, input.name, 'en'); // Default to English, can be customized
-        await sendNewRegistrationNotification(input.name, input.email, 'Free');
       } catch (emailError) {
-        console.error('[Auth] Failed to send welcome emails:', emailError);
+        console.error('[Auth] Failed to send welcome email:', emailError);
         // Don't fail registration if email fails
       }
 
@@ -259,6 +258,20 @@ export const authRouter = router({
       await db.update(users)
         .set({ password: hashedPassword })
         .where(eq(users.id, ctx.user.id));
+
+      // Send password changed notification email
+      try {
+        const ipAddress = ctx.req?.ip || ctx.req?.headers?.['x-forwarded-for'] as string || 'Unknown';
+        await sendPasswordChangedEmail(
+          user.email,
+          user.name || 'User',
+          ipAddress,
+          user.language as 'en' | 'es' || 'en'
+        );
+      } catch (emailError) {
+        console.error('[Auth] Failed to send password changed email:', emailError);
+        // Don't fail password change if email fails
+      }
 
       return {
         success: true,
