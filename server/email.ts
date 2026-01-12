@@ -2,9 +2,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.SUPPORT_EMAIL || 'noreply@eterbox.com';
-const APP_NAME = process.env.VITE_APP_TITLE || 'EterBox';
-const FRONTEND_URL = process.env.WEBAUTHN_ORIGIN || 'http://localhost:3000';
-
+const APP_NAME = process.env.VITE_APP_TITLE || 'EterBox'const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 interface SendEmailOptions {
   to: string;
   subject: string;
