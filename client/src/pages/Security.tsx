@@ -104,7 +104,7 @@ export default function Security() {
 
             <div className="bg-accent/10 border border-accent/30 rounded-lg p-4 mt-6">
               <p className="text-sm">
-                <strong>💡 Recomendación:</strong> Guarda tu contraseña maestra en un lugar físico seguro (papel en caja fuerte) como respaldo. Nunca la almacenes digitalmente sin encriptar.
+                <strong>Recomendación:</strong> Guarda tu contraseña maestra en un lugar físico seguro (papel en caja fuerte) como respaldo. Nunca la almacenes digitalmente sin encriptar.
               </p>
             </div>
           </div>

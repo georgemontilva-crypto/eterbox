@@ -202,7 +202,18 @@ export const adminRouter = router({
         )
       `);
       
-      const bulkEmailId = bulkEmailResult.insertId;
+      // Extract insertId correctly - it might be in different places depending on driver
+      const bulkEmailId = bulkEmailResult?.insertId || bulkEmailResult?.[0]?.insertId || bulkEmailResult?.rows?.insertId;
+      console.log('[Admin] sendBulkEmail - Created bulk email record with ID:', bulkEmailId);
+      console.log('[Admin] sendBulkEmail - Full result:', JSON.stringify(bulkEmailResult));
+      
+      if (!bulkEmailId) {
+        console.error('[Admin] sendBulkEmail - Failed to get insertId, result:', bulkEmailResult);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create bulk email record",
+        });
+      }
 
       // Send emails
       const userIds = targetUsersList.map(u => u.id);

@@ -929,9 +929,9 @@ function EmailsTab() {
                 onChange={(e) => setTargetUsers(e.target.value as any)}
                 className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
               >
-                <option value="all">📧 Todos los usuarios</option>
-                <option value="free">🆓 Solo usuarios gratuitos</option>
-                <option value="premium">⭐ Solo usuarios premium</option>
+                <option value="all">Todos los usuarios</option>
+                <option value="free">Solo usuarios gratuitos</option>
+                <option value="premium">Solo usuarios premium</option>
               </select>
             </div>
 
@@ -967,7 +967,7 @@ function EmailsTab() {
                 className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent font-mono text-sm transition-all resize-none"
               />
               <p className="text-xs text-muted-foreground mt-2">
-                💡 Puedes usar HTML para dar formato al email
+                Puedes usar HTML para dar formato al email
               </p>
             </div>
 

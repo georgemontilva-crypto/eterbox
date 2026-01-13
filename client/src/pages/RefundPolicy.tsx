@@ -75,7 +75,7 @@ export default function RefundPolicy() {
 
               <div className="bg-blue-900/20 border border-blue-500/50 rounded-lg p-4 mt-4">
                 <p className="text-sm">
-                  <strong>💡 Nota:</strong> No necesitas proporcionar una razón detallada. Respetamos tu decisión y procesaremos tu reembolso sin preguntas innecesarias.
+                  <strong>Nota:</strong> No necesitas proporcionar una razón detallada. Respetamos tu decisión y procesaremos tu reembolso sin preguntas innecesarias.
                 </p>
               </div>
             </section>
@@ -138,7 +138,7 @@ export default function RefundPolicy() {
 
               <div className="bg-muted border border-border rounded-lg p-4 mt-4">
                 <p className="text-sm">
-                  <strong>📌 Importante:</strong> Cancelar tu suscripción NO elimina tu cuenta. Si deseas eliminar tu cuenta completamente, debes hacerlo por separado en Configuración → Cuenta → Eliminar Cuenta.
+                  <strong>Importante:</strong> Cancelar tu suscripción NO elimina tu cuenta. Si deseas eliminar tu cuenta completamente, debes hacerlo por separado en Configuración → Cuenta → Eliminar Cuenta.
                 </p>
               </div>
             </section>
@@ -218,7 +218,7 @@ export default function RefundPolicy() {
 
               <div className="bg-green-900/20 border border-green-500/50 rounded-lg p-4 mt-4">
                 <p className="text-sm">
-                  <strong>✅ Garantía:</strong> Los errores de facturación confirmados se reembolsan al 100% sin excepciones, independientemente del tiempo transcurrido.
+                  <strong>Garantía:</strong> Los errores de facturación confirmados se reembolsan al 100% sin excepciones, independientemente del tiempo transcurrido.
                 </p>
               </div>
             </section>
@@ -274,7 +274,7 @@ export default function RefundPolicy() {
 
               <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 mt-4">
                 <p className="text-sm">
-                  <strong>⚠️ Advertencia:</strong> Los contracargos fraudulentos violan nuestros Términos de Servicio y pueden resultar en acciones legales. Siempre intenta resolver problemas directamente con nosotros primero.
+                  <strong>Advertencia:</strong> Los contracargos fraudulentos violan nuestros Términos de Servicio y pueden resultar en acciones legales. Siempre intenta resolver problemas directamente con nosotros primero.
                 </p>
               </div>
             </section>
