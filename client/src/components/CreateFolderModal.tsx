@@ -31,7 +31,8 @@ export function CreateFolderModal({ open, onOpenChange }: CreateFolderModalProps
     const maxFolders = userPlan?.maxFolders || 1;
     const currentFolders = folders.length;
     
-    if (currentFolders >= maxFolders) {
+    // Only check limit if maxFolders is not -1 (unlimited)
+    if (maxFolders !== -1 && currentFolders >= maxFolders) {
       setShowLimitAlert(true);
       return;
     }

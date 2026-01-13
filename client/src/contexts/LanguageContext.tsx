@@ -138,6 +138,19 @@ export const translations: Translations = {
   "verify2fa.redirecting": { en: "Redirecting to login...", es: "Redirigiendo al inicio de sesión..." },
   "verify2fa.securityNote": { en: "This additional security step helps protect your account from unauthorized access.", es: "Este paso de seguridad adicional ayuda a proteger tu cuenta de accesos no autorizados." },
 
+  // Welcome 2FA Modal
+  "welcome2fa.title": { en: "Welcome to EterBox!", es: "¡Bienvenido a EterBox!" },
+  "welcome2fa.description": { en: "Your account has been created successfully. For enhanced security, we recommend enabling Two-Factor Authentication (2FA).", es: "Tu cuenta ha sido creada exitosamente. Para mayor seguridad, te recomendamos activar la Autenticación de Dos Factores (2FA)." },
+  "welcome2fa.benefit1Title": { en: "Extra Protection", es: "Protección Extra" },
+  "welcome2fa.benefit1": { en: "Add an additional layer of security to your account", es: "Añade una capa adicional de seguridad a tu cuenta" },
+  "welcome2fa.benefit2Title": { en: "Prevents Unauthorized Access", es: "Previene Accesos No Autorizados" },
+  "welcome2fa.benefit2": { en: "Even if someone gets your password, they won't be able to access without the 2FA code", es: "Incluso si alguien obtiene tu contraseña, no podrá acceder sin el código 2FA" },
+  "welcome2fa.benefit3Title": { en: "Easy to Set Up", es: "Fácil de Configurar" },
+  "welcome2fa.benefit3": { en: "It only takes 2 minutes to set up with your favorite authentication app", es: "Solo toma 2 minutos configurarlo con tu app de autenticación favorita" },
+  "welcome2fa.activateNow": { en: "Activate Now", es: "Activar Ahora" },
+  "welcome2fa.later": { en: "Later", es: "Más Tarde" },
+  "welcome2fa.reminder": { en: "You can activate 2FA anytime from your settings", es: "Puedes activar 2FA en cualquier momento desde tu configuración" },
+
   // Register Page
   "register.title": { en: "Create your", es: "Crea tu cuenta" },
   "register.titleAccent": { en: "secure account", es: "segura" },
