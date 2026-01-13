@@ -96,12 +96,15 @@ export const appRouter = router({
         const plan = await db.getPlanById(user.planId);
         if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
 
-        const folders = await db.getUserFolders(ctx.user.id);
-        if (folders.length >= plan.maxFolders) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: `You have reached the maximum number of folders (${plan.maxFolders}) for your plan`,
-          });
+        // Check plan limits (skip if unlimited)
+        if (plan.maxFolders !== -1) {
+          const folders = await db.getUserFolders(ctx.user.id);
+          if (folders.length >= plan.maxFolders) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: `You have reached the maximum number of folders (${plan.maxFolders}) for your plan`,
+            });
+          }
         }
 
         const result = await db.createFolder(ctx.user.id, input.name, input.description, input.color, input.icon);
@@ -209,12 +212,15 @@ export const appRouter = router({
         const plan = await db.getPlanById(user.planId);
         if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
 
-        const credentialsCount = await db.countUserCredentials(ctx.user.id);
-        if (credentialsCount >= plan.maxKeys) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: `You have reached the maximum number of credentials (${plan.maxKeys}) for your plan`,
-          });
+        // Check plan limits (skip if unlimited)
+        if (plan.maxKeys !== -1) {
+          const credentialsCount = await db.countUserCredentials(ctx.user.id);
+          if (credentialsCount >= plan.maxKeys) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: `You have reached the maximum number of credentials (${plan.maxKeys}) for your plan`,
+            });
+          }
         }
 
         // Auto-generate category from platform name
