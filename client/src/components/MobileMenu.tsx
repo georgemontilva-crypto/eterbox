@@ -221,7 +221,7 @@ interface MobileMenuProps {
   userEmail?: string;
 }
 
-type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "notifications" | "language" | "generator" | "payments" | null;
+type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "notifications" | "language" | "generator" | "payments" | "security" | null;
 
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword, userEmail }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -312,24 +312,6 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
 
   const menuItems = [
     {
-      id: "2fa" as ActiveView,
-      icon: Shield,
-      label: t("menu.twoFactor"),
-      description: t("menu.twoFactorDesc"),
-    },
-    {
-      id: "biometric" as ActiveView,
-      icon: Lock,
-      label: t("biometric.title"),
-      description: t("biometric.subtitle"),
-    },
-    {
-      id: "password" as ActiveView,
-      icon: Key,
-      label: t("menu.changePassword"),
-      description: t("menu.changePasswordDesc"),
-    },
-    {
       id: "plan" as ActiveView,
       icon: CreditCard,
       label: t("menu.viewPlan"),
@@ -340,18 +322,6 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
       icon: Settings,
       label: t("menu.settings"),
       description: t("menu.settingsDesc"),
-    },
-    {
-      id: "notifications" as ActiveView,
-      icon: Bell,
-      label: "Email Alerts",
-      description: "Configure email notifications",
-    },
-    {
-      id: "language" as ActiveView,
-      icon: Globe,
-      label: t("common.language"),
-      description: language === "en" ? "English" : "Español",
     },
     {
       id: "generator" as ActiveView,
@@ -490,6 +460,42 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
                 <span className="font-medium">Español</span>
               </div>
               {language === "es" && <Check className="w-5 h-5 text-accent" />}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeView === "security") {
+      return (
+        <div className="p-6 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
+              <Shield className="w-8 h-8 text-accent" />
+            </div>
+            <h2 className="text-xl font-bold">{t("menu.security")}</h2>
+            <p className="text-sm text-muted-foreground">Manage your security settings</p>
+          </div>
+          <div className="space-y-3">
+            <button 
+              className="w-full flex items-center justify-between p-4 bg-card border border-border/20 rounded-[15px] hover:border-accent/50 transition-colors"
+              onClick={() => setActiveView("2fa")}
+            >
+              <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-muted-foreground" />
+                <span>{t("menu.twoFactor")}</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <button 
+              className="w-full flex items-center justify-between p-4 bg-card border border-border/20 rounded-[15px] hover:border-accent/50 transition-colors"
+              onClick={() => setActiveView("biometric")}
+            >
+              <div className="flex items-center gap-3">
+                <Lock className="w-5 h-5 text-muted-foreground" />
+                <span>{t("biometric.title")}</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -788,7 +794,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
           <div className="space-y-3">
             <button 
               className="w-full flex items-center justify-between p-4 bg-card border border-border/20 rounded-[15px] hover:border-accent/50 transition-colors"
-              onClick={() => setActiveView("2fa")}
+              onClick={() => setActiveView("security")}
             >
               <div className="flex items-center gap-3">
                 <Shield className="w-5 h-5 text-muted-foreground" />
@@ -808,11 +814,11 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
             </button>
             <button 
               className="w-full flex items-center justify-between p-4 bg-card border border-border/20 rounded-[15px] hover:border-accent/50 transition-colors"
-              onClick={() => setActiveView("plan")}
+              onClick={() => setActiveView("notifications")}
             >
               <div className="flex items-center gap-3">
-                <CreditCard className="w-5 h-5 text-muted-foreground" />
-                <span>{t("menu.subscription")}</span>
+                <Bell className="w-5 h-5 text-muted-foreground" />
+                <span>{t("menu.alerts")}</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
@@ -828,6 +834,16 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
                 <span className="text-sm text-muted-foreground uppercase">{language}</span>
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </div>
+            </button>
+            <button 
+              className="w-full flex items-center justify-between p-4 bg-card border border-border/20 rounded-[15px] hover:border-accent/50 transition-colors"
+              onClick={() => setActiveView("plan")}
+            >
+              <div className="flex items-center gap-3">
+                <CreditCard className="w-5 h-5 text-muted-foreground" />
+                <span>{t("menu.subscription")}</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
         </div>
