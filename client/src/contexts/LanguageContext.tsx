@@ -248,6 +248,7 @@ export const translations: Translations = {
   "home.footer.privacy": { en: "Privacy Policy", es: "Política de Privacidad" },
   "home.footer.cookies": { en: "Cookie Policy", es: "Política de Cookies" },
   "home.footer.refund": { en: "Refund Policy", es: "Reembolsos" },
+  "home.footer.security": { en: "Security", es: "Seguridad" },
   "home.footer.newsletter": { en: "Newsletter", es: "Boletín" },
   "home.footer.newsletterDesc": { en: "Stay updated with security tips and product news.", es: "Mantente actualizado con consejos de seguridad y noticias del producto." },
   "home.footer.emailPlaceholder": { en: "Your email", es: "Tu email" },
@@ -547,6 +548,69 @@ export const translations: Translations = {
   "refund.section8Content": { en: "If you have questions about this refund policy or believe you qualify for an exception, please contact our support team. We are committed to resolving any billing issues fairly and promptly.", es: "Si tienes preguntas sobre esta política de reembolsos o crees que calificas para una excepción, contacta a nuestro equipo de soporte. Estamos comprometidos a resolver cualquier problema de facturación de manera justa y rápida." },
   "refund.contactSupport": { en: "Contact Support", es: "Contactar Soporte" },
   "refund.footerNote": { en: "By using EterBox, you acknowledge that you have read, understood, and agree to this Refund Policy.", es: "Al usar EterBox, reconoces que has leído, entendido y aceptas esta Política de Reembolsos." },
+  
+  // Security & Compliance
+  "security.backToHome": { en: "Back to Home", es: "Volver al Inicio" },
+  "security.title": { en: "Security & Compliance", es: "Seguridad y Cumplimiento" },
+  "security.pageTitle": { en: "Security & Compliance", es: "Seguridad y Cumplimiento" },
+  "security.pageSubtitle": { en: "EterBox is built with security at its core. Learn about our commitment to protecting your data with industry-leading encryption and security practices.", es: "EterBox está construido con la seguridad en su núcleo. Conoce nuestro compromiso de proteger tus datos con cifrado y prácticas de seguridad líderes en la industria." },
+  "security.encryption": { en: "Encryption", es: "Cifrado" },
+  "security.twoFactor": { en: "Two-Factor Auth", es: "Autenticación 2FA" },
+  "security.secureConnection": { en: "Secure Connection", es: "Conexión Segura" },
+  "security.compliant": { en: "Compliant", es: "Cumplimiento" },
+  
+  "security.featuresTitle": { en: "Security Features", es: "Características de Seguridad" },
+  
+  "security.feature1Title": { en: "End-to-End Encryption", es: "Cifrado de Extremo a Extremo" },
+  "security.feature1Desc1": { en: "All your passwords and credentials are encrypted using military-grade AES-256-GCM encryption before being stored in our database.", es: "Todas tus contraseñas y credenciales se cifran usando cifrado AES-256-GCM de grado militar antes de almacenarse en nuestra base de datos." },
+  "security.feature1Point1": { en: "AES-256-GCM authenticated encryption with 256-bit keys", es: "Cifrado autenticado AES-256-GCM con claves de 256 bits" },
+  "security.feature1Point2": { en: "PBKDF2 key derivation with 100,000 iterations and SHA-256", es: "Derivación de clave PBKDF2 con 100,000 iteraciones y SHA-256" },
+  "security.feature1Point3": { en: "Unique salt and initialization vector (IV) for each credential", es: "Salt único y vector de inicialización (IV) para cada credencial" },
+  "security.feature1Point4": { en: "Authentication tags to verify data integrity", es: "Etiquetas de autenticación para verificar integridad de datos" },
+  
+  "security.feature2Title": { en: "Two-Factor Authentication (2FA)", es: "Autenticación de Dos Factores (2FA)" },
+  "security.feature2Desc1": { en: "Add an extra layer of security to your account with time-based one-time passwords (TOTP).", es: "Agrega una capa adicional de seguridad a tu cuenta con contraseñas de un solo uso basadas en tiempo (TOTP)." },
+  "security.feature2Point1": { en: "TOTP-based 2FA compatible with Google Authenticator, Authy, and other authenticator apps", es: "2FA basado en TOTP compatible con Google Authenticator, Authy y otras aplicaciones de autenticación" },
+  "security.feature2Point2": { en: "10 backup codes generated for account recovery", es: "10 códigos de respaldo generados para recuperación de cuenta" },
+  "security.feature2Point3": { en: "Backup codes are hashed using SHA-256 before storage", es: "Los códigos de respaldo se hashean usando SHA-256 antes de almacenarse" },
+  
+  "security.feature3Title": { en: "Security Monitoring & Audit Logs", es: "Monitoreo de Seguridad y Registros de Auditoría" },
+  "security.feature3Desc1": { en: "We continuously monitor your account for suspicious activity and maintain detailed audit logs.", es: "Monitoreamos continuamente tu cuenta en busca de actividad sospechosa y mantenemos registros de auditoría detallados." },
+  "security.feature3Point1": { en: "Activity logging for all account actions (login, password changes, credential access)", es: "Registro de actividad para todas las acciones de cuenta (login, cambios de contraseña, acceso a credenciales)" },
+  "security.feature3Point2": { en: "Failed login attempt tracking with email alerts", es: "Seguimiento de intentos de login fallidos con alertas por email" },
+  "security.feature3Point3": { en: "Rate limiting to prevent brute-force attacks (5 attempts per 15 minutes)", es: "Limitación de tasa para prevenir ataques de fuerza bruta (5 intentos cada 15 minutos)" },
+  "security.feature3Point4": { en: "Automatic session timeout after 15 minutes of inactivity", es: "Timeout automático de sesión después de 15 minutos de inactividad" },
+  
+  "security.feature4Title": { en: "Infrastructure Security", es: "Seguridad de Infraestructura" },
+  "security.feature4Desc1": { en: "Our infrastructure is hosted on enterprise-grade cloud platforms with industry-leading security.", es: "Nuestra infraestructura está alojada en plataformas en la nube de grado empresarial con seguridad líder en la industria." },
+  "security.feature4Point1": { en: "TLS 1.3 encryption for all data in transit", es: "Cifrado TLS 1.3 para todos los datos en tránsito" },
+  "security.feature4Point2": { en: "Hosted on Railway with automatic SSL certificates", es: "Alojado en Railway con certificados SSL automáticos" },
+  "security.feature4Point3": { en: "Database encryption at rest with TiDB Serverless", es: "Cifrado de base de datos en reposo con TiDB Serverless" },
+  
+  "security.complianceTitle": { en: "Privacy & Compliance", es: "Privacidad y Cumplimiento" },
+  "security.gdprDesc": { en: "We comply with the General Data Protection Regulation (GDPR) to protect the privacy rights of EU citizens. You have full control over your data with rights to access, rectify, and delete your information.", es: "Cumplimos con el Reglamento General de Protección de Datos (GDPR) para proteger los derechos de privacidad de los ciudadanos de la UE. Tienes control total sobre tus datos con derechos de acceso, rectificación y eliminación de tu información." },
+  "security.ccpaDesc": { en: "We comply with the California Consumer Privacy Act (CCPA) to protect the privacy rights of California residents. You can request disclosure of data collection and opt-out of data sales.", es: "Cumplimos con la Ley de Privacidad del Consumidor de California (CCPA) para proteger los derechos de privacidad de los residentes de California. Puedes solicitar divulgación de recolección de datos y optar por no participar en ventas de datos." },
+  
+  "security.faqTitle": { en: "Security FAQ", es: "Preguntas Frecuentes de Seguridad" },
+  "security.faq1Question": { en: "Can EterBox employees see my passwords?", es: "¿Pueden los empleados de EterBox ver mis contraseñas?" },
+  "security.faq1Answer": { en: "No. All passwords are encrypted using AES-256-GCM before being stored. We do not have access to your unencrypted passwords. Even our database administrators cannot decrypt your credentials without your account.", es: "No. Todas las contraseñas se cifran usando AES-256-GCM antes de almacenarse. No tenemos acceso a tus contraseñas sin cifrar. Incluso nuestros administradores de base de datos no pueden descifrar tus credenciales sin tu cuenta." },
+  "security.faq2Question": { en: "What happens if EterBox is hacked?", es: "¿Qué pasa si EterBox es hackeado?" },
+  "security.faq2Answer": { en: "In the unlikely event of a breach, your passwords remain encrypted with AES-256-GCM. Without your account credentials, the encrypted data is computationally infeasible to decrypt. We also maintain rate limiting and intrusion detection to prevent unauthorized access.", es: "En el caso improbable de una brecha, tus contraseñas permanecen cifradas con AES-256-GCM. Sin tus credenciales de cuenta, los datos cifrados son computacionalmente imposibles de descifrar. También mantenemos limitación de tasa y detección de intrusiones para prevenir acceso no autorizado." },
+  "security.faq3Question": { en: "How are passwords transmitted to EterBox servers?", es: "¿Cómo se transmiten las contraseñas a los servidores de EterBox?" },
+  "security.faq3Answer": { en: "All communication between your browser and our servers is encrypted using TLS 1.3 (HTTPS). Your passwords are encrypted immediately upon reaching our servers before being stored in the database.", es: "Toda la comunicación entre tu navegador y nuestros servidores está cifrada usando TLS 1.3 (HTTPS). Tus contraseñas se cifran inmediatamente al llegar a nuestros servidores antes de almacenarse en la base de datos." },
+  "security.faq4Question": { en: "What encryption algorithms does EterBox use?", es: "¿Qué algoritmos de cifrado usa EterBox?" },
+  "security.faq4Answer": { en: "We use AES-256-GCM for credential encryption, bcrypt with 12 rounds for password hashing, PBKDF2 with 100,000 iterations for key derivation, and SHA-256 for backup code hashing.", es: "Usamos AES-256-GCM para cifrado de credenciales, bcrypt con 12 rondas para hashing de contraseñas, PBKDF2 con 100,000 iteraciones para derivación de claves, y SHA-256 para hashing de códigos de respaldo." },
+  "security.faq5Question": { en: "Where is my data stored?", es: "¿Dónde se almacenan mis datos?" },
+  "security.faq5Answer": { en: "Your encrypted data is stored in TiDB Serverless, a distributed SQL database with automatic encryption at rest. Our application is hosted on Railway with automatic SSL certificates and DDoS protection.", es: "Tus datos cifrados se almacenan en TiDB Serverless, una base de datos SQL distribuida con cifrado automático en reposo. Nuestra aplicación está alojada en Railway con certificados SSL automáticos y protección DDoS." },
+  
+  "security.responsibleDisclosureTitle": { en: "Responsible Disclosure", es: "Divulgación Responsable" },
+  "security.responsibleDisclosureDesc": { en: "If you discover a security vulnerability in EterBox, please report it to us responsibly. We appreciate the security community's efforts to keep our users safe. Contact us at security@eterbox.com with details of the vulnerability.", es: "Si descubres una vulnerabilidad de seguridad en EterBox, repórtala responsablemente. Apreciamos los esfuerzos de la comunidad de seguridad para mantener a nuestros usuarios seguros. Contáctanos en security@eterbox.com con detalles de la vulnerabilidad." },
+  "security.reportVulnerability": { en: "Report Vulnerability", es: "Reportar Vulnerabilidad" },
+  
+  "security.contactTitle": { en: "Questions About Security?", es: "¿Preguntas Sobre Seguridad?" },
+  "security.contactDesc": { en: "If you have questions about our security practices or need more information, our support team is here to help.", es: "Si tienes preguntas sobre nuestras prácticas de seguridad o necesitas más información, nuestro equipo de soporte está aquí para ayudar." },
+  "security.contactSupport": { en: "Contact Support", es: "Contactar Soporte" },
+  "security.viewPrivacyPolicy": { en: "View Privacy Policy", es: "Ver Política de Privacidad" },
 };
 
 interface LanguageContextType {

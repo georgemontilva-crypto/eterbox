@@ -20,6 +20,7 @@ import Cookies from "./pages/Cookies";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import RefundPolicy from "./pages/RefundPolicy";
+import SecurityCompliance from "./pages/SecurityCompliance";
 import AboutUs from "./pages/AboutUs";
 import Security from "./pages/Security";
 import FAQ from "./pages/FAQ";
@@ -130,6 +131,7 @@ function Router() {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/cookie-policy" component={CookiePolicy} />
       <Route path="/refund-policy" component={RefundPolicy} />
+      <Route path="/security-compliance" component={SecurityCompliance} />
       <Route path="/about" component={AboutUs} />
       <Route path="/security" component={Security} />
       <Route path="/faq" component={FAQ} />
