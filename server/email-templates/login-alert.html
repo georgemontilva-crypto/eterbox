@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Alert</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a; color: #ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #111111; border-radius: 16px; border: 1px solid #1f1f1f; overflow: hidden;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 32px; text-align: center; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🔐</div>
+                            <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff;">New Login Detected</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 32px;">
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #e5e5e5;">
+                                Hi <strong>{{user_name}}</strong>,
+                            </p>
+                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #e5e5e5;">
+                                We detected a new login to your EterBox account. If this was you, no action is needed.
+                            </p>
+                            
+                            <!-- Login Details -->
+                            <div style="background-color: #1a1a1a; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #262626;">
+                                <h3 style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #ffffff; border-bottom: 1px solid #262626; padding-bottom: 12px;">Login Details</h3>
+                                <table width="100%" cellpadding="8" cellspacing="0">
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px; width: 120px;">Date & Time:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px;">{{login_date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">IP Address:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px;">{{ip_address}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">Device:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px;">{{device}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">Location:</td>
+                                        <td style="color: #e5e5e5; font-size: 15px;">{{location}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Security Notice -->
+                            <div style="background-color: #1a1a1a; border-radius: 12px; padding: 20px; margin: 24px 0; border-left: 4px solid #dc2626;">
+                                <p style="margin: 0; font-size: 14px; color: #e5e5e5; line-height: 1.6;">
+                                    ⚠️ <strong style="color: #ffffff;">Wasn't you?</strong><br>
+                                    If you didn't log in, your account may be compromised. Please change your password immediately and enable two-factor authentication.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 24px 32px; background-color: #0a0a0a; border-top: 1px solid #1f1f1f; text-align: center;">
+                            <p style="margin: 0; font-size: 13px; color: #737373;">
+                                EterBox Security Alert System
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

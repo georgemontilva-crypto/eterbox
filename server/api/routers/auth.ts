@@ -6,6 +6,7 @@ import { users } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword, generateToken, generateVerificationToken } from "../../auth-service";
 import { sendWelcomeEmail, sendPasswordChangedEmail } from "../../email";
+import { sendLoginAlert, sendFailedLoginAlert } from "../../email-service";
 
 export const authRouter = router({
   /**
@@ -104,7 +105,34 @@ export const authRouter = router({
       const isValidPassword = await verifyPassword(input.password, user.password);
 
       if (!isValidPassword) {
+        // Increment failed login attempts
+        const failedAttempts = (user.failedLoginAttempts || 0) + 1;
+        await db.update(users)
+          .set({ 
+            failedLoginAttempts: failedAttempts,
+            lastFailedLogin: new Date()
+          })
+          .where(eq(users.id, user.id));
+
+        // Send alert if 3 or more failed attempts
+        if (failedAttempts >= 3) {
+          sendFailedLoginAlert(
+            user.email,
+            user.name,
+            failedAttempts,
+            'Unknown', // TODO: Get real IP
+            'Unknown'  // TODO: Get location
+          ).catch(err => console.error('[Auth] Failed to send failed login alert:', err));
+        }
+
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+      }
+
+      // Reset failed attempts on successful login
+      if (user.failedLoginAttempts && user.failedLoginAttempts > 0) {
+        await db.update(users)
+          .set({ failedLoginAttempts: 0, lastFailedLogin: null })
+          .where(eq(users.id, user.id));
       }
 
       // Check if email is verified
@@ -137,6 +165,15 @@ export const authRouter = router({
         email: user.email,
         role: user.role,
       });
+
+      // Send login alert (non-blocking)
+      sendLoginAlert(
+        user.email,
+        user.name,
+        'Unknown', // TODO: Get real IP from request
+        'Unknown', // TODO: Get device from user-agent
+        'Unknown'  // TODO: Get location from IP
+      ).catch(err => console.error('[Auth] Failed to send login alert:', err));
 
       return {
         success: true,

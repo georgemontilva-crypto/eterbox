@@ -241,6 +241,48 @@ export class EmailTemplateService {
       total_subscribers: totalSubscribers.toString(),
     };
   }
+
+  /**
+   * Get data for login alert
+   */
+  getLoginAlertData(
+    userName: string,
+    ipAddress: string,
+    device: string,
+    location: string
+  ): EmailTemplateData {
+    return {
+      user_name: userName,
+      login_date: new Date().toLocaleString('en-US', {
+        dateStyle: 'long',
+        timeStyle: 'short',
+      }),
+      ip_address: ipAddress,
+      device: device,
+      location: location,
+    };
+  }
+
+  /**
+   * Get data for failed login alert
+   */
+  getFailedLoginAlertData(
+    userName: string,
+    attemptCount: number,
+    ipAddress: string,
+    location: string
+  ): EmailTemplateData {
+    return {
+      user_name: userName,
+      attempt_count: attemptCount.toString(),
+      attempt_date: new Date().toLocaleString('en-US', {
+        dateStyle: 'long',
+        timeStyle: 'short',
+      }),
+      ip_address: ipAddress,
+      location: location,
+    };
+  }
 }
 
 export const emailTemplateService = new EmailTemplateService();

@@ -415,48 +415,27 @@ export async function sendContactFormNotification(
     console.log('[EmailService] To:', adminEmail);
     console.log('[EmailService] Subject:', contactSubject);
     
-    // Try using Resend first if API key is available
-    if (ENV.resendApiKey) {
-      try {
-        console.log('[EmailService] Using Resend API');
-        const resend = new Resend(ENV.resendApiKey);
-        
-        const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
-        const htmlContent = await emailTemplateService.renderTemplate('contact-form', data);
-        
-        const result = await resend.emails.send({
-          from: ENV.supportEmail,
-          to: adminEmail,
-          subject: `📨 New Contact Message: ${contactSubject}`,
-          html: htmlContent,
-          replyTo: contactEmail,
-        });
-        
-        console.log('[EmailService] Resend response:', JSON.stringify(result));
-        console.log('[EmailService] Contact form notification sent successfully via Resend');
-        return true;
-      } catch (resendError) {
-        console.error('[EmailService] Resend failed:', resendError);
-        console.error('[EmailService] Resend error details:', JSON.stringify(resendError, null, 2));
-        // Fall back to SMTP if Resend fails
-      }
-    } else {
-      console.log('[EmailService] Resend API key not configured, using SMTP');
+    // Use Resend for contact form
+    if (!ENV.resendApiKey) {
+      console.error('[EmailService] Resend API key not configured');
+      return false;
     }
-    
-    // Fallback to SMTP
+
+    const resend = new Resend(ENV.resendApiKey);
     const data = emailTemplateService.getContactFormData(contactName, contactEmail, contactSubject, contactMessage);
     const htmlContent = await emailTemplateService.renderTemplate('contact-form', data);
     
-    const result = await sendEmail(adminEmail, `📨 New Contact Message: ${contactSubject}`, htmlContent, ENV.smtpUser);
+    const result = await resend.emails.send({
+      from: ENV.supportEmail,
+      to: adminEmail,
+      subject: `📨 New Contact Message: ${contactSubject}`,
+      html: htmlContent,
+      replyTo: contactEmail,
+    });
     
-    if (result) {
-      console.log('[EmailService] Contact form notification sent successfully via SMTP');
-    } else {
-      console.error('[EmailService] Contact form notification failed to send');
-    }
-    
-    return result;
+    console.log('[EmailService] Resend response:', JSON.stringify(result));
+    console.log('[EmailService] Contact form notification sent successfully to', adminEmail);
+    return true;
   } catch (error) {
     console.error('[EmailService] Failed to send contact form notification:', error);
     return false;
@@ -478,6 +457,76 @@ export async function sendNewsletterNotification(
     return sendEmail(adminEmail, `📰 New Newsletter Subscription: ${subscriberEmail}`, htmlContent);
   } catch (error) {
     console.error('[EmailService] Failed to send newsletter notification:', error);
+    return false;
+  }
+}
+
+/**
+ * Send login alert to user
+ */
+export async function sendLoginAlert(
+  userEmail: string,
+  userName: string,
+  ipAddress: string,
+  device: string,
+  location: string
+): Promise<boolean> {
+  try {
+    if (!ENV.resendApiKey) {
+      console.warn('[EmailService] Resend API key not configured, skipping login alert');
+      return false;
+    }
+
+    const resend = new Resend(ENV.resendApiKey);
+    const data = emailTemplateService.getLoginAlertData(userName, ipAddress, device, location);
+    const htmlContent = await emailTemplateService.renderTemplate('login-alert', data);
+    
+    await resend.emails.send({
+      from: ENV.supportEmail,
+      to: userEmail,
+      subject: '🔐 New Login Detected - EterBox',
+      html: htmlContent,
+    });
+    
+    console.log('[EmailService] Login alert sent successfully to', userEmail);
+    return true;
+  } catch (error) {
+    console.error('[EmailService] Failed to send login alert:', error);
+    return false;
+  }
+}
+
+/**
+ * Send failed login attempts alert to user
+ */
+export async function sendFailedLoginAlert(
+  userEmail: string,
+  userName: string,
+  attemptCount: number,
+  ipAddress: string,
+  location: string
+): Promise<boolean> {
+  try {
+    if (!ENV.resendApiKey) {
+      console.warn('[EmailService] Resend API key not configured, skipping failed login alert');
+      return false;
+    }
+
+    const resend = new Resend(ENV.resendApiKey);
+    const data = emailTemplateService.getFailedLoginAlertData(userName, attemptCount, ipAddress, location);
+    const htmlContent = await emailTemplateService.renderTemplate('failed-login-alert', data);
+    
+    await resend.emails.send({
+      from: ENV.supportEmail,
+      to: userEmail,
+      subject: '🚨 Suspicious Login Activity - EterBox',
+      html: htmlContent,
+    });
+    
+    console.log('[EmailService] Failed login alert sent successfully to', userEmail);
+    return true;
+  } catch (error) {
+    console.error('[EmailService] Failed to send failed login alert:', error);
     return false;
   }
 }
