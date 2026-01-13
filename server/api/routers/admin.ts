@@ -236,6 +236,17 @@ export const adminRouter = router({
         targetUsersList = await db.select({ id: users.id, email: users.email }).from(users).where(sql`planId IS NOT NULL AND planId != 1`);
       }
 
+      // Create bulk email record
+      const bulkEmailResult: any = await db.execute(sql`
+        INSERT INTO bulk_emails (
+          subject, title, body, target_users, recipients_count, status, created_by
+        ) VALUES (
+          ${input.subject}, ${input.title}, ${input.body}, ${input.targetUsers}, ${targetUsersList.length}, 'sending', ${ctx.user.id}
+        )
+      `);
+      
+      const bulkEmailId = bulkEmailResult.insertId;
+
       // Send emails
       const userIds = targetUsersList.map(u => u.id);
       const result = await emailService.sendBulkMarketingEmail({
@@ -246,6 +257,17 @@ export const adminRouter = router({
         actionUrl: input.actionUrl,
         actionText: input.actionText
       });
+
+      // Update bulk email record with results
+      await db.execute(sql`
+        UPDATE bulk_emails 
+        SET 
+          sent_count = ${result.sent},
+          failed_count = ${result.failed || 0},
+          status = 'sent',
+          sent_at = NOW()
+        WHERE id = ${bulkEmailId}
+      `);
 
       return result;
     }),
@@ -310,9 +332,82 @@ export const adminRouter = router({
 
       return {
         daily: revenueData || [],
-        summary: totalRevenue?.[0] || { total_transactions: 0, total_amount: 0, average_amount: 0 },
+        summary: totalRevenue?.[0] || { total_transactions: 0, total_amount: 0, average_amount: 0, growth_percentage: 0, today_revenue: 0 },
         period: input.period
       };
+    }),
+
+  // Get transactions history
+  getTransactions: adminProcedure
+    .input(
+      z.object({
+        limit: z.number().default(50)
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_view_revenue) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permisos para ver transacciones",
+        });
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const transactions: any = await db.execute(sql`
+        SELECT 
+          ph.id,
+          ph.user_id,
+          ph.amount,
+          ph.status,
+          ph.created_at,
+          u.name as user_name,
+          u.email as user_email,
+          p.name as plan_name
+        FROM payment_history ph
+        LEFT JOIN users u ON ph.user_id = u.id
+        LEFT JOIN plans p ON ph.plan_id = p.id
+        ORDER BY ph.created_at DESC
+        LIMIT ${input.limit}
+      `);
+
+      return transactions || [];
+    }),
+
+  // Get email history
+  getEmailHistory: adminProcedure
+    .query(async ({ ctx }) => {
+      const permissions = await adminService.getAdminPermissions(ctx.user.id);
+      if (!permissions?.can_send_bulk_emails) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permisos para ver historial de emails",
+        });
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const emailHistory: any = await db.execute(sql`
+        SELECT 
+          id,
+          subject,
+          title,
+          body,
+          target_users,
+          recipients_count,
+          sent_count,
+          status,
+          created_at,
+          sent_at
+        FROM bulk_emails
+        ORDER BY created_at DESC
+        LIMIT 50
+      `);
+
+      return emailHistory || [];
     }),
 
   // Get users with expiring subscriptions
