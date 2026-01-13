@@ -392,9 +392,9 @@ function UsersTab() {
   };
 
   const filteredUsers = users?.filter((user: any) => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPlan = filterPlan === 'all' || user.plan_name.toLowerCase() === filterPlan;
+    const matchesSearch = (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (user.email || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPlan = filterPlan === 'all' || (user.plan_name || '').toLowerCase() === filterPlan;
     const matchesStatus = filterStatus === 'all' || 
                          (filterStatus === 'restricted' && user.is_restricted) ||
                          (filterStatus === 'active' && !user.is_restricted);
