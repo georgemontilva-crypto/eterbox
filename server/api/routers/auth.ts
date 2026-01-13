@@ -2,7 +2,7 @@ import { z } from "zod";
 import { publicProcedure, protectedProcedure, router } from "../../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "../../db";
-import { users } from "../../../drizzle/schema";
+import { users, loginAttempts } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword, generateToken, generateVerificationToken } from "../../auth-service";
 import { sendWelcomeEmail, sendPasswordChangedEmail } from "../../email";
@@ -83,7 +83,7 @@ export const authRouter = router({
         password: z.string().min(1, "Password is required"),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
 
@@ -106,36 +106,62 @@ export const authRouter = router({
       const isValidPassword = await verifyPassword(input.password, user.password);
 
       if (!isValidPassword) {
-        // Increment failed login attempts
-        const failedAttempts = (user.failedLoginAttempts || 0) + 1;
-        await db.update(users)
-          .set({ 
-            failedLoginAttempts: failedAttempts,
-            lastFailedLogin: new Date()
-          })
-          .where(eq(users.id, user.id));
+        // Log failed login attempt
+        const requestInfo = getRequestInfo(ctx.req);
+        await db.insert(loginAttempts).values({
+          userId: user.id,
+          ipAddress: requestInfo.ipAddress,
+          userAgent: ctx.req.headers['user-agent'] || 'Unknown',
+          success: false,
+          reason: 'invalid_password'
+        });
+
+        // Count recent failed attempts (last 24 hours)
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const recentFailedAttempts = await db.select()
+          .from(loginAttempts)
+          .where(
+            eq(loginAttempts.userId, user.id)
+          )
+          .then(attempts => 
+            attempts.filter(a => 
+              !a.success && 
+              a.createdAt && 
+              a.createdAt >= oneDayAgo
+            ).length
+          );
 
         // Send alert if 3 or more failed attempts
-        if (failedAttempts >= 3) {
-          const requestInfo = getRequestInfo(ctx.req);
+        if (recentFailedAttempts >= 3) {
           sendFailedLoginAlert(
             user.email,
             user.name,
-            failedAttempts,
+            recentFailedAttempts,
             requestInfo.ipAddress,
             requestInfo.location
           ).catch(err => console.error('[Auth] Failed to send failed login alert:', err));
         }
 
-        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+        // Calculate remaining attempts (max 5 before account lock)
+        const remainingAttempts = Math.max(0, 5 - recentFailedAttempts);
+        const errorMessage = remainingAttempts > 0
+          ? `Incorrect password. ${remainingAttempts} attempt${remainingAttempts !== 1 ? 's' : ''} remaining before account lock.`
+          : "Account temporarily locked due to too many failed attempts. Please try again later or reset your password.";
+
+        throw new TRPCError({ code: "UNAUTHORIZED", message: errorMessage });
       }
 
-      // Reset failed attempts on successful login
-      if (user.failedLoginAttempts && user.failedLoginAttempts > 0) {
-        await db.update(users)
-          .set({ failedLoginAttempts: 0, lastFailedLogin: null })
-          .where(eq(users.id, user.id));
-      }
+      // Get request info for successful login
+      const requestInfo = getRequestInfo(ctx.req);
+
+      // Log successful login
+      await db.insert(loginAttempts).values({
+        userId: user.id,
+        ipAddress: requestInfo.ipAddress,
+        userAgent: ctx.req.headers['user-agent'] || 'Unknown',
+        success: true,
+        reason: null
+      });
 
       // Check if email is verified
       if (!user.emailVerified) {
@@ -169,7 +195,6 @@ export const authRouter = router({
       });
 
       // Send login alert (non-blocking)
-      const requestInfo = getRequestInfo(ctx.req);
       sendLoginAlert(
         user.email,
         user.name,
