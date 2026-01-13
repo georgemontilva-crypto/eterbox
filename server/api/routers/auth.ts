@@ -182,33 +182,6 @@ export const authRouter = router({
         };
       }
 
-      // Check device limit for Free plan
-      const { getUserById, getPlanById, countUserActiveSessions } = await import("../../db");
-      const userWithPlan = await getUserById(user.id);
-      if (userWithPlan) {
-        const plan = await getPlanById(userWithPlan.planId);
-        if (plan && plan.name === 'Free') {
-          const activeDevices = await countUserActiveSessions(user.id);
-          const currentDeviceInfo = ctx.req.headers['user-agent'] || 'Unknown';
-          
-          // Check if this is a new device (not in recent activity)
-          const { getUserDevices } = await import("../../db");
-          const userDevices = await getUserDevices(user.id);
-          const isKnownDevice = userDevices.some(d => d.deviceInfo === currentDeviceInfo);
-          
-          // If this is a new device and user already has 1 device, return special response
-          if (!isKnownDevice && activeDevices >= 1) {
-            return {
-              success: false,
-              requiresDeviceSwitch: true,
-              message: "You already have an active session on another device.",
-              userId: user.id,
-              email: user.email,
-            };
-          }
-        }
-      }
-
       // Update last signed in
       await db.update(users)
         .set({ lastSignedIn: new Date() })
@@ -382,83 +355,5 @@ export const authRouter = router({
       };
     }),
 
-  /**
-   * Force login by closing previous sessions
-   */
-  forceLogin: publicProcedure
-    .input(
-      z.object({
-        email: z.string().email("Invalid email address"),
-        password: z.string().min(1, "Password is required"),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
 
-      // Find user by email
-      const [user] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
-
-      if (!user) {
-        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
-      }
-
-      // Verify password
-      const isValidPassword = await verifyPassword(input.password, user.password || '');
-
-      if (!isValidPassword) {
-        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
-      }
-
-      // Clear all previous sessions (activity logs)
-      const { activityLogs } = await import("../../../drizzle/schema");
-      await db.delete(activityLogs).where(eq(activityLogs.userId, user.id));
-
-      // Get request info
-      const requestInfo = getRequestInfo(ctx.req);
-
-      // Record new login activity
-      const { recordActivity } = await import("../../db");
-      await recordActivity(
-        user.id,
-        "user_login",
-        "auth",
-        undefined,
-        requestInfo.ipAddress,
-        requestInfo.device
-      );
-
-      // Update last signed in
-      await db.update(users)
-        .set({ lastSignedIn: new Date() })
-        .where(eq(users.id, user.id));
-
-      // Generate JWT token
-      const token = generateToken({
-        userId: user.id,
-        email: user.email,
-        role: user.role,
-      });
-
-      // Send login alert (non-blocking)
-      sendLoginAlert(
-        user.email,
-        user.name,
-        requestInfo.ipAddress,
-        requestInfo.device,
-        requestInfo.location
-      ).catch(err => console.error('[Auth] Failed to send login alert:', err));
-
-      return {
-        success: true,
-        token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          planId: user.planId,
-        },
-      };
-    }),
 });

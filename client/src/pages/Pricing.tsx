@@ -14,21 +14,19 @@ const PLANS = [
     id: 1,
     name: "Free",
     descriptionKey: "pricing.freeDesc",
-    maxKeys: 25,
+    maxKeys: 15,
     maxFolders: 3,
     maxGeneratedKeys: 20,
-    maxDevices: 1, // NEW: Device limit
     price: 0,
     yearlyPrice: 0,
     yearlyDiscount: 0,
     features: [
-      { key: "25 credentials", included: true },
+      { key: "15 credentials", included: true, highlight: true },
       { key: "3 folders", included: true },
       { key: "20 generated passwords/month", included: true },
       { key: "AES-256 Encryption", included: true },
       { key: "Two-Factor Authentication", included: true },
-      { key: "1 device only", included: true, highlight: true },
-      { key: "Unlimited devices", included: false },
+      { key: "Unlimited devices", included: true },
       { key: "Export/Import", included: false },
       { key: "Automatic backup", included: false },
       { key: "Biometric authentication", included: false },
@@ -42,7 +40,6 @@ const PLANS = [
     maxKeys: -1, // Unlimited
     maxFolders: -1, // Unlimited
     maxGeneratedKeys: -1, // Unlimited
-    maxDevices: -1, // Unlimited
     price: 3.99,
     yearlyPrice: 39.99,
     yearlyDiscount: 17,
@@ -69,7 +66,6 @@ const PLANS = [
     maxKeys: -1,
     maxFolders: -1,
     maxGeneratedKeys: -1,
-    maxDevices: -1,
     maxMembers: 5, // NEW: Up to 5 users
     price: 19.99,
     yearlyPrice: 199.99,
@@ -96,7 +92,6 @@ const PLANS = [
     maxKeys: -1,
     maxFolders: -1,
     maxGeneratedKeys: -1,
-    maxDevices: -1,
     maxMembers: 10, // NEW: Up to 10 users included
     price: 49.99,
     yearlyPrice: 499.99,
