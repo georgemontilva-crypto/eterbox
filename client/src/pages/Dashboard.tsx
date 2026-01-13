@@ -527,13 +527,11 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-4 mb-8">
-          {/* Add New Credential button - Full width */}
-          <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }}>
-            <Plus className="w-4 h-4 mr-2" />Add New Credential
-          </Button>
-          
-          {/* Create Folder and Generate Password - Side by side on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* All 3 buttons in one row on desktop, stacked on mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }}>
+              <Plus className="w-4 h-4 mr-2" />Add New Credential
+            </Button>
             <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)}>
               <Plus className="w-4 h-4 mr-2" />Create Folder
             </Button>
