@@ -384,12 +384,12 @@ function UsersTab() {
   });
 
   const handleApproveUser = (userId: number) => {
-    updateUserMutation.mutate({ userId, is_restricted: false });
+    updateUserMutation.mutate({ userId, isRestricted: false });
   };
 
   const handleRestrictUser = (userId: number) => {
     if (confirm('¿Estás seguro de que quieres restringir este usuario?')) {
-      updateUserMutation.mutate({ userId, is_restricted: true });
+      updateUserMutation.mutate({ userId, isRestricted: true });
     }
   };
 

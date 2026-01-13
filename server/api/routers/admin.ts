@@ -118,6 +118,7 @@ export const adminRouter = router({
         planId: z.number().optional(),
         role: z.enum(["user", "admin"]).optional(),
         subscriptionEndDate: z.string().optional(),
+        isRestricted: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -137,6 +138,7 @@ export const adminRouter = router({
       if (input.email) updateData.email = input.email;
       if (input.role) updateData.role = input.role;
       if (input.subscriptionEndDate) updateData.subscriptionEndDate = new Date(input.subscriptionEndDate);
+      if (input.isRestricted !== undefined) updateData.is_restricted = input.isRestricted ? 1 : 0;
       
       // Si se cambia el plan, establecer fechas de suscripción
       if (input.planId !== undefined) {
