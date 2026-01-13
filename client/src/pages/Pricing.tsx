@@ -366,43 +366,20 @@ export default function Pricing() {
 
         {/* PayPal Checkout Modal */}
         {showCheckout && selectedPlan && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-md p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold">{t("pricing.checkout")}</h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowCheckout(false)}
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-
-              <div className="mb-6">
-                <p className="text-muted-foreground mb-2">{t("pricing.selectedPlan")}:</p>
-                <p className="text-xl font-bold">{selectedPlan.name}</p>
-                <p className="text-2xl font-bold text-accent mt-2">
-                  ${getPrice(selectedPlan)} / {billingPeriod === "yearly" ? t("pricing.year") : t("pricing.month")}
-                </p>
-              </div>
-
-              <PayPalCheckout
-                planId={selectedPlan.id}
-                planName={selectedPlan.name}
-                price={getPrice(selectedPlan)}
-                period={billingPeriod === "yearly" ? "yearly" : "monthly"}
-                discount={billingPeriod === "yearly" ? selectedPlan.yearlyDiscount : undefined}
-                onSuccess={() => {
-                  setShowCheckout(false);
-                  toast.success(t("pricing.paymentSuccess"));
-                  refetchUserPlan();
-                  setLocation("/dashboard?upgraded=true");
-                }}
-                onCancel={() => setShowCheckout(false)}
-              />
-            </Card>
-          </div>
+          <PayPalCheckout
+            planId={selectedPlan.id}
+            planName={selectedPlan.name}
+            price={getPrice(selectedPlan)}
+            period={billingPeriod === "yearly" ? "yearly" : "monthly"}
+            discount={billingPeriod === "yearly" ? selectedPlan.yearlyDiscount : undefined}
+            onSuccess={() => {
+              setShowCheckout(false);
+              toast.success(t("pricing.paymentSuccess"));
+              refetchUserPlan();
+              setLocation("/dashboard?upgraded=true");
+            }}
+            onCancel={() => setShowCheckout(false)}
+          />
         )}
       </main>
     </div>

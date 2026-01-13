@@ -42,6 +42,10 @@ export function PayPalCheckout({
   const { data: plans } = trpc.plans.list.useQuery();
 
   const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || "";
+  
+  // Debug log
+  console.log("PayPal Client ID:", paypalClientId ? "Configured" : "Missing");
+  console.log("Environment:", import.meta.env.MODE);
 
   const createOrder = async () => {
     try {
@@ -225,7 +229,8 @@ export function PayPalCheckout({
               </div>
             ) : !paypalClientId ? (
               <div className="text-center py-8">
-                <p className="text-sm text-destructive">{t("checkout.paypalNotConfigured")}</p>
+                <p className="text-sm text-destructive mb-2">{t("checkout.paypalNotConfigured")}</p>
+                <p className="text-xs text-muted-foreground">Please configure VITE_PAYPAL_CLIENT_ID environment variable</p>
               </div>
             ) : (
               <PayPalScriptProvider 
@@ -234,6 +239,7 @@ export function PayPalCheckout({
                   currency: "USD",
                   intent: "capture",
                 }}
+                deferLoading={false}
               >
                 <div className="space-y-3">
                   {/* PayPal Button */}
