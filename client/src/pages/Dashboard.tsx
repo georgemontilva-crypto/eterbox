@@ -502,10 +502,14 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-3 gap-3 md:gap-4 mb-8">
-          <Card className="p-3 md:p-4 border border-border/20">
+          <Card 
+            className="p-3 md:p-4 border border-border/20 cursor-pointer hover:border-accent/50 transition-colors" 
+            onClick={() => setLocation('/pricing')}
+          >
             <div className="flex flex-col items-start">
               <p className="text-xs md:text-sm text-muted-foreground mb-1">Current Plan</p>
               <p className="text-base md:text-xl font-bold text-accent">{planName}</p>
+              <p className="text-xs text-muted-foreground mt-1">Click to upgrade</p>
             </div>
           </Card>
           <Card className="p-3 md:p-4 border border-border/20">

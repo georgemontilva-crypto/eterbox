@@ -394,17 +394,17 @@ export default function Pricing() {
 
               <PayPalCheckout
                 planId={selectedPlan.id}
-                amount={getPrice(selectedPlan)}
-                billingPeriod={billingPeriod}
+                planName={selectedPlan.name}
+                price={getPrice(selectedPlan)}
+                period={billingPeriod === "yearly" ? "yearly" : "monthly"}
+                discount={billingPeriod === "yearly" ? selectedPlan.yearlyDiscount : undefined}
                 onSuccess={() => {
                   setShowCheckout(false);
                   toast.success(t("pricing.paymentSuccess"));
                   refetchUserPlan();
                   setLocation("/dashboard?upgraded=true");
                 }}
-                onError={(error) => {
-                  toast.error(error);
-                }}
+                onCancel={() => setShowCheckout(false)}
               />
             </Card>
           </div>
