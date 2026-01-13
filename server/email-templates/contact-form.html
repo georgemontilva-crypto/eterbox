@@ -35,9 +35,7 @@
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">Email:</td>
-                                        <td style="color: #e5e5e5; font-size: 15px;">
-                                            <a href="mailto:{{contact_email}}" style="color: #3b82f6; text-decoration: none;">{{contact_email}}</a>
-                                        </td>
+                                        <td style="color: #3b82f6; font-size: 15px;">{{contact_email}}</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: #a3a3a3; font-size: 14px;">Subject:</td>
@@ -56,11 +54,11 @@
                                 <div style="font-size: 15px; color: #e5e5e5; line-height: 1.6; white-space: pre-wrap;">{{contact_message}}</div>
                             </div>
                             
-                            <!-- Quick Reply Button -->
-                            <div style="text-align: center; margin: 32px 0;">
-                                <a href="mailto:{{contact_email}}?subject=Re: {{contact_subject}}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px;">
-                                    Reply to {{contact_name}}
-                                </a>
+                            <!-- Reply Instructions -->
+                            <div style="background-color: #1a1a1a; border-radius: 12px; padding: 20px; margin: 24px 0; border: 1px solid #262626; text-align: center;">
+                                <p style="margin: 0; font-size: 14px; color: #a3a3a3;">
+                                    💡 <strong style="color: #e5e5e5;">To reply:</strong> Simply use the "Reply" button in your email client to respond directly to {{contact_name}}
+                                </p>
                             </div>
                         </td>
                     </tr>
