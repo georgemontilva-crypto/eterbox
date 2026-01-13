@@ -87,13 +87,13 @@ export const adminRouter = router({
           u.id,
           u.name,
           u.email,
-          u.plan_id,
+          u.planId as plan_id,
           u.is_restricted,
-          u.created_at,
+          u.createdAt as created_at,
           p.name as plan_name
         FROM users u
-        LEFT JOIN plans p ON u.plan_id = p.id
-        ORDER BY u.created_at DESC
+        LEFT JOIN plans p ON u.planId = p.id
+        ORDER BY u.createdAt DESC
       `);
 
       // db.execute() returns [rows, fields], we need just the rows
