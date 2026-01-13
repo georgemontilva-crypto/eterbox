@@ -197,7 +197,7 @@ export const appRouter = router({
     create: protectedProcedure
       .input(z.object({
         platformName: z.string().min(1).max(255),
-        username: z.string().min(1).max(255),
+        username: z.string().max(255).optional(),
         email: z.string().email().optional(),
         password: z.string().min(1),
         folderId: z.number().optional(),
@@ -249,7 +249,7 @@ export const appRouter = router({
       .input(z.object({
         id: z.number(),
         platformName: z.string().min(1).max(255).optional(),
-        username: z.string().min(1).max(255).optional(),
+        username: z.string().max(255).optional(),
         email: z.string().email().optional(),
         password: z.string().min(1).optional(),
         folderId: z.number().optional(),
