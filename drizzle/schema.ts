@@ -277,3 +277,21 @@ export const newsletterSubscriptions = mysqlTable("newsletterSubscriptions", {
 
 export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
 export type InsertNewsletterSubscription = typeof newsletterSubscriptions.$inferInsert;
+
+
+/**
+ * User notification preferences
+ */
+export const notificationPreferences = mysqlTable("notification_preferences", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull().unique(),
+  securityAlerts: boolean("security_alerts").default(true).notNull(),
+  marketingPromos: boolean("marketing_promos").default(true).notNull(),
+  productUpdates: boolean("product_updates").default(true).notNull(),
+  accountActivity: boolean("account_activity").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NotificationPreferences = typeof notificationPreferences.$inferSelect;
+export type InsertNotificationPreferences = typeof notificationPreferences.$inferInsert;
