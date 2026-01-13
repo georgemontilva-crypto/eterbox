@@ -1,48 +1,87 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-// import { useAuth } from "@/_core/hooks/useAuth"; // Removed - public page doesn't need auth
-import { Check, Lock, Loader2 } from "lucide-react";
+import { Check, Lock, Loader2, X } from "lucide-react";
 import { useLocation, useSearch } from "wouter";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PayPalCheckout } from "@/components/PayPalCheckout";
 
-// Hardcoded plans - no database needed for public view
+// Updated plans with new pricing strategy
 const PLANS = [
   {
     id: 1,
     name: "Free",
     descriptionKey: "pricing.freeDesc",
-    maxKeys: 10,
-    maxFolders: 2,
-    maxGeneratedKeys: 10,
+    maxKeys: 25,
+    maxFolders: 3,
+    maxGeneratedKeys: 20,
+    maxDevices: 1, // NEW: Device limit
     price: 0,
     yearlyPrice: 0,
     yearlyDiscount: 0,
+    features: [
+      { key: "25 credentials", included: true },
+      { key: "3 folders", included: true },
+      { key: "20 generated passwords/month", included: true },
+      { key: "AES-256 Encryption", included: true },
+      { key: "Two-Factor Authentication", included: true },
+      { key: "1 device only", included: true, highlight: true },
+      { key: "Unlimited devices", included: false },
+      { key: "Export/Import", included: false },
+      { key: "Automatic backup", included: false },
+      { key: "Biometric authentication", included: false },
+      { key: "Priority support", included: false },
+    ]
   },
   {
     id: 2,
     name: "Basic",
     descriptionKey: "pricing.basicDesc",
-    maxKeys: 100,
-    maxFolders: 10,
-    maxGeneratedKeys: 300,
-    price: 12.99,
-    yearlyPrice: 139.08,
-    yearlyDiscount: 10,
+    maxKeys: -1, // Unlimited
+    maxFolders: -1, // Unlimited
+    maxGeneratedKeys: -1, // Unlimited
+    maxDevices: -1, // Unlimited
+    price: 3.99,
+    yearlyPrice: 39.99,
+    yearlyDiscount: 17,
+    popular: true,
+    features: [
+      { key: "Unlimited credentials", included: true },
+      { key: "Unlimited folders", included: true },
+      { key: "Unlimited generated passwords", included: true },
+      { key: "AES-256 Encryption", included: true },
+      { key: "Two-Factor Authentication", included: true },
+      { key: "Unlimited devices", included: true, highlight: true },
+      { key: "Export/Import Credentials", included: true, highlight: true },
+      { key: "Automatic backup", included: true, highlight: true },
+      { key: "Biometric authentication", included: true, highlight: true },
+      { key: "Change history", included: true },
+      { key: "Security alerts", included: true },
+      { key: "Priority support (24h)", included: true },
+    ]
   },
   {
     id: 3,
     name: "Corporate",
     descriptionKey: "pricing.corporateDesc",
-    maxKeys: 1000,
-    maxFolders: 100,
+    maxKeys: -1,
+    maxFolders: -1,
     maxGeneratedKeys: -1,
-    price: 29,
-    yearlyPrice: 319.20,
-    yearlyDiscount: 8,
+    maxDevices: -1,
+    maxMembers: 5, // NEW: Up to 5 users
+    price: 19.99,
+    yearlyPrice: 199.99,
+    yearlyDiscount: 17,
+    features: [
+      { key: "Up to 5 users", included: true, highlight: true },
+      { key: "Everything in Basic", included: true },
+      { key: "Share credentials/folders", included: true, highlight: true },
+      { key: "Team admin panel", included: true },
+      { key: "Complete audits and compliance", included: true },
+      { key: "24/7 dedicated support", included: true },
+    ]
   },
   {
     id: 4,
@@ -51,31 +90,40 @@ const PLANS = [
     maxKeys: -1,
     maxFolders: -1,
     maxGeneratedKeys: -1,
-    maxMembers: 20,
-    price: 99,
-    yearlyPrice: 1080,
-    yearlyDiscount: 9,
+    maxDevices: -1,
+    maxMembers: 10, // NEW: Up to 10 users included
+    price: 49.99,
+    yearlyPrice: 499.99,
+    yearlyDiscount: 17,
+    pricePerAdditionalUser: 4.99,
+    features: [
+      { key: "Up to 10 users included", included: true, highlight: true },
+      { key: "$4.99 per additional user", included: true },
+      { key: "Everything in Corporate", included: true },
+      { key: "SSO Integration", included: true, highlight: true },
+      { key: "Advanced multi-user (unlimited)", included: true },
+      { key: "Complete audits and compliance", included: true },
+      { key: "24/7 dedicated support", included: true },
+      { key: "Dedicated onboarding", included: true, highlight: true },
+    ]
   },
 ];
 
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const search = useSearch();
-  // const { user } = useAuth(); // Removed - will check localStorage directly
   const [user, setUser] = useState<any>(null);
 
   // Check if user is logged in by checking localStorage token
   useEffect(() => {
     const token = localStorage.getItem("auth_token");
     if (token) {
-      // User is logged in, we can show their plan
       setUser({ loggedIn: true });
     }
   }, []);
+
   const { t } = useLanguage();
-  // Use hardcoded plans instead of database
   const plans = PLANS;
-  // Removed getUserPlan query to prevent auth errors on public page
   const userPlan = null;
   const refetchUserPlan = () => {};
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
@@ -97,22 +145,35 @@ export default function Pricing() {
     },
   });
 
-  // Handle PayPal return (for redirect flow fallback)
+  // Handle PayPal return
   useEffect(() => {
     const params = new URLSearchParams(search);
     const token = params.get("token");
-    const paymentStatus = params.get("payment");
+    const payerId = params.get("PayerID");
 
-    if (paymentStatus === "cancelled") {
-      toast.info(t("pricing.paymentCancelled"));
-    } else if (token && !captureOrderMutation.isPending) {
+    if (token && payerId) {
       captureOrderMutation.mutate({ orderId: token });
     }
   }, [search]);
 
-  const handleUpgrade = (plan: any) => {
+  const isCurrentPlan = (planId: number) => {
+    return userPlan?.id === planId;
+  };
+
+  const handleSelectPlan = (plan: any) => {
+    if (plan.id === 1) {
+      toast.info(t("pricing.alreadyFree"));
+      return;
+    }
+
     if (!user) {
-      setLocation("/");
+      toast.error(t("pricing.loginRequired"));
+      setLocation("/login?redirect=/pricing");
+      return;
+    }
+
+    if (isCurrentPlan(plan.id)) {
+      toast.info(t("pricing.alreadySubscribed"));
       return;
     }
 
@@ -120,40 +181,18 @@ export default function Pricing() {
     setShowCheckout(true);
   };
 
-  const handleCheckoutSuccess = () => {
-    setShowCheckout(false);
-    setSelectedPlan(null);
-    refetchUserPlan();
-    setLocation("/dashboard?upgraded=true");
-  };
-
-  const handleCheckoutCancel = () => {
-    setShowCheckout(false);
-    setSelectedPlan(null);
-  };
-
-  const isCurrentPlan = (planId: number) => {
-    // Always return false since we don't fetch user plan on public page
-    return false;
-  };
-
   const getPrice = (plan: any) => {
-    if (plan.price === "0" || plan.price === 0) return "0";
-    return billingPeriod === "yearly" && plan.yearlyPrice 
-      ? plan.yearlyPrice 
-      : plan.price;
+    if (billingPeriod === "yearly") {
+      return plan.yearlyPrice;
+    }
+    return plan.price;
   };
 
   const getDiscount = (plan: any) => {
-    if (billingPeriod === "yearly" && plan.yearlyDiscount > 0) {
+    if (billingPeriod === "yearly") {
       return plan.yearlyDiscount;
     }
     return 0;
-  };
-
-  const getGeneratedKeysLimit = (plan: any) => {
-    if (plan.maxGeneratedKeys === -1) return t("plan.unlimited");
-    return plan.maxGeneratedKeys;
   };
 
   return (
@@ -201,7 +240,7 @@ export default function Pricing() {
           >
             {t("pricing.yearly")}
             <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full">
-              {t("pricing.saveUp")}
+              Save 17%
             </span>
           </button>
         </div>
@@ -216,31 +255,32 @@ export default function Pricing() {
               <Card
                 key={plan.id}
                 className={`p-8 border rounded-[15px] transition-all duration-300 flex flex-col ${
-                  plan.name === "Basic"
-                    ? "border-accent bg-accent/5"
+                  plan.popular
+                    ? "border-accent bg-accent/5 ring-2 ring-accent/20"
                     : isCurrentPlan(plan.id)
                     ? "border-green-500/50 bg-green-500/5"
                     : "border-border/20 hover:border-accent/50"
                 }`}
               >
+                {/* Badge */}
                 {isCurrentPlan(plan.id) && (
                   <div className="bg-green-500/20 text-green-400 text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4">
                     {t("pricing.currentPlan")}
                   </div>
                 )}
-                {plan.name === "Basic" && !isCurrentPlan(plan.id) && (
+                {plan.popular && !isCurrentPlan(plan.id) && (
                   <div className="bg-accent/20 text-accent text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4">
-                    {t("pricing.popular")}
+                    Most Popular
                   </div>
                 )}
-                {plan.name === "Corporate" && !isCurrentPlan(plan.id) && (
+                {plan.name === "Corporate" && !isCurrentPlan(plan.id) && !plan.popular && (
                   <div className="bg-blue-500/20 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4">
-                    {t("pricing.forSmallBusinesses")}
+                    For Small Businesses
                   </div>
                 )}
                 {plan.name === "Enterprise" && !isCurrentPlan(plan.id) && (
                   <div className="bg-purple-500/20 text-purple-400 text-xs font-semibold px-3 py-1 rounded-full w-fit mb-4">
-                    {t("pricing.forLargeBusinesses")}
+                    For Large Businesses
                   </div>
                 )}
                 
@@ -254,7 +294,7 @@ export default function Pricing() {
                   ) : (
                     <>
                       <div className="flex items-baseline gap-2">
-                        <p className="text-4xl font-bold">${Math.round(Number(price))}</p>
+                        <p className="text-4xl font-bold">${price}</p>
                         {discount > 0 && (
                           <span className="bg-green-500/20 text-green-400 text-xs font-semibold px-2 py-1 rounded-full">
                             -{discount}%
@@ -266,7 +306,7 @@ export default function Pricing() {
                       </p>
                       {billingPeriod === "yearly" && discount > 0 && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          {t("pricing.equivalentTo")} ${Math.round(Number(price) / 12)}/{t("pricing.month")}
+                          {t("pricing.equivalentTo")} ${(price / 12).toFixed(2)}/{t("pricing.month")}
                         </p>
                       )}
                     </>
@@ -274,111 +314,88 @@ export default function Pricing() {
                 </div>
 
                 {/* Features */}
-                <div className="space-y-4 mb-8 flex-grow">
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                    <span className="text-sm">
-                      {plan.maxKeys === -1 ? t("plan.unlimited") : plan.maxKeys} {t("pricing.credentials")}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                    <span className="text-sm">
-                      {plan.maxFolders === -1 ? t("plan.unlimited") : plan.maxFolders} {t("pricing.folders")}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                    <span className="text-sm">
-                      {getGeneratedKeysLimit(plan)} {t("pricing.generatedKeys")}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                    <span className="text-sm">{t("pricing.aesEncryption")}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                    <span className="text-sm">{t("pricing.twoFactorAuth")}</span>
-                  </div>
-                  {plan.name !== "Free" && (
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                      <span className="text-sm">{t("pricing.exportImport")}</span>
+                <div className="space-y-3 mb-8 flex-grow">
+                  {plan.features.map((feature: any, idx: number) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      {feature.included ? (
+                        <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 ${feature.highlight ? 'text-accent' : 'text-green-500'}`} />
+                      ) : (
+                        <X className="w-5 h-5 text-muted-foreground/50 flex-shrink-0 mt-0.5" />
+                      )}
+                      <span className={`text-sm ${feature.included ? '' : 'text-muted-foreground/70 line-through'} ${feature.highlight ? 'font-semibold' : ''}`}>
+                        {feature.key}
+                      </span>
                     </div>
-                  )}
-                  {(plan.name === "Corporate" || plan.name === "Enterprise") && (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                        <span className="text-sm">{t("pricing.automaticBackup")}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                        <span className="text-sm">{t("pricing.audits")}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                        <span className="text-sm">{t("pricing.support24")}</span>
-                      </div>
-                    </>
-                  )}
-                  {plan.name === "Enterprise" && (
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-accent flex-shrink-0" />
-                      <span className="text-sm">{t("pricing.multiUserAdvanced")}</span>
-                    </div>
-                  )}
+                  ))}
                 </div>
 
                 {/* CTA Button */}
-                <div className="mt-auto">
                 <Button
-                  className="w-full"
-                  variant={plan.name === "Free" ? "outline" : "default"}
-                  onClick={() => {
-                    if (plan.name === "Free" || isCurrentPlan(plan.id)) {
-                      setLocation("/dashboard");
-                    } else {
-                      handleUpgrade(plan);
-                    }
-                  }}
-                  disabled={captureOrderMutation.isPending}
+                  onClick={() => handleSelectPlan(plan)}
+                  disabled={isCurrentPlan(plan.id)}
+                  className={`w-full ${
+                    plan.popular
+                      ? "bg-accent hover:bg-accent/90"
+                      : isCurrentPlan(plan.id)
+                      ? "bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                      : ""
+                  }`}
+                  variant={plan.popular ? "default" : isCurrentPlan(plan.id) ? "outline" : "outline"}
                 >
-                  {captureOrderMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      {t("pricing.processing")}
-                    </>
-                  ) : isCurrentPlan(plan.id) ? (
+                  {isCurrentPlan(plan.id) ? (
                     t("pricing.currentPlan")
-                  ) : plan.name === "Free" ? (
+                  ) : plan.id === 1 ? (
                     t("pricing.getStarted")
                   ) : (
                     t("pricing.subscribeNow")
                   )}
                 </Button>
-                </div>
               </Card>
             );
           })}
         </div>
 
+        {/* PayPal Checkout Modal */}
+        {showCheckout && selectedPlan && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-md p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold">{t("pricing.checkout")}</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowCheckout(false)}
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
 
+              <div className="mb-6">
+                <p className="text-muted-foreground mb-2">{t("pricing.selectedPlan")}:</p>
+                <p className="text-xl font-bold">{selectedPlan.name}</p>
+                <p className="text-2xl font-bold text-accent mt-2">
+                  ${getPrice(selectedPlan)} / {billingPeriod === "yearly" ? t("pricing.year") : t("pricing.month")}
+                </p>
+              </div>
+
+              <PayPalCheckout
+                planId={selectedPlan.id}
+                amount={getPrice(selectedPlan)}
+                billingPeriod={billingPeriod}
+                onSuccess={() => {
+                  setShowCheckout(false);
+                  toast.success(t("pricing.paymentSuccess"));
+                  refetchUserPlan();
+                  setLocation("/dashboard?upgraded=true");
+                }}
+                onError={(error) => {
+                  toast.error(error);
+                }}
+              />
+            </Card>
+          </div>
+        )}
       </main>
-
-      {/* PayPal Checkout Modal */}
-      {showCheckout && selectedPlan && (
-        <PayPalCheckout
-          planId={selectedPlan.id}
-          planName={selectedPlan.name}
-          price={getPrice(selectedPlan)}
-          period={billingPeriod}
-          discount={getDiscount(selectedPlan)}
-          onSuccess={handleCheckoutSuccess}
-          onCancel={handleCheckoutCancel}
-        />
-      )}
     </div>
   );
 }
