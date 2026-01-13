@@ -247,6 +247,7 @@ export const translations: Translations = {
   "home.footer.terms": { en: "Terms of Service", es: "Términos de Servicio" },
   "home.footer.privacy": { en: "Privacy Policy", es: "Política de Privacidad" },
   "home.footer.cookies": { en: "Cookie Policy", es: "Política de Cookies" },
+  "home.footer.refund": { en: "Refund Policy", es: "Reembolsos" },
   "home.footer.newsletter": { en: "Newsletter", es: "Boletín" },
   "home.footer.newsletterDesc": { en: "Stay updated with security tips and product news.", es: "Mantente actualizado con consejos de seguridad y noticias del producto." },
   "home.footer.emailPlaceholder": { en: "Your email", es: "Tu email" },
@@ -487,6 +488,65 @@ export const translations: Translations = {
   
   "notifications.activity.title": { en: "Account Activity", es: "Actividad de Cuenta" },
   "notifications.activity.desc": { en: "Summaries and reminders", es: "Resúmenes y recordatorios" },
+  
+  // Refund Policy
+  "refund.backToHome": { en: "Back to Home", es: "Volver al Inicio" },
+  "refund.title": { en: "Refund Policy", es: "Política de Reembolsos" },
+  "refund.pageTitle": { en: "Refund Policy", es: "Política de Reembolsos" },
+  "refund.lastUpdated": { en: "Last Updated", es: "Última Actualización" },
+  "refund.updateDate": { en: "January 2026", es: "Enero 2026" },
+  "refund.importantNotice": { en: "Important Notice", es: "Aviso Importante" },
+  "refund.noRefundPolicy": { en: "All sales are final. No refunds will be issued except in cases of billing errors or technical issues that prevent service access.", es: "Todas las ventas son finales. No se emitirán reembolsos excepto en casos de errores de facturación o problemas técnicos que impidan el acceso al servicio." },
+  "refund.noRefundExplanation": { en: "By subscribing to EterBox, you acknowledge and accept this no-refund policy.", es: "Al suscribirte a EterBox, reconoces y aceptas esta política de no reembolsos." },
+  
+  "refund.section1Title": { en: "1. No Refund Policy", es: "1. Política de No Reembolsos" },
+  "refund.section1Content1": { en: "EterBox operates on a strict no-refund policy. All purchases of subscription plans (Basic, Corporate, and Enterprise) are final and non-refundable.", es: "EterBox opera bajo una política estricta de no reembolsos. Todas las compras de planes de suscripción (Basic, Corporate y Enterprise) son finales y no reembolsables." },
+  "refund.section1Content2": { en: "This policy applies to all subscription periods, whether monthly or yearly, and regardless of usage or satisfaction with the service.", es: "Esta política se aplica a todos los períodos de suscripción, ya sean mensuales o anuales, e independientemente del uso o satisfacción con el servicio." },
+  "refund.section1Content3": { en: "We encourage all users to thoroughly test our free plan before committing to a paid subscription to ensure the service meets your needs.", es: "Alentamos a todos los usuarios a probar exhaustivamente nuestro plan gratuito antes de comprometerse con una suscripción de pago para asegurar que el servicio cumple con sus necesidades." },
+  
+  "refund.section2Title": { en: "2. Subscription Service", es: "2. Servicio de Suscripción" },
+  "refund.section2Content1": { en: "EterBox is a subscription-based service with the following characteristics:", es: "EterBox es un servicio basado en suscripción con las siguientes características:" },
+  "refund.section2Point1": { en: "Subscriptions renew automatically at the end of each billing cycle (monthly or yearly)", es: "Las suscripciones se renuevan automáticamente al final de cada ciclo de facturación (mensual o anual)" },
+  "refund.section2Point2": { en: "You will be charged the current subscription price at renewal unless you cancel before the renewal date", es: "Se te cobrará el precio de suscripción actual en la renovación a menos que canceles antes de la fecha de renovación" },
+  "refund.section2Point3": { en: "Access to premium features continues until the end of the paid period, even if you cancel", es: "El acceso a funciones premium continúa hasta el final del período pagado, incluso si cancelas" },
+  "refund.section2Point4": { en: "After cancellation, your account will automatically downgrade to the free plan at the end of the billing cycle", es: "Después de la cancelación, tu cuenta se degradará automáticamente al plan gratuito al final del ciclo de facturación" },
+  
+  "refund.section3Title": { en: "3. Billing and Charges", es: "3. Facturación y Cargos" },
+  "refund.section3Content1": { en: "All charges are processed securely through our payment partners (PayPal and Stripe). Please note:", es: "Todos los cargos se procesan de forma segura a través de nuestros socios de pago (PayPal y Stripe). Ten en cuenta:" },
+  "refund.section3Point1": { en: "Charges are made in USD and may be subject to currency conversion fees by your bank", es: "Los cargos se realizan en USD y pueden estar sujetos a tarifas de conversión de moneda por tu banco" },
+  "refund.section3Point2": { en: "You are responsible for ensuring your payment method is valid and has sufficient funds", es: "Eres responsable de asegurar que tu método de pago sea válido y tenga fondos suficientes" },
+  "refund.section3Point3": { en: "Failed payments may result in service interruption or account suspension", es: "Los pagos fallidos pueden resultar en interrupción del servicio o suspensión de cuenta" },
+  "refund.section3Point4": { en: "We do not store your credit card information; all payment data is handled by our secure payment processors", es: "No almacenamos tu información de tarjeta de crédito; todos los datos de pago son manejados por nuestros procesadores de pago seguros" },
+  
+  "refund.section4Title": { en: "4. Cancellation Policy", es: "4. Política de Cancelación" },
+  "refund.section4Content1": { en: "You may cancel your subscription at any time through your account settings. Upon cancellation:", es: "Puedes cancelar tu suscripción en cualquier momento a través de la configuración de tu cuenta. Al cancelar:" },
+  "refund.section4Point1": { en: "Your subscription remains active until the end of the current billing period", es: "Tu suscripción permanece activa hasta el final del período de facturación actual" },
+  "refund.section4Point2": { en: "You will not be charged for subsequent billing cycles", es: "No se te cobrará por ciclos de facturación posteriores" },
+  "refund.section4Point3": { en: "No refund will be provided for the remaining time in your current billing period", es: "No se proporcionará reembolso por el tiempo restante en tu período de facturación actual" },
+  "refund.section4Point4": { en: "Your account will automatically convert to the free plan when the paid period expires", es: "Tu cuenta se convertirá automáticamente al plan gratuito cuando expire el período pagado" },
+  
+  "refund.section5Title": { en: "5. Exceptions - When Refunds May Be Issued", es: "5. Excepciones - Cuándo Se Pueden Emitir Reembolsos" },
+  "refund.section5Content1": { en: "We will issue refunds only in the following exceptional circumstances:", es: "Emitiremos reembolsos solo en las siguientes circunstancias excepcionales:" },
+  "refund.section5Point1": { en: "Duplicate charges: If you were accidentally charged twice for the same subscription period", es: "Cargos duplicados: Si se te cobró accidentalmente dos veces por el mismo período de suscripción" },
+  "refund.section5Point2": { en: "Billing errors: If you were charged an incorrect amount due to a system error", es: "Errores de facturación: Si se te cobró una cantidad incorrecta debido a un error del sistema" },
+  "refund.section5Point3": { en: "Service unavailability: If our service was completely inaccessible for more than 72 consecutive hours due to technical issues on our end", es: "Indisponibilidad del servicio: Si nuestro servicio estuvo completamente inaccesible durante más de 72 horas consecutivas debido a problemas técnicos de nuestra parte" },
+  "refund.section5Content2": { en: "To request a refund under these exceptions, please contact our support team at support@eterbox.com with documentation of the issue. Refund requests must be submitted within 30 days of the charge.", es: "Para solicitar un reembolso bajo estas excepciones, contacta a nuestro equipo de soporte en support@eterbox.com con documentación del problema. Las solicitudes de reembolso deben presentarse dentro de los 30 días del cargo." },
+  
+  "refund.section6Title": { en: "6. Free Plan - Risk-Free Trial", es: "6. Plan Gratuito - Prueba Sin Riesgo" },
+  "refund.section6Content1": { en: "EterBox offers a generous free plan that allows you to test our service before committing to a paid subscription. The free plan includes up to 25 credentials, unlimited folders, and all core security features.", es: "EterBox ofrece un plan gratuito generoso que te permite probar nuestro servicio antes de comprometerte con una suscripción de pago. El plan gratuito incluye hasta 25 credenciales, carpetas ilimitadas y todas las funciones de seguridad principales." },
+  "refund.section6Content2": { en: "We strongly recommend using the free plan to evaluate whether EterBox meets your needs before upgrading to a paid plan.", es: "Recomendamos encarecidamente usar el plan gratuito para evaluar si EterBox cumple con tus necesidades antes de actualizar a un plan de pago." },
+  
+  "refund.section7Title": { en: "7. Chargebacks and Disputes", es: "7. Contracargos y Disputas" },
+  "refund.section7Content1": { en: "Please contact us before initiating a chargeback with your bank or credit card company. Chargebacks filed without first attempting to resolve the issue with us may result in:", es: "Por favor contáctanos antes de iniciar un contracargo con tu banco o compañía de tarjeta de crédito. Los contracargos presentados sin intentar primero resolver el problema con nosotros pueden resultar en:" },
+  "refund.section7Content2": { en: "Consequences of unauthorized chargebacks:", es: "Consecuencias de contracargos no autorizados:" },
+  "refund.section7Point1": { en: "Immediate suspension of your account and loss of access to all data", es: "Suspensión inmediata de tu cuenta y pérdida de acceso a todos los datos" },
+  "refund.section7Point2": { en: "A chargeback processing fee of $25 USD will be added to your account", es: "Se agregará una tarifa de procesamiento de contracargo de $25 USD a tu cuenta" },
+  "refund.section7Point3": { en: "Permanent ban from using EterBox services if the chargeback is deemed fraudulent", es: "Prohibición permanente de usar los servicios de EterBox si el contracargo se considera fraudulento" },
+  
+  "refund.section8Title": { en: "8. Contact Us", es: "8. Contáctanos" },
+  "refund.section8Content": { en: "If you have questions about this refund policy or believe you qualify for an exception, please contact our support team. We are committed to resolving any billing issues fairly and promptly.", es: "Si tienes preguntas sobre esta política de reembolsos o crees que calificas para una excepción, contacta a nuestro equipo de soporte. Estamos comprometidos a resolver cualquier problema de facturación de manera justa y rápida." },
+  "refund.contactSupport": { en: "Contact Support", es: "Contactar Soporte" },
+  "refund.footerNote": { en: "By using EterBox, you acknowledge that you have read, understood, and agree to this Refund Policy.", es: "Al usar EterBox, reconoces que has leído, entendido y aceptas esta Política de Reembolsos." },
 };
 
 interface LanguageContextType {

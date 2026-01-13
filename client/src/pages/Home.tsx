@@ -353,6 +353,7 @@ export default function Home() {
                 <li><button onClick={() => setLocation("/terms")} className="hover:text-accent transition-colors">{t("home.footer.terms")}</button></li>
                 <li><button onClick={() => setLocation("/privacy")} className="hover:text-accent transition-colors">{t("home.footer.privacy")}</button></li>
                 <li><button onClick={() => setLocation("/cookies")} className="hover:text-accent transition-colors">{t("home.footer.cookies")}</button></li>
+                <li><button onClick={() => setLocation("/refund-policy")} className="hover:text-accent transition-colors">{t("home.footer.refund")}</button></li>
               </ul>
             </div>
             
