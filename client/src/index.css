@@ -199,29 +199,34 @@
 }
 
 
-/* Custom scrollbar colors - Simple and minimal */
+/* Custom scrollbar colors - Adapts to theme */
 /* For Webkit browsers (Chrome, Safari, Edge) */
-::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
+
+/* Light mode - White scrollbar */
+:root:not(.dark) ::-webkit-scrollbar-thumb {
+  background-color: #ffffff;
+  border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+:root:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background-color: #e0e0e0;
 }
 
+/* Dark mode - Black scrollbar */
 .dark ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: #000000;
+  border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #333333;
 }
 
 /* For Firefox */
-* {
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+:root:not(.dark) * {
+  scrollbar-color: #ffffff transparent;
 }
 
 .dark * {
-  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+  scrollbar-color: #000000 transparent;
 }
