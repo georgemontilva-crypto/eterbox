@@ -347,6 +347,15 @@ function OverviewTab({ analytics, period, colors }: any) {
 // Users Tab Component with Advanced Management
 function UsersTab() {
   const { data: users, isLoading, refetch } = trpc.admin.listUsers.useQuery();
+  
+  // Debug: Log users data
+  useEffect(() => {
+    if (users) {
+      console.log('[UsersTab] Total users:', users.length);
+      console.log('[UsersTab] First user:', JSON.stringify(users[0]));
+      console.log('[UsersTab] Users array:', users);
+    }
+  }, [users]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlan, setFilterPlan] = useState<'all' | 'free' | 'premium' | 'enterprise'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'restricted'>('all');
@@ -549,7 +558,7 @@ function UsersTab() {
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm text-muted-foreground">
-                    {new Date(user.created_at).toLocaleDateString('es-ES')}
+                    {user.created_at ? new Date(user.created_at).toLocaleDateString('es-ES') : 'N/A'}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">

@@ -300,35 +300,35 @@ export async function getAnalytics(period: 'day' | 'week' | 'month' | 'year' = '
     const totalUsersResult: any = await db.execute(sql`
       SELECT COUNT(*) as count FROM users
     `);
-    const totalUsers = totalUsersResult?.[0]?.count || 0;
+    const totalUsers = totalUsersResult[0]?.[0]?.count || 0;
 
     // New users in period
     const newUsersResult: any = await db.execute(sql`
       SELECT COUNT(*) as count FROM users
       WHERE createdAt >= ${startDate.toISOString()}
     `);
-    const newUsers = newUsersResult?.[0]?.count || 0;
+    const newUsers = newUsersResult[0]?.[0]?.count || 0;
 
     // Total revenue (sum of all payments)
     const revenueResult: any = await db.execute(sql`
       SELECT COALESCE(SUM(amount), 0) as total FROM payment_history
       WHERE status = 'completed'
     `);
-    const totalRevenue = parseFloat(revenueResult?.[0]?.total || '0');
+    const totalRevenue = parseFloat(revenueResult[0]?.[0]?.total || '0');
 
     // Revenue in period
     const periodRevenueResult: any = await db.execute(sql`
       SELECT COALESCE(SUM(amount), 0) as total FROM payment_history
       WHERE status = 'completed' AND created_at >= ${startDate.toISOString()}
     `);
-    const periodRevenue = parseFloat(periodRevenueResult?.[0]?.total || '0');
+    const periodRevenue = parseFloat(periodRevenueResult[0]?.[0]?.total || '0');
 
     // Active subscriptions
     const activeSubsResult: any = await db.execute(sql`
       SELECT COUNT(*) as count FROM users
       WHERE planId IS NOT NULL AND planId != 1
     `);
-    const activeSubscriptions = activeSubsResult?.[0]?.count || 0;
+    const activeSubscriptions = activeSubsResult[0]?.[0]?.count || 0;
 
     // Users by plan
     const usersByPlanResult: any = await db.execute(sql`
@@ -363,9 +363,9 @@ export async function getAnalytics(period: 'day' | 'week' | 'month' | 'year' = '
       totalRevenue,
       periodRevenue,
       activeSubscriptions,
-      usersByPlan: usersByPlanResult || [],
-      dailyRegistrations: dailyRegsResult || [],
-      dailyRevenue: dailyRevenueResult || [],
+      usersByPlan: usersByPlanResult[0] || [],
+      dailyRegistrations: dailyRegsResult[0] || [],
+      dailyRevenue: dailyRevenueResult[0] || [],
       period
     };
   } catch (error) {
