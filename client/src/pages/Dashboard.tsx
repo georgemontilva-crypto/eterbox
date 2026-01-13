@@ -338,18 +338,27 @@ export default function Dashboard() {
         <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
           <div className="container py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <img src="/logo.png" alt="EterBox Logo" className="w-6 h-6" />
-                <span className="text-xl font-bold">EterBox</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <Button variant="ghost" size="sm" onClick={() => setLocation("/settings")}>
-                  <Settings className="w-4 h-4 mr-2" />Settings
+              <MobileMenu 
+                planName={planName} 
+                onLogout={logout}
+                userEmail={user?.email}
+                onAddCredentialWithPassword={(password) => {
+                  setDefaultPassword(password);
+                  setSelectedFolderId(activeFolderView);
+                  setShowCredentialModal(true);
+                }}
+              />
+              {adminCheck?.isAdmin && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLocation("/admin")}
+                  className="hidden md:flex items-center gap-2 text-accent hover:text-accent/80"
+                >
+                  <Shield className="w-4 h-4" />
+                  Admin
                 </Button>
-                <Button variant="ghost" size="sm" onClick={logout}>
-                  <LogOut className="w-4 h-4 mr-2" />Logout
-                </Button>
-              </div>
+              )}
             </div>
           </div>
         </header>
