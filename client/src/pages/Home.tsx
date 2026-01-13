@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Lock, Shield, Zap, ArrowRight, Check, Globe, Menu, Sun, Moon, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -26,6 +26,14 @@ export default function Home() {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Redirect to dashboard if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      setLocation('/dashboard');
+    }
+  }, [setLocation]);
   
   const subscribeNewsletter = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {
