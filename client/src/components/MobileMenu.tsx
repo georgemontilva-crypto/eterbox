@@ -975,7 +975,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
           <div className="flex flex-col h-full">
             {/* Persistent Header with Menu */}
             <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-border/20">
-              <div className="flex items-center p-4">
+              <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   {activeView ? (
                     <Button variant="ghost" size="icon" onClick={handleBack}>
@@ -985,6 +985,17 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
                     <span className="text-lg font-bold">EterBox</span>
                   )}
                 </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setOpen(false)}
+                  className="hover:bg-accent/10"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </Button>
               </div>
             </div>
 
