@@ -197,3 +197,33 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Hide scrollbar on mobile devices only */
+@media (max-width: 768px) {
+  /* Hide scrollbar for Chrome, Safari and Opera on mobile */
+  body::-webkit-scrollbar,
+  .overflow-y-auto::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox on mobile */
+  body,
+  .overflow-y-auto {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+/* Pull-to-refresh animations */
+@keyframes pull-refresh-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.pull-refresh-indicator {
+  animation: pull-refresh-bounce 1s ease-in-out infinite;
+}

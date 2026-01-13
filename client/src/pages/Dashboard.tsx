@@ -12,6 +12,7 @@ import { ExportCredentialsModal } from "@/components/ExportCredentialsModal";
 import { ImportCredentialsModal } from "@/components/ImportCredentialsModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { RenewalBanner } from "@/components/RenewalBanner";
@@ -56,6 +57,17 @@ export default function Dashboard() {
   const utils = trpc.useUtils();
   const webauthnRegisterMutation = trpc.webauthn.generateRegistrationOptions.useMutation();
   const webauthnVerifyMutation = trpc.webauthn.verifyRegistration.useMutation();
+
+  // Pull-to-refresh functionality
+  const { containerRef, isRefreshing, pullDistance } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        utils.credentials.list.invalidate(),
+        utils.folders.list.invalidate(),
+        utils.plans.getUserPlan.invalidate(),
+      ]);
+    },
+  });
 
   const togglePasswordVisibility = (id: number) => {
     const newSet = new Set(visiblePasswords);
@@ -451,7 +463,43 @@ export default function Dashboard() {
 
   // Main Dashboard View
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div 
+      ref={containerRef}
+      className="min-h-screen bg-background text-foreground overflow-y-auto"
+      style={{
+        transform: `translateY(${pullDistance}px)`,
+        transition: isRefreshing ? 'none' : 'transform 0.2s ease-out',
+      }}
+    >
+      {/* Pull-to-refresh indicator */}
+      {pullDistance > 0 && (
+        <div 
+          className="absolute top-0 left-0 right-0 flex items-center justify-center"
+          style={{
+            height: `${pullDistance}px`,
+            opacity: Math.min(pullDistance / 80, 1),
+          }}
+        >
+          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+            {isRefreshing ? (
+              <>
+                <svg className="animate-spin h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span className="text-sm">Refreshing...</span>
+              </>
+            ) : (
+              <>
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+                <span className="text-sm">Pull to refresh</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container py-4">
           <div className="flex items-center justify-between">
