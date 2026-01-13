@@ -82,7 +82,7 @@ export const adminRouter = router({
       if (!db) throw new Error("Database not available");
 
       // Get all users with plan information
-      const usersList: any = await db.execute(sql`
+      const result: any = await db.execute(sql`
         SELECT 
           u.id,
           u.name,
@@ -96,7 +96,11 @@ export const adminRouter = router({
         ORDER BY u.created_at DESC
       `);
 
-      return usersList || [];
+      // db.execute() returns [rows, fields], we need just the rows
+      const usersList = Array.isArray(result) ? result : (result?.rows || result || []);
+      console.log('[Admin] listUsers - Total users found:', usersList.length);
+      
+      return usersList;
     }),
 
   // Update user
@@ -262,7 +266,7 @@ export const adminRouter = router({
           break;
       }
 
-      const revenueData: any = await db.execute(sql`
+      const revenueResult: any = await db.execute(sql`
         SELECT 
           DATE(created_at) as date,
           COUNT(*) as transactions,
@@ -274,7 +278,7 @@ export const adminRouter = router({
         ORDER BY date ASC
       `);
 
-      const totalRevenue: any = await db.execute(sql`
+      const totalRevenueResult: any = await db.execute(sql`
         SELECT 
           COUNT(*) as total_transactions,
           SUM(amount) as total_amount,
@@ -283,8 +287,13 @@ export const adminRouter = router({
         WHERE status = 'completed' AND created_at >= ${startDate.toISOString()}
       `);
 
+      const revenueData = Array.isArray(revenueResult) ? revenueResult : (revenueResult?.rows || revenueResult || []);
+      const totalRevenue = Array.isArray(totalRevenueResult) ? totalRevenueResult : (totalRevenueResult?.rows || totalRevenueResult || []);
+      
+      console.log('[Admin] getRevenue - Daily data points:', revenueData.length);
+
       return {
-        daily: revenueData || [],
+        daily: revenueData,
         summary: totalRevenue?.[0] || { total_transactions: 0, total_amount: 0, average_amount: 0, growth_percentage: 0, today_revenue: 0 },
         period: input.period
       };
@@ -309,7 +318,7 @@ export const adminRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      const transactions: any = await db.execute(sql`
+      const result: any = await db.execute(sql`
         SELECT 
           ph.id,
           ph.user_id,
@@ -326,7 +335,10 @@ export const adminRouter = router({
         LIMIT ${input.limit}
       `);
 
-      return transactions || [];
+      const transactions = Array.isArray(result) ? result : (result?.rows || result || []);
+      console.log('[Admin] getTransactions - Total transactions found:', transactions.length);
+      
+      return transactions;
     }),
 
   // Get email history
@@ -343,7 +355,7 @@ export const adminRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      const emailHistory: any = await db.execute(sql`
+      const result: any = await db.execute(sql`
         SELECT 
           id,
           subject,
@@ -360,7 +372,10 @@ export const adminRouter = router({
         LIMIT 50
       `);
 
-      return emailHistory || [];
+      const emailHistory = Array.isArray(result) ? result : (result?.rows || result || []);
+      console.log('[Admin] getEmailHistory - Total emails found:', emailHistory.length);
+      
+      return emailHistory;
     }),
 
   // Get users with expiring subscriptions
