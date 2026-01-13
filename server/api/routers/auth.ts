@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword, generateToken, generateVerificationToken } from "../../auth-service";
 import { sendWelcomeEmail, sendPasswordChangedEmail } from "../../email";
 import { sendLoginAlert, sendFailedLoginAlert } from "../../email-service";
+import { getRequestInfo } from "../../request-info-service";
 
 export const authRouter = router({
   /**
@@ -116,12 +117,13 @@ export const authRouter = router({
 
         // Send alert if 3 or more failed attempts
         if (failedAttempts >= 3) {
+          const requestInfo = getRequestInfo(ctx.req);
           sendFailedLoginAlert(
             user.email,
             user.name,
             failedAttempts,
-            'Unknown', // TODO: Get real IP
-            'Unknown'  // TODO: Get location
+            requestInfo.ipAddress,
+            requestInfo.location
           ).catch(err => console.error('[Auth] Failed to send failed login alert:', err));
         }
 
@@ -167,12 +169,13 @@ export const authRouter = router({
       });
 
       // Send login alert (non-blocking)
+      const requestInfo = getRequestInfo(ctx.req);
       sendLoginAlert(
         user.email,
         user.name,
-        'Unknown', // TODO: Get real IP from request
-        'Unknown', // TODO: Get device from user-agent
-        'Unknown'  // TODO: Get location from IP
+        requestInfo.ipAddress,
+        requestInfo.device,
+        requestInfo.location
       ).catch(err => console.error('[Auth] Failed to send login alert:', err));
 
       return {
