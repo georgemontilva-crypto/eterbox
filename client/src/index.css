@@ -198,3 +198,30 @@
   scrollbar-width: none;  /* Firefox */
 }
 
+
+/* Custom scrollbar colors - Simple and minimal */
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* For Firefox */
+* {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.dark * {
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
