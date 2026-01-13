@@ -89,6 +89,10 @@ export const adminRouter = router({
           u.email,
           u.planId as plan_id,
           u.createdAt as created_at,
+          u.subscriptionEndDate as subscription_end_date,
+          u.subscriptionStatus as subscription_status,
+          u.subscriptionPeriod as subscription_period,
+          DATEDIFF(u.subscriptionEndDate, NOW()) as days_remaining,
           p.name as plan_name,
           0 as is_restricted
         FROM users u
@@ -131,9 +135,31 @@ export const adminRouter = router({
       const updateData: any = {};
       if (input.name) updateData.name = input.name;
       if (input.email) updateData.email = input.email;
-      if (input.planId !== undefined) updateData.planId = input.planId;
       if (input.role) updateData.role = input.role;
       if (input.subscriptionEndDate) updateData.subscriptionEndDate = new Date(input.subscriptionEndDate);
+      
+      // Si se cambia el plan, establecer fechas de suscripción
+      if (input.planId !== undefined) {
+        updateData.planId = input.planId;
+        
+        if (input.planId === 1) {
+          // Plan Free: sin fecha de expiración
+          updateData.subscriptionStartDate = null;
+          updateData.subscriptionEndDate = null;
+          updateData.subscriptionStatus = 'active';
+          updateData.subscriptionPeriod = 'monthly';
+        } else {
+          // Planes pagos: establecer 30 días desde hoy
+          const now = new Date();
+          const endDate = new Date(now);
+          endDate.setDate(endDate.getDate() + 30);
+          
+          updateData.subscriptionStartDate = now;
+          updateData.subscriptionEndDate = endDate;
+          updateData.subscriptionStatus = 'active';
+          updateData.subscriptionPeriod = 'monthly';
+        }
+      }
 
       await db.update(users).set(updateData).where(eq(users.id, input.userId));
 
@@ -347,7 +373,8 @@ export const adminRouter = router({
         LIMIT ${input.limit}
       `);
 
-      const transactions = Array.isArray(result) ? result : (result?.rows || result || []);
+      // db.execute() returns [rows, fields], extract just the rows
+      const transactions = Array.isArray(result) && result.length > 0 ? result[0] : [];
       console.log('[Admin] getTransactions - Total transactions found:', transactions.length);
       
       return transactions;

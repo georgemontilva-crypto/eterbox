@@ -223,7 +223,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <div className="bg-card border border-border/20 rounded-[20px] p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Registros Diarios</h3>
-            <div className="w-10 h-10 rounded-[15px] bg-blue-500/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[12px] bg-blue-500/10 flex items-center justify-center">
               <UserPlus className="w-5 h-5 text-blue-500" />
             </div>
           </div>
@@ -255,7 +255,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <div className="bg-card border border-border/20 rounded-[20px] p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Usuarios por Plan</h3>
-            <div className="w-10 h-10 rounded-[15px] bg-purple-500/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[12px] bg-purple-500/10 flex items-center justify-center">
               <Users className="w-5 h-5 text-purple-500" />
             </div>
           </div>
@@ -291,7 +291,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <div className="bg-card border border-border/20 rounded-[20px] p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Ingresos Diarios</h3>
-            <div className="w-10 h-10 rounded-[15px] bg-green-500/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[12px] bg-green-500/10 flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-green-500" />
             </div>
           </div>
@@ -320,7 +320,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <h3 className="text-lg font-semibold mb-4">Actividad Reciente</h3>
         <div className="space-y-3">
           {analytics.recentActivity?.slice(0, 5).map((activity: any, index: number) => (
-            <div key={index} className="flex items-center gap-4 p-3 bg-muted/50 rounded-[15px]">
+            <div key={index} className="flex items-center gap-4 p-3 bg-muted/50 rounded-[12px]">
               <div className={`w-10 h-10 rounded-[10px] ${
                 activity.type === 'registration' ? 'bg-blue-500/10' :
                 activity.type === 'payment' ? 'bg-green-500/10' :
@@ -347,15 +347,6 @@ function OverviewTab({ analytics, period, colors }: any) {
 // Users Tab Component with Advanced Management
 function UsersTab() {
   const { data: users, isLoading, refetch } = trpc.admin.listUsers.useQuery();
-  
-  // Debug: Log users data
-  useEffect(() => {
-    if (users) {
-      console.log('[UsersTab] Total users:', users.length);
-      console.log('[UsersTab] First user:', JSON.stringify(users[0]));
-      console.log('[UsersTab] Users array:', users);
-    }
-  }, [users]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlan, setFilterPlan] = useState<'all' | 'free' | 'premium' | 'enterprise'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'restricted'>('all');
@@ -391,7 +382,7 @@ function UsersTab() {
   };
 
   const handleChangePlan = (userId: number, planId: number) => {
-    updateUserMutation.mutate({ userId, planId });
+    updateUserMutation.mutate({ userId, plan_id: planId });
   };
 
   const handleDeleteUser = (userId: number) => {
@@ -401,22 +392,9 @@ function UsersTab() {
   };
 
   const filteredUsers = users?.filter((user: any) => {
-    const matchesSearch = (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (user.email || '').toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Map filter values to actual plan names in database
-    let matchesPlan = true;
-    if (filterPlan !== 'all') {
-      const planName = (user.plan_name || '').toLowerCase();
-      if (filterPlan === 'free') {
-        matchesPlan = planName === 'free';
-      } else if (filterPlan === 'premium') {
-        matchesPlan = planName === 'basic';
-      } else if (filterPlan === 'enterprise') {
-        matchesPlan = planName === 'corporate' || planName === 'enterprise';
-      }
-    }
-    
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPlan = filterPlan === 'all' || user.plan_name.toLowerCase() === filterPlan;
     const matchesStatus = filterStatus === 'all' || 
                          (filterStatus === 'restricted' && user.is_restricted) ||
                          (filterStatus === 'active' && !user.is_restricted);
@@ -492,7 +470,7 @@ function UsersTab() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Nombre o email..."
-              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
           <div>
@@ -500,7 +478,7 @@ function UsersTab() {
             <select
               value={filterPlan}
               onChange={(e) => setFilterPlan(e.target.value as any)}
-              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">Todos los planes</option>
               <option value="free">Free</option>
@@ -513,7 +491,7 @@ function UsersTab() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">Todos</option>
               <option value="active">Activos</option>
@@ -531,7 +509,6 @@ function UsersTab() {
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Usuario</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Plan</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">Días Restantes</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Estado</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Registro</th>
                 <th className="px-6 py-4 text-right text-sm font-semibold">Acciones</th>
@@ -559,20 +536,6 @@ function UsersTab() {
                     </select>
                   </td>
                   <td className="px-6 py-4">
-                    {user.days_remaining !== null && user.days_remaining !== undefined ? (
-                      <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-[8px] text-sm font-medium ${
-                        user.days_remaining <= 3 ? 'bg-red-500/10 text-red-500' :
-                        user.days_remaining <= 7 ? 'bg-orange-500/10 text-orange-500' :
-                        'bg-green-500/10 text-green-500'
-                      }`}>
-                        <Clock className="w-3 h-3" />
-                        {user.days_remaining} días
-                      </span>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">Sin límite</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
                     {user.is_restricted ? (
                       <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-500/10 text-red-500 rounded-[8px] text-sm font-medium">
                         <Ban className="w-3 h-3" />
@@ -586,7 +549,7 @@ function UsersTab() {
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm text-muted-foreground">
-                    {user.created_at ? new Date(user.created_at).toLocaleDateString('es-ES') : 'N/A'}
+                    {new Date(user.created_at).toLocaleDateString('es-ES')}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
@@ -635,6 +598,259 @@ function UsersTab() {
   );
 }
 
+// Users Tab Component with Advanced Management
+function UsersTab() {
+  const { data: users, isLoading, refetch } = trpc.admin.listUsers.useQuery();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterPlan, setFilterPlan] = useState<'all' | 'free' | 'premium' | 'enterprise'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'restricted'>('all');
+
+  const updateUserMutation = trpc.admin.updateUser.useMutation({
+    onSuccess: () => {
+      toast.success('Usuario actualizado exitosamente');
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Error al actualizar usuario');
+    },
+  });
+
+  const deleteUserMutation = trpc.admin.deleteUser.useMutation({
+    onSuccess: () => {
+      toast.success('Usuario eliminado exitosamente');
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Error al eliminar usuario');
+    },
+  });
+
+  const handleApproveUser = (userId: number) => {
+    updateUserMutation.mutate({ userId, is_restricted: false });
+  };
+
+  const handleRestrictUser = (userId: number) => {
+    if (confirm('¿Estás seguro de que quieres restringir este usuario?')) {
+      updateUserMutation.mutate({ userId, is_restricted: true });
+    }
+  };
+
+  const handleChangePlan = (userId: number, planId: number) => {
+    updateUserMutation.mutate({ userId, plan_id: planId });
+  };
+
+  const handleDeleteUser = (userId: number) => {
+    if (confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.')) {
+      deleteUserMutation.mutate({ userId });
+    }
+  };
+
+  const filteredUsers = users?.filter((user: any) => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPlan = filterPlan === 'all' || user.plan_name.toLowerCase() === filterPlan;
+    const matchesStatus = filterStatus === 'all' || 
+                         (filterStatus === 'restricted' && user.is_restricted) ||
+                         (filterStatus === 'active' && !user.is_restricted);
+    return matchesSearch && matchesPlan && matchesStatus;
+  });
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Cargando usuarios...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-card border border-border/20 rounded-[15px] p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[10px] bg-blue-500/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-blue-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Total</p>
+              <p className="text-2xl font-bold">{users?.length || 0}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-card border border-border/20 rounded-[15px] p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[10px] bg-green-500/10 flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Activos</p>
+              <p className="text-2xl font-bold text-green-500">{users?.filter((u: any) => !u.is_restricted).length || 0}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-card border border-border/20 rounded-[15px] p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[10px] bg-red-500/10 flex items-center justify-center">
+              <Ban className="w-5 h-5 text-red-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Restringidos</p>
+              <p className="text-2xl font-bold text-red-500">{users?.filter((u: any) => u.is_restricted).length || 0}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-card border border-border/20 rounded-[15px] p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[10px] bg-purple-500/10 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-purple-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Premium</p>
+              <p className="text-2xl font-bold text-purple-500">{users?.filter((u: any) => u.plan_name !== 'Free').length || 0}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-card border border-border/20 rounded-[20px] p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Buscar</label>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Nombre o email..."
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Plan</label>
+            <select
+              value={filterPlan}
+              onChange={(e) => setFilterPlan(e.target.value as any)}
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="all">Todos los planes</option>
+              <option value="free">Free</option>
+              <option value="premium">Premium</option>
+              <option value="enterprise">Enterprise</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Estado</label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value as any)}
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="all">Todos</option>
+              <option value="active">Activos</option>
+              <option value="restricted">Restringidos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Users Table */}
+      <div className="bg-card border border-border/20 rounded-[20px] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-muted/50 border-b border-border/20">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Usuario</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Plan</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Estado</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Registro</th>
+                <th className="px-6 py-4 text-right text-sm font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/20">
+              {filteredUsers?.map((user: any) => (
+                <tr key={user.id} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-6 py-4">
+                    <div>
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <select
+                      value={user.plan_id}
+                      onChange={(e) => handleChangePlan(user.id, parseInt(e.target.value))}
+                      className="px-3 py-1.5 bg-background border border-border/20 rounded-[8px] text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                      disabled={updateUserMutation.isPending}
+                    >
+                      <option value="1">Free</option>
+                      <option value="2">Premium</option>
+                      <option value="3">Enterprise</option>
+                    </select>
+                  </td>
+                  <td className="px-6 py-4">
+                    {user.is_restricted ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-500/10 text-red-500 rounded-[8px] text-sm font-medium">
+                        <Ban className="w-3 h-3" />
+                        Restringido
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-500 rounded-[8px] text-sm font-medium">
+                        <CheckCircle className="w-3 h-3" />
+                        Activo
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-muted-foreground">
+                    {new Date(user.created_at).toLocaleDateString('es-ES')}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      {user.is_restricted ? (
+                        <button
+                          onClick={() => handleApproveUser(user.id)}
+                          disabled={updateUserMutation.isPending}
+                          className="p-2 bg-green-500/10 hover:bg-green-500/20 text-green-500 rounded-[8px] transition-colors disabled:opacity-50"
+                          title="Aprobar usuario"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleRestrictUser(user.id)}
+                          disabled={updateUserMutation.isPending}
+                          className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-[8px] transition-colors disabled:opacity-50"
+                          title="Restringir usuario"
+                        >
+                          <Ban className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        disabled={deleteUserMutation.isPending}
+                        className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-[8px] transition-colors disabled:opacity-50"
+                        title="Eliminar usuario"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {filteredUsers?.length === 0 && (
+          <div className="text-center py-12">
+            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No se encontraron usuarios</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // Revenue Tab Component with Charts and Transaction History
 function RevenueTab({ period, colors }: any) {
@@ -780,7 +996,7 @@ function RevenueTab({ period, colors }: any) {
             <h3 className="text-lg font-semibold">Historial de Transacciones</h3>
             <p className="text-sm text-muted-foreground">Últimas 50 transacciones</p>
           </div>
-          <div className="w-10 h-10 rounded-[15px] bg-blue-500/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-[12px] bg-blue-500/10 flex items-center justify-center">
             <Activity className="w-5 h-5 text-blue-500" />
           </div>
         </div>
@@ -927,7 +1143,7 @@ function EmailsTab() {
           <button
             onClick={() => sendRemindersMutation.mutate()}
             disabled={sendRemindersMutation.isPending || !expiringUsers?.length}
-            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-[15px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-[12px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {sendRemindersMutation.isPending ? (
               <>
@@ -964,11 +1180,11 @@ function EmailsTab() {
               <select
                 value={targetUsers}
                 onChange={(e) => setTargetUsers(e.target.value as any)}
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
               >
-                <option value="all">Todos los usuarios</option>
-                <option value="free">Solo usuarios gratuitos</option>
-                <option value="premium">Solo usuarios premium</option>
+                <option value="all">📧 Todos los usuarios</option>
+                <option value="free">🆓 Solo usuarios gratuitos</option>
+                <option value="premium">⭐ Solo usuarios premium</option>
               </select>
             </div>
 
@@ -979,7 +1195,7 @@ function EmailsTab() {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Ej: Nuevas funciones en EterBox"
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
               />
             </div>
 
@@ -990,7 +1206,7 @@ function EmailsTab() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ej: ¡Descubre las novedades!"
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
               />
             </div>
 
@@ -1001,10 +1217,10 @@ function EmailsTab() {
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="<p>Escribe el contenido del email en HTML...</p>"
                 rows={8}
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent font-mono text-sm transition-all resize-none"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent font-mono text-sm transition-all resize-none"
               />
               <p className="text-xs text-muted-foreground mt-2">
-                Puedes usar HTML para dar formato al email
+                💡 Puedes usar HTML para dar formato al email
               </p>
             </div>
 
@@ -1181,7 +1397,7 @@ function AdminsTab({ permissions }: any) {
               value={newAdminEmail}
               onChange={(e) => setNewAdminEmail(e.target.value)}
               placeholder="usuario@ejemplo.com"
-              className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -1189,7 +1405,7 @@ function AdminsTab({ permissions }: any) {
             <label className="block text-sm font-medium mb-3">Permisos</label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {Object.entries(newAdminPerms).map(([key, value]) => (
-                <label key={key} className="flex items-center gap-3 p-3 bg-muted/30 rounded-[15px] cursor-pointer hover:bg-muted/50 transition-colors">
+                <label key={key} className="flex items-center gap-3 p-3 bg-muted/30 rounded-[12px] cursor-pointer hover:bg-muted/50 transition-colors">
                   <input
                     type="checkbox"
                     checked={value}
