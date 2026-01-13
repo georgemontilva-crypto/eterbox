@@ -543,9 +543,15 @@ export default function Dashboard() {
             </div>
           </Card>
           <Card className="p-3 md:p-4 border border-border/20">
-            <div className="flex flex-col items-start">
-              <p className="text-xs md:text-sm text-muted-foreground mb-1">Credentials Used</p>
-              <p className="text-base md:text-xl font-bold">{credentials.length}/{(maxKeys === -1 || maxKeys >= 999999) ? "∞" : maxKeys}</p>
+            <div className="grid grid-cols-2 gap-3 md:gap-4 h-full">
+              <div className="flex flex-col items-start justify-center">
+                <p className="text-xs text-muted-foreground mb-1">Credentials</p>
+                <p className="text-base md:text-lg font-bold">{credentials.length}/{(maxKeys === -1 || maxKeys >= 999999) ? "∞" : maxKeys}</p>
+              </div>
+              <div className="flex flex-col items-start justify-center border-l border-border/20 pl-3 md:pl-4">
+                <p className="text-xs text-muted-foreground mb-1">Folders</p>
+                <p className="text-base md:text-lg font-bold">{folders.length}/{(maxFolders === -1 || maxFolders >= 999999) ? "∞" : maxFolders}</p>
+              </div>
             </div>
           </Card>
           <Card className="p-3 md:p-4 border border-border/20">
