@@ -61,7 +61,8 @@ export const notificationsRouter = router({
             location: 'Madrid, España',
             device: 'Chrome en Windows 11',
             timestamp: new Date().toLocaleString('es-ES')
-          }
+          },
+          isTest: true
         });
         return result;
       } else {
@@ -72,7 +73,8 @@ export const notificationsRouter = router({
           title: 'Esta es una notificación de prueba',
           body: '<p>Si recibes este correo, las notificaciones están funcionando correctamente.</p>',
           actionUrl: 'https://eterbox.com',
-          actionText: 'Visitar EterBox'
+          actionText: 'Visitar EterBox',
+          isTest: true
         });
         return result;
       }

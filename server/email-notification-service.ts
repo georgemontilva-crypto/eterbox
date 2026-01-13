@@ -216,14 +216,17 @@ export async function sendSecurityAlertEmail(params: {
     device?: string;
     timestamp?: string;
   };
+  isTest?: boolean;
 }) {
   const { userId, userEmail, alertType, details } = params;
 
-  // Check preferences
-  const prefs = await getEmailPreferences(userId);
-  if (!prefs || !prefs.security_alerts) {
-    console.log(`[Email] User ${userId} has disabled security alerts`);
-    return { success: true, skipped: true };
+  // Check preferences (skip for test emails)
+  if (!params.isTest) {
+    const prefs = await getEmailPreferences(userId);
+    if (!prefs || !prefs.security_alerts) {
+      console.log(`[Email] User ${userId} has disabled security alerts`);
+      return { success: true, skipped: true };
+    }
   }
 
   const alertMessages = {
@@ -353,14 +356,17 @@ export async function sendMarketingEmail(params: {
   body: string;
   actionUrl?: string;
   actionText?: string;
+  isTest?: boolean;
 }) {
   const { userId, userEmail, subject, title, body, actionUrl, actionText } = params;
 
-  // Check preferences
-  const prefs = await getEmailPreferences(userId);
-  if (!prefs || !prefs.marketing_promos) {
-    console.log(`[Email] User ${userId} has disabled marketing emails`);
-    return { success: true, skipped: true };
+  // Check preferences (skip for test emails)
+  if (!params.isTest) {
+    const prefs = await getEmailPreferences(userId);
+    if (!prefs || !prefs.marketing_promos) {
+      console.log(`[Email] User ${userId} has disabled marketing emails`);
+      return { success: true, skipped: true };
+    }
   }
 
   const html = generateEmailTemplate({
