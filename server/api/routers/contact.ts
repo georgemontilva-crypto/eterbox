@@ -3,6 +3,38 @@ import { publicProcedure, router } from "../../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "../../db";
 import { sendContactFormNotification, sendNewsletterNotification } from "../../email-service";
+import { ENV } from "../../_core/env";
+
+/**
+ * Verify reCAPTCHA token with Google API
+ */
+async function verifyRecaptcha(token: string): Promise<boolean> {
+  if (!ENV.recaptchaSecretKey) {
+    console.warn('[reCAPTCHA] Secret key not configured, skipping verification');
+    return true; // Allow if not configured
+  }
+
+  try {
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${ENV.recaptchaSecretKey}&response=${token}`,
+    });
+
+    const data = await response.json();
+    console.log('[reCAPTCHA] Verification result:', { success: data.success, score: data.score });
+
+    // For v3, check score (0.0 - 1.0, higher is better)
+    if (data.success && data.score !== undefined) {
+      return data.score >= 0.5; // Adjust threshold as needed
+    }
+
+    return data.success;
+  } catch (error) {
+    console.error('[reCAPTCHA] Verification error:', error);
+    return true; // Allow on error to not block legitimate users
+  }
+}
 
 export const contactRouter = router({
   /**
@@ -15,9 +47,20 @@ export const contactRouter = router({
         email: z.string().email("Invalid email address"),
         subject: z.string().min(5, "Subject must be at least 5 characters"),
         message: z.string().min(10, "Message must be at least 10 characters"),
+        recaptchaToken: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
+      // Verify reCAPTCHA if token is provided
+      if (input.recaptchaToken) {
+        const isValid = await verifyRecaptcha(input.recaptchaToken);
+        if (!isValid) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "reCAPTCHA verification failed. Please try again.",
+          });
+        }
+      }
       try {
         // Send notification to admin
         await sendContactFormNotification(
