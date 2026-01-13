@@ -14,7 +14,7 @@ export const ENV = {
   smtpPort: parseInt(process.env.SMTP_PORT ?? "587"),
   smtpUser: process.env.SMTP_USER ?? "",
   smtpPassword: process.env.SMTP_PASSWORD ?? "",
-  supportEmail: process.env.SUPPORT_EMAIL ?? "support@eterbox.com",
+  supportEmail: process.env.SUPPORT_EMAIL ?? "contact@eterbox.com",
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY ?? "",
   adminContactEmail: process.env.ADMIN_CONTACT_EMAIL ?? "contact@eterbox.com",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
