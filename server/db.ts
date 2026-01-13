@@ -564,19 +564,32 @@ export async function getUserDevices(userId: number) {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const devices = await db
-      .selectDistinct({
+    const allLogs = await db
+      .select({
         deviceInfo: activityLogs.deviceInfo,
         ipAddress: activityLogs.ipAddress,
         lastUsed: activityLogs.createdAt,
       })
       .from(activityLogs)
       .where(
-        sql`${activityLogs.userId} = ${userId} AND ${activityLogs.createdAt} >= ${thirtyDaysAgo} AND ${activityLogs.deviceInfo} IS NOT NULL AND ${activityLogs.deviceInfo} != ''`
+        and(
+          eq(activityLogs.userId, userId),
+          gte(activityLogs.createdAt, thirtyDaysAgo)
+        )
       )
-      .limit(100);
+      .limit(1000);
 
-    return devices;
+    // Filter and deduplicate in JavaScript
+    const deviceMap = new Map();
+    for (const log of allLogs) {
+      if (log.deviceInfo && log.deviceInfo.trim() !== '') {
+        if (!deviceMap.has(log.deviceInfo)) {
+          deviceMap.set(log.deviceInfo, log);
+        }
+      }
+    }
+
+    return Array.from(deviceMap.values());
   } catch (error) {
     console.error("[Database] Error getting user devices:", error);
     return [];
@@ -594,16 +607,28 @@ export async function countUserActiveSessions(userId: number): Promise<number> {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const devices = await db
-      .selectDistinct({
+    const allLogs = await db
+      .select({
         deviceInfo: activityLogs.deviceInfo,
       })
       .from(activityLogs)
       .where(
-        sql`${activityLogs.userId} = ${userId} AND ${activityLogs.createdAt} >= ${thirtyDaysAgo} AND ${activityLogs.deviceInfo} IS NOT NULL AND ${activityLogs.deviceInfo} != ''`
-      );
+        and(
+          eq(activityLogs.userId, userId),
+          gte(activityLogs.createdAt, thirtyDaysAgo)
+        )
+      )
+      .limit(1000);
 
-    return devices.length;
+    // Count unique devices in JavaScript
+    const uniqueDevices = new Set();
+    for (const log of allLogs) {
+      if (log.deviceInfo && log.deviceInfo.trim() !== '') {
+        uniqueDevices.add(log.deviceInfo);
+      }
+    }
+
+    return uniqueDevices.size;
   } catch (error) {
     console.error("[Database] Error counting user sessions:", error);
     return 0;
