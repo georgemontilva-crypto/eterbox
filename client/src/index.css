@@ -322,3 +322,30 @@ button, a, input, select, textarea {
     transition: transform 0.1s ease-in-out;
   }
 }
+
+/* Custom Sheet/Menu slide animations - Left to Right */
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-slide-in-from-left {
+  animation: slide-in-from-left 0.3s ease-out;
+}
+
+.animate-slide-out-to-left {
+  animation: slide-out-to-left 0.3s ease-in;
+}

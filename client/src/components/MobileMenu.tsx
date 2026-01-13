@@ -226,6 +226,7 @@ type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword, userEmail }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const [activeView, setActiveView] = useState<ActiveView>(null);
+  const [viewHistory, setViewHistory] = useState<ActiveView[]>([]);
   const [, setLocation] = useLocation();
   const { language, setLanguage, t } = useLanguage();
   const [platform] = useState<Platform>(detectPlatform());
@@ -343,13 +344,26 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
   };
 
   const handleSelectOption = (viewId: ActiveView) => {
+    // Add current view to history before changing
+    if (activeView !== null) {
+      setViewHistory(prev => [...prev, activeView]);
+    }
     setActiveView(viewId);
   };
 
   const handleBack = () => {
-    setActiveView(null);
-    // Reset 2FA states when going back
-    if (!is2FAEnabled) {
+    // If there's history, go back to previous view
+    if (viewHistory.length > 0) {
+      const previousView = viewHistory[viewHistory.length - 1];
+      setViewHistory(prev => prev.slice(0, -1));
+      setActiveView(previousView);
+    } else {
+      // No history, go back to main menu
+      setActiveView(null);
+    }
+    
+    // Reset 2FA states when going back to main menu
+    if (viewHistory.length === 0 && !is2FAEnabled) {
       setQrCode(null);
       setSecret(null);
       setVerificationCode("");
@@ -359,6 +373,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
   const handleClose = () => {
     setOpen(false);
     setActiveView(null);
+    setViewHistory([]);
   };
 
   const handleGoToDashboard = () => {
@@ -983,7 +998,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent 
           side="left" 
-          className="w-full sm:w-[400px] sm:max-w-[400px] bg-background border-r border-border/20 p-0"
+          className="w-full sm:w-[400px] sm:max-w-[400px] bg-background border-r border-border/20 p-0 !animate-none data-[state=open]:!animate-slide-in-from-left data-[state=closed]:!animate-slide-out-to-left"
         >
           <VisuallyHidden.Root>
             <SheetTitle>EterBox Menu</SheetTitle>
