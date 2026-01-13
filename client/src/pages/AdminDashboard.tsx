@@ -403,7 +403,20 @@ function UsersTab() {
   const filteredUsers = users?.filter((user: any) => {
     const matchesSearch = (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (user.email || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPlan = filterPlan === 'all' || (user.plan_name || '').toLowerCase() === filterPlan;
+    
+    // Map filter values to actual plan names in database
+    let matchesPlan = true;
+    if (filterPlan !== 'all') {
+      const planName = (user.plan_name || '').toLowerCase();
+      if (filterPlan === 'free') {
+        matchesPlan = planName === 'free';
+      } else if (filterPlan === 'premium') {
+        matchesPlan = planName === 'basic';
+      } else if (filterPlan === 'enterprise') {
+        matchesPlan = planName === 'corporate' || planName === 'enterprise';
+      }
+    }
+    
     const matchesStatus = filterStatus === 'all' || 
                          (filterStatus === 'restricted' && user.is_restricted) ||
                          (filterStatus === 'active' && !user.is_restricted);
