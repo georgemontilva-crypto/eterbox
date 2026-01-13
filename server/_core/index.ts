@@ -46,14 +46,32 @@ async function startServer() {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval needed for Vite in dev
+        scriptSrc: [
+          "'self'", 
+          "'unsafe-inline'", 
+          "'unsafe-eval'", // unsafe-eval needed for Vite in dev
+          "https://www.paypal.com",
+          "https://www.paypalobjects.com",
+        ],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'"],
+        connectSrc: [
+          "'self'",
+          "https://www.paypal.com",
+          "https://api.paypal.com",
+          "https://api-m.paypal.com",
+        ],
         fontSrc: ["'self'"],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
-        frameSrc: ["'none'"],
+        frameSrc: [
+          "'self'",
+          "https://www.paypal.com",
+        ],
+        childSrc: [
+          "'self'",
+          "https://www.paypal.com",
+        ],
       },
     },
     hsts: {
