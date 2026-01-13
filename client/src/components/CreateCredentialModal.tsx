@@ -24,6 +24,8 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
     selectedFolderId: defaultFolderId || folderId || "",
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   // Update password when defaultPassword changes
   React.useEffect(() => {
     if (defaultPassword) {
@@ -34,8 +36,44 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
   const createMutation = trpc.credentials.create.useMutation();
   const utils = trpc.useUtils();
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.platformName.trim()) {
+      newErrors.platformName = "Platform name is required";
+    }
+
+    if (!formData.username.trim() && !formData.email.trim()) {
+      newErrors.username = "Either username or email is required";
+      newErrors.email = "Either username or email is required";
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 4) {
+      newErrors.password = "Password must be at least 4 characters";
+    }
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Clear previous errors
+    setErrors({});
+    
+    // Validate form
+    if (!validateForm()) {
+      toast.error("Please fix the errors in the form");
+      return;
+    }
+
     try {
       await createMutation.mutateAsync({
         platformName: formData.platformName,
@@ -47,10 +85,12 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
       });
       toast.success("Credential created successfully!");
       setFormData({ platformName: "", username: "", email: "", password: "", notes: "", selectedFolderId: folderId || "" });
+      setErrors({});
       onOpenChange(false);
       utils.credentials.list.invalidate();
-    } catch (error) {
-      toast.error("Failed to create credential");
+    } catch (error: any) {
+      const errorMessage = error?.message || "Failed to create credential";
+      toast.error(errorMessage);
     }
   };
 
@@ -67,10 +107,18 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               type="text"
               placeholder="e.g., Gmail, GitHub, Shopify"
               value={formData.platformName}
-              onChange={(e) => setFormData({ ...formData, platformName: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
+              onChange={(e) => {
+                setFormData({ ...formData, platformName: e.target.value });
+                if (errors.platformName) setErrors({ ...errors, platformName: "" });
+              }}
+              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
+                errors.platformName ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              }`}
               required
             />
+            {errors.platformName && (
+              <p className="text-red-500 text-sm mt-1">{errors.platformName}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Username</label>
@@ -78,9 +126,17 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               type="text"
               placeholder="Your username"
               value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
+              onChange={(e) => {
+                setFormData({ ...formData, username: e.target.value });
+                if (errors.username) setErrors({ ...errors, username: "" });
+              }}
+              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
+                errors.username ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              }`}
             />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Email</label>
@@ -88,9 +144,17 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               type="email"
               placeholder="your@email.com"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
+              onChange={(e) => {
+                setFormData({ ...formData, email: e.target.value });
+                if (errors.email) setErrors({ ...errors, email: "" });
+              }}
+              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
+                errors.email ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              }`}
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Password</label>
@@ -98,10 +162,18 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
               type="password"
               placeholder="••••••••"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
+              onChange={(e) => {
+                setFormData({ ...formData, password: e.target.value });
+                if (errors.password) setErrors({ ...errors, password: "" });
+              }}
+              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
+                errors.password ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              }`}
               required
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Folder (Optional)</label>
