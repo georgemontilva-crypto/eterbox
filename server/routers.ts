@@ -767,6 +767,245 @@ export const appRouter = router({
         }
       }),
   }),
+
+  // ============ EXPORT/IMPORT ============
+  exportImport: router({
+    export: protectedProcedure
+      .input(z.object({
+        format: z.enum(['json', 'csv']),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Check plan limits
+        const user = await db.getUserById(ctx.user.id);
+        if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+        const plan = await db.getPlanById(user.planId);
+        if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
+
+        // Block export for Free plan
+        if (plan.name === 'Free') {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "📥 Export/Import is only available in Basic plan and above. Upgrade to Basic ($3.99/month) to export your credentials.",
+          });
+        }
+
+        // Get all credentials
+        const credentials = await db.getUserCredentials(ctx.user.id);
+
+        // Decrypt passwords
+        const decryptedCredentials = credentials.map(cred => ({
+          platformName: cred.platformName,
+          username: cred.username,
+          email: cred.email || '',
+          password: crypto.decryptPassword(cred.encryptedPassword, String(user.id)),
+          url: cred.url || '',
+          notes: cred.notes || '',
+        }));
+
+        let exportData: string;
+        if (input.format === 'json') {
+          exportData = JSON.stringify(decryptedCredentials, null, 2);
+        } else {
+          // CSV format
+          const headers = 'Platform,Username,Email,Password,URL,Notes\n';
+          const rows = decryptedCredentials.map(cred => 
+            `"${cred.platformName}","${cred.username}","${cred.email}","${cred.password}","${cred.url}","${cred.notes}"`
+          ).join('\n');
+          exportData = headers + rows;
+        }
+
+        await db.recordActivity(ctx.user.id, "credentials_exported", "export", undefined);
+
+        return {
+          data: exportData,
+          filename: `eterbox-export-${new Date().toISOString().split('T')[0]}.${input.format}`,
+        };
+      }),
+
+    import: protectedProcedure
+      .input(z.object({
+        format: z.enum(['json', 'csv']),
+        data: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Check plan limits
+        const user = await db.getUserById(ctx.user.id);
+        if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+        const plan = await db.getPlanById(user.planId);
+        if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
+
+        // Block import for Free plan
+        if (plan.name === 'Free') {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "📥 Export/Import is only available in Basic plan and above. Upgrade to Basic ($3.99/month) to import your credentials.",
+          });
+        }
+
+        let credentials: any[] = [];
+
+        try {
+          if (input.format === 'json') {
+            credentials = JSON.parse(input.data);
+          } else {
+            // Parse CSV
+            const lines = input.data.split('\n');
+            
+            for (let i = 1; i < lines.length; i++) {
+              if (!lines[i].trim()) continue;
+              const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+              if (values.length >= 4) {
+                credentials.push({
+                  platformName: values[0],
+                  username: values[1],
+                  email: values[2] || undefined,
+                  password: values[3],
+                  url: values[4] || undefined,
+                  notes: values[5] || undefined,
+                });
+              }
+            }
+          }
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid import data format",
+          });
+        }
+
+        // Check if importing would exceed plan limits
+        const currentCount = await db.countUserCredentials(ctx.user.id);
+        
+        if (plan.maxKeys !== -1 && currentCount + credentials.length > plan.maxKeys) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: `Importing ${credentials.length} credentials would exceed your plan limit of ${plan.maxKeys}. Upgrade to Basic for unlimited credentials.`,
+          });
+        }
+
+        // Import credentials
+        let imported = 0;
+        for (const cred of credentials) {
+          try {
+            const encryptedPassword = crypto.encryptPassword(cred.password, String(user.id));
+            const category = cred.platformName.toLowerCase().replace(/\s+/g, "-");
+
+            await db.createCredential(ctx.user.id, {
+              platformName: cred.platformName,
+              category,
+              username: cred.username,
+              email: cred.email,
+              encryptedPassword,
+              url: cred.url,
+              notes: cred.notes,
+            });
+
+            imported++;
+          } catch (error) {
+            console.error(`Failed to import credential for ${cred.platformName}:`, error);
+          }
+        }
+
+        await db.recordActivity(ctx.user.id, "credentials_imported", "import", undefined);
+
+        return {
+          success: true,
+          imported,
+          total: credentials.length,
+        };
+      }),
+  }),
+
+  // ============ PASSWORD GENERATOR ============
+  passwordGenerator: router({
+    generate: protectedProcedure
+      .input(z.object({
+        length: z.number().min(8).max(128).default(16),
+        includeUppercase: z.boolean().default(true),
+        includeLowercase: z.boolean().default(true),
+        includeNumbers: z.boolean().default(true),
+        includeSymbols: z.boolean().default(true),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Check plan limits
+        const user = await db.getUserById(ctx.user.id);
+        if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+        const plan = await db.getPlanById(user.planId);
+        if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
+
+        // Check monthly limit for Free plan
+        if (plan.name === 'Free') {
+          const generatedThisMonth = user.generatedKeysUsed || 0;
+          const monthlyLimit = plan.maxGeneratedKeys;
+
+          if (generatedThisMonth >= monthlyLimit) {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: `🔑 You've reached your monthly limit of ${monthlyLimit} generated passwords. Upgrade to Basic ($3.99/month) for unlimited password generation.`,
+            });
+          }
+        }
+
+        // Generate password
+        const charset = {
+          uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+          lowercase: 'abcdefghijklmnopqrstuvwxyz',
+          numbers: '0123456789',
+          symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?',
+        };
+
+        let chars = '';
+        if (input.includeUppercase) chars += charset.uppercase;
+        if (input.includeLowercase) chars += charset.lowercase;
+        if (input.includeNumbers) chars += charset.numbers;
+        if (input.includeSymbols) chars += charset.symbols;
+
+        if (chars.length === 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "At least one character type must be selected",
+          });
+        }
+
+        let password = '';
+        const randomBytesArray = randomBytes(input.length);
+        for (let i = 0; i < input.length; i++) {
+          password += chars[randomBytesArray[i] % chars.length];
+        }
+
+        // Increment counter for Free plan
+        if (plan.name === 'Free') {
+          await db.incrementUserGeneratedKeys(ctx.user.id);
+        }
+
+        // Get updated usage
+        const updatedUser = await db.getUserById(ctx.user.id);
+
+        return {
+          password,
+          usage: {
+            used: updatedUser?.generatedKeysUsed || 0,
+            limit: plan.maxGeneratedKeys,
+          },
+        };
+      }),
+
+    getUsage: protectedProcedure.query(async ({ ctx }) => {
+      const user = await db.getUserById(ctx.user.id);
+      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const plan = await db.getPlanById(user.planId);
+      if (!plan) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return {
+        used: user.generatedKeysUsed || 0,
+        limit: plan.maxGeneratedKeys,
+      };
+    }),
+  }),
 });
 
 

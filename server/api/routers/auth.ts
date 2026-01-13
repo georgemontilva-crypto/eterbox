@@ -182,6 +182,30 @@ export const authRouter = router({
         };
       }
 
+      // Check device limit for Free plan
+      const { getUserById, getPlanById, countUserActiveSessions } = await import("../../db");
+      const userWithPlan = await getUserById(user.id);
+      if (userWithPlan) {
+        const plan = await getPlanById(userWithPlan.planId);
+        if (plan && plan.name === 'Free') {
+          const activeDevices = await countUserActiveSessions(user.id);
+          const currentDeviceInfo = ctx.req.headers['user-agent'] || 'Unknown';
+          
+          // Check if this is a new device (not in recent activity)
+          const { getUserDevices } = await import("../../db");
+          const userDevices = await getUserDevices(user.id);
+          const isKnownDevice = userDevices.some(d => d.deviceInfo === currentDeviceInfo);
+          
+          // If this is a new device and user already has 1 device, block login
+          if (!isKnownDevice && activeDevices >= 1) {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: "🔒 You already have an active session on another device. Upgrade to Basic ($3.99/month) to use EterBox on unlimited devices.",
+            });
+          }
+        }
+      }
+
       // Update last signed in
       await db.update(users)
         .set({ lastSignedIn: new Date() })

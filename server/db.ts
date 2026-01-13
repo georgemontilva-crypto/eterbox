@@ -550,3 +550,102 @@ export async function getNewsletterSubscribers(activeOnly: boolean = true) {
     .from(newsletterSubscriptions)
     .orderBy(desc(newsletterSubscriptions.subscribedAt));
 }
+
+// ============ DEVICE MANAGEMENT ============
+
+/**
+ * Get user devices (based on activity logs with unique device info)
+ */
+export async function getUserDevices(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  try {
+    // Get unique devices from activity logs in the last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const devices = await db
+      .selectDistinct({
+        deviceInfo: activityLogs.deviceInfo,
+        ipAddress: activityLogs.ipAddress,
+        lastUsed: activityLogs.createdAt,
+      })
+      .from(activityLogs)
+      .where(
+        sql`${activityLogs.userId} = ${userId} AND ${activityLogs.createdAt} >= ${thirtyDaysAgo} AND ${activityLogs.deviceInfo} IS NOT NULL AND ${activityLogs.deviceInfo} != ''`
+      )
+      .limit(100);
+
+    return devices;
+  } catch (error) {
+    console.error("[Database] Error getting user devices:", error);
+    return [];
+  }
+}
+
+/**
+ * Count user's active sessions (devices) in the last 30 days
+ */
+export async function countUserActiveSessions(userId: number): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const devices = await db
+      .selectDistinct({
+        deviceInfo: activityLogs.deviceInfo,
+      })
+      .from(activityLogs)
+      .where(
+        sql`${activityLogs.userId} = ${userId} AND ${activityLogs.createdAt} >= ${thirtyDaysAgo} AND ${activityLogs.deviceInfo} IS NOT NULL AND ${activityLogs.deviceInfo} != ''`
+      );
+
+    return devices.length;
+  } catch (error) {
+    console.error("[Database] Error counting user sessions:", error);
+    return 0;
+  }
+}
+
+/**
+ * Increment user's generated keys counter
+ */
+export async function incrementUserGeneratedKeys(userId: number) {
+  const db = await getDb();
+  if (!db) return;
+
+  try {
+    await db
+      .update(users)
+      .set({
+        generatedKeysUsed: sql`COALESCE(${users.generatedKeysUsed}, 0) + 1`,
+      })
+      .where(eq(users.id, userId));
+  } catch (error) {
+    console.error("[Database] Error incrementing generated keys:", error);
+  }
+}
+
+/**
+ * Reset all users' generated keys counter (monthly reset via cron)
+ */
+export async function resetAllUsersGeneratedKeys() {
+  const db = await getDb();
+  if (!db) return;
+
+  try {
+    await db
+      .update(users)
+      .set({
+        generatedKeysUsed: 0,
+      });
+    
+    console.log("[Database] Reset all users' generated keys counter");
+  } catch (error) {
+    console.error("[Database] Error resetting generated keys:", error);
+  }
+}
