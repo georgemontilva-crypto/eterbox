@@ -15,6 +15,7 @@ import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { RenewalBanner } from "@/components/RenewalBanner";
+import { SubscriptionExpiredModal } from "@/components/SubscriptionExpiredModal";
 import { useLocation } from "wouter";
 import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
@@ -48,7 +49,18 @@ export default function Dashboard() {
   const [selectedFolderForEdit, setSelectedFolderForEdit] = useState<any>(null);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
-  const { data: credentials = [] } = trpc.credentials.list.useQuery();
+  
+  // Calculate days remaining
+  const daysRemaining = userPlan?.subscriptionEndDate 
+    ? Math.max(0, Math.ceil((new Date(userPlan.subscriptionEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : null;
+  
+  const isSubscriptionExpired = daysRemaining === 0;
+  
+  // Block credentials access if subscription is expired
+  const { data: credentials = [] } = trpc.credentials.list.useQuery(undefined, {
+    enabled: !isSubscriptionExpired
+  });
   const { data: folders = [] } = trpc.folders.list.useQuery();
   const deleteCredentialMutation = trpc.credentials.delete.useMutation();
   const deleteFolderMutation = trpc.folders.delete.useMutation();
@@ -505,6 +517,15 @@ export default function Dashboard() {
           />
         )}
 
+        {/* Subscription Expired Modal */}
+        {daysRemaining !== null && (
+          <SubscriptionExpiredModal 
+            open={daysRemaining <= 3}
+            daysRemaining={daysRemaining}
+            planName={userPlan?.name || "Premium"}
+          />
+        )}
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name || "User"}!</h1>
           <p className="text-muted-foreground">Manage your passwords and credentials securely</p>
@@ -529,8 +550,26 @@ export default function Dashboard() {
           </Card>
           <Card className="p-3 md:p-4 border border-border/20">
             <div className="flex flex-col items-start">
-              <p className="text-xs md:text-sm text-muted-foreground mb-1">Folders Used</p>
-              <p className="text-base md:text-xl font-bold">{folders.length}/{(maxFolders === -1 || maxFolders >= 999999) ? "∞" : maxFolders}</p>
+              <p className="text-xs md:text-sm text-muted-foreground mb-1">Subscription</p>
+              {userPlan?.subscriptionEndDate ? (
+                <>
+                  <p className="text-base md:text-xl font-bold">
+                    {(() => {
+                      const daysRemaining = Math.max(0, Math.ceil((new Date(userPlan.subscriptionEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+                      if (daysRemaining === 0) return <span className="text-red-500">Expired</span>;
+                      if (daysRemaining <= 3) return <span className="text-red-500">{daysRemaining} days</span>;
+                      if (daysRemaining <= 7) return <span className="text-orange-500">{daysRemaining} days</span>;
+                      return <span className="text-green-500">{daysRemaining} days</span>;
+                    })()}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Days remaining</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-base md:text-xl font-bold text-green-500">∞</p>
+                  <p className="text-xs text-muted-foreground mt-1">No expiration</p>
+                </>
+              )}
             </div>
           </Card>
         </div>
@@ -538,10 +577,10 @@ export default function Dashboard() {
         <div className="space-y-4 mb-8">
           {/* All 3 buttons in one row on desktop, stacked on mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }}>
+            <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }} disabled={isSubscriptionExpired}>
               <Plus className="w-4 h-4 mr-2" />Add New Credential
             </Button>
-            <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)}>
+            <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)} disabled={isSubscriptionExpired}>
               <Plus className="w-4 h-4 mr-2" />Create Folder
             </Button>
             <Button size="lg" variant="outline" className="w-full" onClick={() => setShowPasswordGenerator(true)}>
@@ -625,10 +664,19 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {filteredCredentials.length > 0 && (
+              {filteredCredentials.length > 0 && !isSubscriptionExpired && (
                 <div>
                   <p className="text-sm font-semibold text-muted-foreground mb-2">Credentials</p>
                   <div className="space-y-2">{filteredCredentials.map((cred: any) => renderCredentialCard(cred))}</div>
+                </div>
+              )}
+              
+              {isSubscriptionExpired && (
+                <div className="p-6 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 text-center">
+                  <Lock className="w-12 h-12 text-red-500 mx-auto mb-3" />
+                  <p className="font-semibold text-red-700 dark:text-red-400 mb-2">Subscription Expired</p>
+                  <p className="text-sm text-red-600 dark:text-red-500 mb-4">Renew your subscription to access your credentials</p>
+                  <Button onClick={() => setLocation('/pricing')}>Renew Now</Button>
                 </div>
               )}
 
