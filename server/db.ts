@@ -1,7 +1,6 @@
-import { eq, and, or, like, desc, asc } from "drizzle-orm";
+import { eq, and, or, like, desc, asc, gte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
-import { gte } from "drizzle-orm";
 import { 
   InsertUser, 
   users, 
