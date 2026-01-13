@@ -10,6 +10,7 @@ import Pricing from "./pages/Pricing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
 import Verify2FA from "./pages/Verify2FA";
+import VerifyEmail from "./pages/VerifyEmail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -136,6 +137,7 @@ function Router() {
       <Route path="/security" component={Security} />
       <Route path="/faq" component={FAQ} />
       <Route path="/verify-2fa" component={Verify2FA} />
+      <Route path="/verify-email" component={VerifyEmail} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
       <Route path="/change-password" component={() => <ProtectedRoute component={ChangePassword} />} />

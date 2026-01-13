@@ -5,7 +5,7 @@ import { getDb } from "../../db";
 import { users, loginAttempts } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword, verifyPassword, generateToken, generateVerificationToken } from "../../auth-service";
-import { sendWelcomeEmail, sendPasswordChangedEmail } from "../../email";
+import { sendWelcomeEmail, sendPasswordChangedEmail, sendVerificationEmail } from "../../email";
 import { sendLoginAlert, sendFailedLoginAlert } from "../../email-service";
 import { getRequestInfo } from "../../request-info-service";
 
@@ -49,6 +49,14 @@ export const authRouter = router({
         verificationToken,
         planId: 1, // Free plan by default
       });
+
+      // Send verification email
+      try {
+        await sendVerificationEmail(input.email, verificationToken, input.name, 'en'); // Default to English, can be customized
+      } catch (emailError) {
+        console.error('[Auth] Failed to send verification email:', emailError);
+        // Don't fail registration if email fails
+      }
 
       // Send welcome email
       try {

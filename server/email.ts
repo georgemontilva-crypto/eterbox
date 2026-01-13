@@ -905,3 +905,113 @@ export async function sendSupportTicketConfirmation(
     html,
   });
 }
+
+// ============ EMAIL VERIFICATION ============
+
+export function getVerificationEmailTemplate(verificationLink: string, userName: string, language: 'en' | 'es' = 'en') {
+  const translations = {
+    en: {
+      subject: `${APP_NAME} - Verify Your Email Address`,
+      greeting: `Hello ${userName},`,
+      intro: 'Thank you for signing up! Please verify your email address to activate your account and start using EterBox.',
+      button: 'Verify Email Address',
+      expiry: 'This verification link will expire in 24 hours.',
+      noRequest: "If you didn't create an account with EterBox, you can safely ignore this email.",
+      security: 'For security reasons, never share this link with anyone.',
+      footer: `Welcome to ${APP_NAME}!<br>The ${APP_NAME} Team`,
+    },
+    es: {
+      subject: `${APP_NAME} - Verifica tu Dirección de Email`,
+      greeting: `Hola ${userName},`,
+      intro: '¡Gracias por registrarte! Por favor verifica tu dirección de email para activar tu cuenta y comenzar a usar EterBox.',
+      button: 'Verificar Email',
+      expiry: 'Este enlace de verificación expirará en 24 horas.',
+      noRequest: 'Si no creaste una cuenta en EterBox, puedes ignorar este correo de forma segura.',
+      security: 'Por razones de seguridad, nunca compartas este enlace con nadie.',
+      footer: `¡Bienvenido a ${APP_NAME}!<br>El equipo de ${APP_NAME}`,
+    },
+  };
+
+  const t = translations[language];
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${t.subject}</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0f172a;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0f172a; padding: 40px 20px;">
+        <tr>
+          <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background-color: #1e293b; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">
+              <!-- Header -->
+              <tr>
+                <td style="background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%); padding: 40px 40px 30px; text-align: center;">
+                  <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">🔒 ${APP_NAME}</h1>
+                </td>
+              </tr>
+              
+              <!-- Content -->
+              <tr>
+                <td style="padding: 40px;">
+                  <p style="margin: 0 0 20px; color: #e2e8f0; font-size: 16px; line-height: 1.6;">${t.greeting}</p>
+                  <p style="margin: 0 0 30px; color: #cbd5e1; font-size: 15px; line-height: 1.6;">${t.intro}</p>
+                  
+                  <!-- Button -->
+                  <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td align="center" style="padding: 20px 0;">
+                        <a href="${verificationLink}" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%); color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);">${t.button}</a>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <!-- Info Box -->
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                    <tr>
+                      <td style="background-color: #334155; border-left: 4px solid #00f0ff; padding: 20px; border-radius: 8px;">
+                        <p style="margin: 0 0 10px; color: #f1f5f9; font-size: 14px; line-height: 1.5;">⏰ ${t.expiry}</p>
+                        <p style="margin: 0; color: #cbd5e1; font-size: 13px; line-height: 1.5;">${t.security}</p>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <p style="margin: 20px 0 0; color: #94a3b8; font-size: 14px; line-height: 1.6;">${t.noRequest}</p>
+                </td>
+              </tr>
+              
+              <!-- Footer -->
+              <tr>
+                <td style="background-color: #0f172a; padding: 30px 40px; text-align: center; border-top: 1px solid #334155;">
+                  <p style="margin: 0 0 10px; color: #64748b; font-size: 13px; line-height: 1.6;">${t.footer}</p>
+                  <p style="margin: 0; color: #475569; font-size: 12px;">© ${new Date().getFullYear()} ${APP_NAME}. All rights reserved.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+export async function sendVerificationEmail(
+  email: string,
+  verificationToken: string,
+  userName: string,
+  language: 'en' | 'es' = 'en'
+) {
+  const verificationLink = `${FRONTEND_URL}/verify-email?token=${verificationToken}`;
+  const translations = {
+    en: { subject: `${APP_NAME} - Verify Your Email Address` },
+    es: { subject: `${APP_NAME} - Verifica tu Dirección de Email` },
+  };
+  const t = translations[language];
+  const html = getVerificationEmailTemplate(verificationLink, userName, language);
+
+  return sendEmail({ to: email, subject: t.subject, html });
+}
