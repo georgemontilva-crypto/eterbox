@@ -3,7 +3,7 @@
  * Handles subscription renewals, reminders, and automatic billing
  */
 
-import { router, protectedProcedure } from '../trpc';
+import { router, protectedProcedure } from '../../_core/trpc';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import * as subscriptionService from '../../subscription-renewal-service';
