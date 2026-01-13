@@ -382,7 +382,7 @@ function UsersTab() {
   };
 
   const handleChangePlan = (userId: number, planId: number) => {
-    updateUserMutation.mutate({ userId, plan_id: planId });
+    updateUserMutation.mutate({ userId, planId });
   };
 
   const handleDeleteUser = (userId: number) => {
