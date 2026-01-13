@@ -28,8 +28,3 @@ CREATE TABLE IF NOT EXISTS payment_history (
   INDEX idx_stripe_payment_intent_id (stripe_payment_intent_id),
   INDEX idx_paypal_order_id (paypal_order_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Insert some sample data for testing (optional)
--- INSERT INTO payment_history (user_id, plan_id, amount, status, payment_method, description, completed_at) VALUES
--- (1, 2, 9.99, 'completed', 'stripe', 'Monthly subscription - Basic Plan', NOW()),
--- (2, 3, 19.99, 'completed', 'paypal', 'Monthly subscription - Corporate Plan', NOW());
