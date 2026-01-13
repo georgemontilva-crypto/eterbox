@@ -50,7 +50,7 @@ export function ImportCredentialsModal({ open, onOpenChange }: ImportCredentials
             email: cred.email || cred.Email || "",
             password: cred.encryptedPassword || cred.password || cred.Password || "",
             notes: cred.notes || cred.Notes || "",
-            folderId: undefined,
+            folderId: undefined, // Ignore folder for now
           });
           results.success++;
         } catch (error: any) {
@@ -83,11 +83,43 @@ export function ImportCredentialsModal({ open, onOpenChange }: ImportCredentials
     const lines = text.split(/\r?\n/).filter(line => line.trim());
     if (lines.length < 2) return [];
 
-    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+    // Parse CSV line respecting quoted fields
+    const parseLine = (line: string): string[] => {
+      const result: string[] = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+        
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            // Escaped quote
+            current += '"';
+            i++; // Skip next quote
+          } else {
+            // Toggle quote state
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          // Field separator
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      
+      result.push(current.trim());
+      return result;
+    };
+
+    const headers = parseLine(lines[0]);
     const credentials: any[] = [];
 
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+      const values = parseLine(lines[i]);
       const cred: any = {};
       
       headers.forEach((header, index) => {

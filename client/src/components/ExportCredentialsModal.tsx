@@ -47,7 +47,7 @@ export function ExportCredentialsModal({ open, onOpenChange, credentials }: Expo
       const csvContent = [
         headers.join(","),
         ...rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(","))
-      ].join("\\n");
+      ].join("\n");
 
       const dataBlob = new Blob([csvContent], { type: "text/csv" });
       const url = URL.createObjectURL(dataBlob);
