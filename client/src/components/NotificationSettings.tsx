@@ -66,8 +66,12 @@ export function NotificationSettings() {
     }
 
     try {
-      await testNotificationMutation.mutateAsync({ type });
-      alert(t('notifications.testSent'));
+      const result = await testNotificationMutation.mutateAsync({ type });
+      if (result && result.success) {
+        alert(t('notifications.testSent'));
+      } else {
+        alert(t('notifications.testError'));
+      }
     } catch (error) {
       console.error('Error sending test notification:', error);
       alert(t('notifications.testError'));
