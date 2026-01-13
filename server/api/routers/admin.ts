@@ -88,9 +88,9 @@ export const adminRouter = router({
           u.name,
           u.email,
           u.planId as plan_id,
-          u.is_restricted,
           u.createdAt as created_at,
-          p.name as plan_name
+          p.name as plan_name,
+          0 as is_restricted
         FROM users u
         LEFT JOIN plans p ON u.planId = p.id
         ORDER BY u.createdAt DESC
