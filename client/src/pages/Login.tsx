@@ -22,12 +22,15 @@ export default function Login() {
   const [show2FA, setShow2FA] = useState(false);
   const [twoFACode, setTwoFACode] = useState("");
   const [pendingUserId, setPendingUserId] = useState<number | null>(null);
+  const [showResendButton, setShowResendButton] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
 
   const loginMutation = trpc.auth.login.useMutation();
   const generateAuthOptions = trpc.webauthn.generateAuthenticationOptions.useMutation();
   const verifyAuthentication = trpc.webauthn.verifyAuthentication.useMutation();
   const generateUsernamelessOptions = trpc.webauthn.generateUsernamelessAuthOptions.useMutation();
   const verifyUsernamelessAuth = trpc.webauthn.verifyUsernamelessAuth.useMutation();
+  const resendVerificationMutation = trpc.auth.resendVerificationEmail.useMutation();
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,9 +63,37 @@ export default function Login() {
         window.location.href = "/dashboard";
       }
     } catch (err: any) {
-      setError(err.message || t("login.failed"));
+      const errorMessage = err.message || t("login.failed");
+      setError(errorMessage);
+      
+      // Show resend button if error is about email verification
+      if (errorMessage.includes("verify your email") || errorMessage.includes("verifica tu email")) {
+        setShowResendButton(true);
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!formData.email) {
+      setError(t("login.enterEmailFirst"));
+      return;
+    }
+
+    setResendingEmail(true);
+    setError("");
+
+    try {
+      const result = await resendVerificationMutation.mutateAsync({ email: formData.email });
+      setError("");
+      // Show success message
+      setError(result.message || t("login.verificationEmailSent"));
+      setShowResendButton(false);
+    } catch (err: any) {
+      setError(err.message || t("login.resendFailed"));
+    } finally {
+      setResendingEmail(false);
     }
   };
 
@@ -179,8 +210,20 @@ export default function Login() {
             {loginMethod === "password" ? (
               <form onSubmit={handlePasswordLogin} className="space-y-4">
                 {error && (
-                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                    {error}
+                  <div className="space-y-2">
+                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                      {error}
+                    </div>
+                    {showResendButton && (
+                      <button
+                        type="button"
+                        onClick={handleResendVerification}
+                        disabled={resendingEmail}
+                        className="w-full p-2 text-sm text-accent hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {resendingEmail ? t("login.resending") : t("login.resendVerification")}
+                      </button>
+                    )}
                   </div>
                 )}
 
@@ -235,8 +278,20 @@ export default function Login() {
             ) : (
               <div className="space-y-4">
                 {error && (
-                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                    {error}
+                  <div className="space-y-2">
+                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                      {error}
+                    </div>
+                    {showResendButton && (
+                      <button
+                        type="button"
+                        onClick={handleResendVerification}
+                        disabled={resendingEmail}
+                        className="w-full p-2 text-sm text-accent hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {resendingEmail ? t("login.resending") : t("login.resendVerification")}
+                      </button>
+                    )}
                   </div>
                 )}
 

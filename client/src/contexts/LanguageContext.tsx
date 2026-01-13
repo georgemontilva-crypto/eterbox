@@ -196,6 +196,12 @@ export const translations: Translations = {
   "login.sessionExpired": { en: "Authentication session expired. Please try again.", es: "Sesión de autenticación expirada. Por favor inténtalo de nuevo." },
   "login.biometricFailed": { en: "Could not authenticate. Make sure you have registered it first.", es: "No se pudo autenticar. Asegúrate de haberlo registrado primero." },
   "login.your": { en: "Your", es: "Tu" },
+  "login.resendVerification": { en: "Resend verification email", es: "Reenviar email de verificación" },
+  "login.resending": { en: "Sending...", es: "Enviando..." },
+  "login.enterEmailFirst": { en: "Please enter your email address", es: "Por favor ingresa tu dirección de email" },
+  "login.verificationEmailSent": { en: "Verification email sent! Please check your inbox.", es: "¡Email de verificación enviado! Por favor revisa tu bandeja de entrada." },
+  "login.resendFailed": { en: "Failed to send verification email. Please try again.", es: "Error al enviar el email de verificación. Por favor intenta de nuevo." },
+  "login.forgotPassword": { en: "Forgot password?", es: "¿Olvidaste tu contraseña?" },
 
   // Password Change
   "password.title": { en: "Change Password", es: "Cambiar Contraseña" },

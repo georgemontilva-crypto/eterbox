@@ -290,6 +290,60 @@ export const authRouter = router({
     }),
 
   /**
+   * Resend verification email
+   */
+  resendVerificationEmail: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+      // Find user by email
+      const [user] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return {
+          success: true,
+          message: "If an account exists with this email, a verification link has been sent.",
+        };
+      }
+
+      // Check if already verified
+      if (user.emailVerified) {
+        throw new TRPCError({ 
+          code: "BAD_REQUEST", 
+          message: "Email is already verified. You can log in now." 
+        });
+      }
+
+      // Generate new verification token if needed
+      let verificationToken = user.verificationToken;
+      if (!verificationToken) {
+        verificationToken = generateVerificationToken();
+        await db.update(users)
+          .set({ verificationToken })
+          .where(eq(users.id, user.id));
+      }
+
+      // Send verification email
+      try {
+        await sendVerificationEmail(user.email, verificationToken, user.name || 'User', 'en');
+      } catch (emailError) {
+        console.error('[Auth] Failed to resend verification email:', emailError);
+        throw new TRPCError({ 
+          code: "INTERNAL_SERVER_ERROR", 
+          message: "Failed to send verification email. Please try again later." 
+        });
+      }
+
+      return {
+        success: true,
+        message: "Verification email sent! Please check your inbox.",
+      };
+    }),
+
+  /**
    * Logout (client-side will remove token)
    */
   logout: protectedProcedure.mutation(async () => {
