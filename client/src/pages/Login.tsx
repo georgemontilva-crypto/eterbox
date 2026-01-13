@@ -22,8 +22,10 @@ export default function Login() {
   const [show2FA, setShow2FA] = useState(false);
   const [twoFACode, setTwoFACode] = useState("");
   const [pendingUserId, setPendingUserId] = useState<number | null>(null);
+  const [showDeviceSwitchModal, setShowDeviceSwitchModal] = useState(false);
 
   const loginMutation = trpc.auth.login.useMutation();
+  const forceLoginMutation = trpc.auth.forceLogin.useMutation();
   const generateAuthOptions = trpc.webauthn.generateAuthenticationOptions.useMutation();
   const verifyAuthentication = trpc.webauthn.verifyAuthentication.useMutation();
   const generateUsernamelessOptions = trpc.webauthn.generateUsernamelessAuthOptions.useMutation();
@@ -45,6 +47,13 @@ export default function Login() {
         email: formData.email,
         password: formData.password,
       });
+
+      // Check if device switch is required
+      if (result.requiresDeviceSwitch) {
+        setShowDeviceSwitchModal(true);
+        setLoading(false);
+        return;
+      }
 
       // Check if 2FA is required
       if (result.requires2FA && result.userId) {
@@ -278,6 +287,78 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* Device Switch Modal */}
+      {showDeviceSwitchModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-border/20 rounded-xl p-8 max-w-md w-full shadow-2xl">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
+                <Key className="w-8 h-8 text-amber-500" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2">{t("login.deviceLimit")}</h3>
+              <p className="text-muted-foreground">
+                {t("login.deviceLimitMessage")}
+              </p>
+            </div>
+
+            <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6">
+              <p className="text-sm text-center">
+                <span className="font-semibold">{t("login.freePlanLimit")}</span>
+                <br />
+                {t("login.upgradeForUnlimited")}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <Button
+                onClick={async () => {
+                  setLoading(true);
+                  try {
+                    const result = await forceLoginMutation.mutateAsync({
+                      email: formData.email,
+                      password: formData.password,
+                    });
+
+                    if (result.token) {
+                      localStorage.setItem("auth_token", result.token);
+                      window.location.href = "/dashboard";
+                    }
+                  } catch (err: any) {
+                    setError(err.message || t("login.failed"));
+                    setShowDeviceSwitchModal(false);
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                className="w-full h-12 text-base"
+                disabled={loading}
+              >
+                {loading ? t("login.processing") : t("login.closeAndLoginHere")}
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setShowDeviceSwitchModal(false);
+                  setLocation("/pricing");
+                }}
+                variant="outline"
+                className="w-full h-12 text-base border-accent text-accent hover:bg-accent/10"
+              >
+                {t("login.upgradeToBasic")}
+              </Button>
+
+              <Button
+                onClick={() => setShowDeviceSwitchModal(false)}
+                variant="ghost"
+                className="w-full h-12 text-base"
+              >
+                {t("login.cancel")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

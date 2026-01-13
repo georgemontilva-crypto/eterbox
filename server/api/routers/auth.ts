@@ -196,12 +196,15 @@ export const authRouter = router({
           const userDevices = await getUserDevices(user.id);
           const isKnownDevice = userDevices.some(d => d.deviceInfo === currentDeviceInfo);
           
-          // If this is a new device and user already has 1 device, block login
+          // If this is a new device and user already has 1 device, return special response
           if (!isKnownDevice && activeDevices >= 1) {
-            throw new TRPCError({
-              code: "FORBIDDEN",
-              message: "🔒 You already have an active session on another device. Upgrade to Basic ($3.99/month) to use EterBox on unlimited devices.",
-            });
+            return {
+              success: false,
+              requiresDeviceSwitch: true,
+              message: "You already have an active session on another device.",
+              userId: user.id,
+              email: user.email,
+            };
           }
         }
       }
@@ -376,6 +379,86 @@ export const authRouter = router({
       return {
         success: true,
         message: "Password updated successfully",
+      };
+    }),
+
+  /**
+   * Force login by closing previous sessions
+   */
+  forceLogin: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email("Invalid email address"),
+        password: z.string().min(1, "Password is required"),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database connection failed" });
+
+      // Find user by email
+      const [user] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+
+      if (!user) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+      }
+
+      // Verify password
+      const isValidPassword = await verifyPassword(input.password, user.password || '');
+
+      if (!isValidPassword) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+      }
+
+      // Clear all previous sessions (activity logs)
+      const { activityLogs } = await import("../../../drizzle/schema");
+      await db.delete(activityLogs).where(eq(activityLogs.userId, user.id));
+
+      // Get request info
+      const requestInfo = getRequestInfo(ctx.req);
+
+      // Record new login activity
+      const { recordActivity } = await import("../../db");
+      await recordActivity(
+        user.id,
+        "user_login",
+        "auth",
+        undefined,
+        requestInfo.ipAddress,
+        requestInfo.device
+      );
+
+      // Update last signed in
+      await db.update(users)
+        .set({ lastSignedIn: new Date() })
+        .where(eq(users.id, user.id));
+
+      // Generate JWT token
+      const token = generateToken({
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+      });
+
+      // Send login alert (non-blocking)
+      sendLoginAlert(
+        user.email,
+        user.name,
+        requestInfo.ipAddress,
+        requestInfo.device,
+        requestInfo.location
+      ).catch(err => console.error('[Auth] Failed to send login alert:', err));
+
+      return {
+        success: true,
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          planId: user.planId,
+        },
       };
     }),
 });
