@@ -386,16 +386,19 @@ export async function getUsersWithExpiringSubscriptions(daysBeforeExpiry: number
     targetDate.setDate(targetDate.getDate() + daysBeforeExpiry);
 
     const result: any = await db.execute(sql`
-      SELECT u.id, u.name, u.email, u.subscriptionEndDate, p.name as plan_name, p.price
+      SELECT u.id, u.name, u.email, u.subscription_end_date as subscriptionEndDate, p.name as plan_name, p.price
       FROM users u
-      INNER JOIN plans p ON u.planId = p.id
-      WHERE u.subscriptionEndDate IS NOT NULL
-        AND u.subscriptionEndDate <= ${targetDate.toISOString()}
-        AND u.subscriptionEndDate > NOW()
-      ORDER BY u.subscriptionEndDate ASC
+      INNER JOIN plans p ON u.plan_id = p.id
+      WHERE u.subscription_end_date IS NOT NULL
+        AND u.subscription_end_date <= ${targetDate.toISOString()}
+        AND u.subscription_end_date > NOW()
+      ORDER BY u.subscription_end_date ASC
     `);
 
-    return result || [];
+    const users = Array.isArray(result) ? result : (result?.rows || result || []);
+    console.log('[Admin] getUsersWithExpiringSubscriptions - Total users found:', users.length);
+    
+    return users;
   } catch (error) {
     console.error('[Admin] Error getting expiring subscriptions:', error);
     return [];
