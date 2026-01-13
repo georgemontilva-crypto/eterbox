@@ -250,13 +250,13 @@ export async function getAllAdmins() {
     if (!db) return [];
 
     const result: any = await db.execute(sql`
-      SELECT u.id, u.name, u.email, u.created_at as createdAt,
+      SELECT u.id, u.name, u.email, u.createdAt,
              ap.is_super_admin, ap.can_view_users, ap.can_edit_users, ap.can_delete_users,
              ap.can_send_bulk_emails, ap.can_view_revenue, ap.can_manage_admins, ap.can_view_analytics,
-             ap.created_at as admin_since
+             ap.createdAt as admin_since
       FROM users u
       INNER JOIN admin_permissions ap ON u.id = ap.user_id
-      ORDER BY ap.is_super_admin DESC, u.created_at ASC
+      ORDER BY ap.is_super_admin DESC, u.createdAt ASC
     `);
 
     // MySQL2 returns result as [rows, fields], we need the rows array
@@ -305,7 +305,7 @@ export async function getAnalytics(period: 'day' | 'week' | 'month' | 'year' = '
     // New users in period
     const newUsersResult: any = await db.execute(sql`
       SELECT COUNT(*) as count FROM users
-      WHERE created_at >= ${startDate.toISOString()}
+      WHERE createdAt >= ${startDate.toISOString()}
     `);
     const newUsers = newUsersResult?.[0]?.count || 0;
 
@@ -341,10 +341,10 @@ export async function getAnalytics(period: 'day' | 'week' | 'month' | 'year' = '
 
     // Daily registrations (last 30 days)
     const dailyRegsResult: any = await db.execute(sql`
-      SELECT DATE(created_at) as date, COUNT(*) as count
+      SELECT DATE(createdAt) as date, COUNT(*) as count
       FROM users
-      WHERE created_at >= ${new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()}
-      GROUP BY DATE(created_at)
+      WHERE createdAt >= ${new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()}
+      GROUP BY DATE(createdAt)
       ORDER BY date ASC
     `);
 
