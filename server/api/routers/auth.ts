@@ -211,6 +211,17 @@ export const authRouter = router({
         .set({ lastSignedIn: new Date() })
         .where(eq(users.id, user.id));
 
+      // Record activity for device tracking
+      const { recordActivity } = await import("../../db");
+      await recordActivity(
+        user.id,
+        "user_login",
+        "auth",
+        undefined,
+        requestInfo.ipAddress,
+        requestInfo.device
+      );
+
       // Generate JWT token
       const token = generateToken({
         userId: user.id,
