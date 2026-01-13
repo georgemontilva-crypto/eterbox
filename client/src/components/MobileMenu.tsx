@@ -221,7 +221,7 @@ interface MobileMenuProps {
   userEmail?: string;
 }
 
-type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "notifications" | "language" | "generator" | "payments" | "security" | null;
+type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "notifications" | "language" | "generator" | "payments" | "security" | "documentation" | null;
 
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword, userEmail }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -335,6 +335,12 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
       icon: Receipt,
       label: t("payments.history"),
       description: t("payments.historyDesc"),
+    },
+    {
+      id: "documentation" as ActiveView,
+      icon: Shield,
+      label: t("menu.documentation"),
+      description: t("menu.documentationDesc"),
     },
   ];
 
@@ -916,6 +922,117 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
         <div className="flex flex-col h-full">
           <div className="flex-1 overflow-y-auto p-6">
             <NotificationSettings />
+          </div>
+        </div>
+      );
+    }
+
+    if (activeView === "documentation") {
+      return (
+        <div className="flex flex-col h-full">
+          <div className="p-6 space-y-6">
+            <button onClick={handleBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">{t("common.back")}</span>
+            </button>
+            <div className="text-center space-y-2">
+              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
+                <Shield className="w-8 h-8 text-accent" />
+              </div>
+              <h2 className="text-xl font-bold">{t("menu.documentation")}</h2>
+              <p className="text-sm text-muted-foreground">{t("menu.documentationDesc")}</p>
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {/* Security & Compliance */}
+            <button
+              onClick={() => {
+                setOpen(false);
+                setLocation("/security-compliance");
+              }}
+              className="w-full flex items-center gap-4 p-4 rounded-[15px] hover:bg-card/50 transition-colors text-left group"
+            >
+              <div className="w-10 h-10 rounded-[12px] bg-card border border-border/20 flex items-center justify-center group-hover:border-accent/50 transition-colors">
+                <Shield className="w-5 h-5 text-muted-foreground group-hover:text-accent transition-colors" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium">{t("menu.securityCompliance")}</p>
+                <p className="text-xs text-muted-foreground">{t("menu.securityComplianceDesc")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
+            </button>
+
+            {/* Privacy Policy */}
+            <button
+              onClick={() => {
+                setOpen(false);
+                setLocation("/privacy");
+              }}
+              className="w-full flex items-center gap-4 p-4 rounded-[15px] hover:bg-card/50 transition-colors text-left group"
+            >
+              <div className="w-10 h-10 rounded-[12px] bg-card border border-border/20 flex items-center justify-center group-hover:border-accent/50 transition-colors">
+                <Lock className="w-5 h-5 text-muted-foreground group-hover:text-accent transition-colors" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium">{t("menu.privacyPolicy")}</p>
+                <p className="text-xs text-muted-foreground">{t("menu.privacyPolicyDesc")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
+            </button>
+
+            {/* Cookie Policy */}
+            <button
+              onClick={() => {
+                setOpen(false);
+                setLocation("/cookies");
+              }}
+              className="w-full flex items-center gap-4 p-4 rounded-[15px] hover:bg-card/50 transition-colors text-left group"
+            >
+              <div className="w-10 h-10 rounded-[12px] bg-card border border-border/20 flex items-center justify-center group-hover:border-accent/50 transition-colors">
+                <Globe className="w-5 h-5 text-muted-foreground group-hover:text-accent transition-colors" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium">{t("menu.cookiePolicy")}</p>
+                <p className="text-xs text-muted-foreground">{t("menu.cookiePolicyDesc")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
+            </button>
+
+            {/* Terms of Service */}
+            <button
+              onClick={() => {
+                setOpen(false);
+                setLocation("/terms");
+              }}
+              className="w-full flex items-center gap-4 p-4 rounded-[15px] hover:bg-card/50 transition-colors text-left group"
+            >
+              <div className="w-10 h-10 rounded-[12px] bg-card border border-border/20 flex items-center justify-center group-hover:border-accent/50 transition-colors">
+                <Key className="w-5 h-5 text-muted-foreground group-hover:text-accent transition-colors" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium">{t("menu.termsOfService")}</p>
+                <p className="text-xs text-muted-foreground">{t("menu.termsOfServiceDesc")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
+            </button>
+
+            {/* Refund Policy */}
+            <button
+              onClick={() => {
+                setOpen(false);
+                setLocation("/refund-policy");
+              }}
+              className="w-full flex items-center gap-4 p-4 rounded-[15px] hover:bg-card/50 transition-colors text-left group"
+            >
+              <div className="w-10 h-10 rounded-[12px] bg-card border border-border/20 flex items-center justify-center group-hover:border-accent/50 transition-colors">
+                <CreditCard className="w-5 h-5 text-muted-foreground group-hover:text-accent transition-colors" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium">{t("menu.refundPolicy")}</p>
+                <p className="text-xs text-muted-foreground">{t("menu.refundPolicyDesc")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
+            </button>
           </div>
         </div>
       );

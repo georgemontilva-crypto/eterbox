@@ -92,6 +92,7 @@ export default function Home() {
               </DropdownMenuContent>
             </DropdownMenu>
             <Button variant="ghost" onClick={() => setLocation("/pricing")}>{t("home.nav.pricing")}</Button>
+            <Button variant="ghost" onClick={() => setLocation("/security-compliance")}>{t("home.nav.security")}</Button>
             <Button variant="ghost" onClick={() => setLocation("/support")}>{t("home.nav.support")}</Button>
             <Button variant="ghost" onClick={() => setLocation('/login')}>{t("home.nav.login")}</Button>
             <Button onClick={() => setLocation('/register')}>{t("home.nav.signIn")}</Button>
@@ -149,6 +150,16 @@ export default function Home() {
                       }}
                     >
                       {t("home.nav.pricing")}
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-base h-12 rounded-[15px]"
+                      onClick={() => {
+                        setLocation("/security-compliance");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      {t("home.nav.security")}
                     </Button>
                     <Button 
                       variant="ghost" 
