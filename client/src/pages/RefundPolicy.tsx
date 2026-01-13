@@ -349,7 +349,7 @@ export default function RefundPolicy() {
       <footer className="border-t border-border mt-12">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
-            <p>© 2026 EterBox. Todos los derechos reservados.</p>
+            <p>© {new Date().getFullYear()} EterBox®. Todos los derechos reservados.</p>
             <div className="flex justify-center gap-4 mt-4">
               <a href="/privacy-policy" className="hover:text-foreground">Privacidad</a>
               <a href="/terms" className="hover:text-foreground">Términos</a>

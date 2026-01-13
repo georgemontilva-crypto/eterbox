@@ -377,7 +377,7 @@ export default function Home() {
           </div>
           
           <div className="border-t border-border/20 pt-6 text-center text-muted-foreground text-xs sm:text-sm">
-            <p>&copy; 2026 EterBox. {t("home.footer.rights")}</p>
+            <p>&copy; {new Date().getFullYear()} EterBox®. {t("home.footer.rights")}</p>
           </div>
         </div>
       </footer>
