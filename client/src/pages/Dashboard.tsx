@@ -695,7 +695,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {searchQuery.length === 0 && planName !== "Corporate" && (
+        {searchQuery.length === 0 && planName !== "Corporate" && planName !== "Enterprise" && (
           <div className="mb-8 p-4 rounded-[15px] bg-accent/10 border border-accent/30">
             <div className="flex items-center justify-between gap-4">
               <div className="pr-4 md:pr-8">
