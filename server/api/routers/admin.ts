@@ -97,8 +97,13 @@ export const adminRouter = router({
       `);
 
       // db.execute() returns [rows, fields], we need just the rows
-      const usersList = Array.isArray(result) ? result : (result?.rows || result || []);
+      console.log('[Admin] listUsers - RAW result type:', typeof result);
+      console.log('[Admin] listUsers - Is array?:', Array.isArray(result));
+      console.log('[Admin] listUsers - Result keys:', result ? Object.keys(result) : 'null');
+      
+      const usersList = Array.isArray(result) ? result : (result?.rows || result?.[0] || result || []);
       console.log('[Admin] listUsers - Total users found:', usersList.length);
+      console.log('[Admin] listUsers - First user sample:', usersList[0]);
       
       return usersList;
     }),
