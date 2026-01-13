@@ -350,6 +350,7 @@ function OverviewTab({ analytics, period, colors }: any) {
 // Users Tab Component with Advanced Management
 function UsersTab() {
   const { data: users, isLoading, refetch } = trpc.admin.listUsers.useQuery();
+  const { data: plans } = trpc.plans.getAll.useQuery();
   
   // Debug: Log users data
   useEffect(() => {
