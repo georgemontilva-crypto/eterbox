@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   );
 
   // Get all plans
-  const { data: plans } = trpc.plans.getAll.useQuery();
+  const { data: plans } = trpc.plans.list.useQuery();
 
   // Redirect if not admin
   useEffect(() => {
@@ -350,7 +350,7 @@ function OverviewTab({ analytics, period, colors }: any) {
 // Users Tab Component with Advanced Management
 function UsersTab() {
   const { data: users, isLoading, refetch } = trpc.admin.listUsers.useQuery();
-  const { data: plans } = trpc.plans.getAll.useQuery();
+  const { data: plans } = trpc.plans.list.useQuery();
   
   // Debug: Log users data
   useEffect(() => {
