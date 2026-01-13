@@ -28,6 +28,9 @@ export default function AdminDashboard() {
     { enabled: !!adminCheck?.isAdmin }
   );
 
+  // Get all plans
+  const { data: plans } = trpc.plans.getAll.useQuery();
+
   // Redirect if not admin
   useEffect(() => {
     if (!checkingAdmin && adminCheck) {
@@ -404,18 +407,9 @@ function UsersTab() {
     const matchesSearch = (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (user.email || '').toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Map filter values to actual plan names in database
-    let matchesPlan = true;
-    if (filterPlan !== 'all') {
-      const planName = (user.plan_name || '').toLowerCase();
-      if (filterPlan === 'free') {
-        matchesPlan = planName === 'free';
-      } else if (filterPlan === 'premium') {
-        matchesPlan = planName === 'basic';
-      } else if (filterPlan === 'enterprise') {
-        matchesPlan = planName === 'corporate' || planName === 'enterprise';
-      }
-    }
+    // Filter by plan name
+    const matchesPlan = filterPlan === 'all' || 
+                       (user.plan_name || '').toLowerCase() === filterPlan.toLowerCase();
     
     const matchesStatus = filterStatus === 'all' || 
                          (filterStatus === 'restricted' && user.is_restricted) ||
@@ -503,9 +497,11 @@ function UsersTab() {
               className="w-full px-4 py-2 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">Todos los planes</option>
-              <option value="free">Free</option>
-              <option value="premium">Premium</option>
-              <option value="enterprise">Enterprise</option>
+              {plans?.map((plan) => (
+                <option key={plan.id} value={plan.name.toLowerCase()}>
+                  {plan.name}
+                </option>
+              ))}
             </select>
           </div>
           <div>
@@ -553,9 +549,11 @@ function UsersTab() {
                       className="px-3 py-1.5 bg-background border border-border/20 rounded-[8px] text-sm focus:outline-none focus:ring-2 focus:ring-accent"
                       disabled={updateUserMutation.isPending}
                     >
-                      <option value="1">Free</option>
-                      <option value="2">Premium</option>
-                      <option value="3">Enterprise</option>
+                      {plans?.map((plan) => (
+                        <option key={plan.id} value={plan.id}>
+                          {plan.name}
+                        </option>
+                      ))}
                     </select>
                   </td>
                   <td className="px-6 py-4">
