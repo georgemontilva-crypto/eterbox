@@ -69,21 +69,8 @@ export const adminRouter = router({
 
   // Get all users with pagination and search
   listUsers: adminProcedure
-    .input(
-      z.object({
-        page: z.number().default(1),
-        pageSize: z.number().default(20),
-        search: z.string().optional(),
-        planId: z.number().optional(),
-        role: z.enum(["user", "admin"]).optional(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
       const permissions = await adminService.getAdminPermissions(ctx.user.id);
-      console.log('[Admin] listUsers - User ID:', ctx.user.id);
-      console.log('[Admin] listUsers - Permissions:', JSON.stringify(permissions));
-      console.log('[Admin] listUsers - can_view_users value:', permissions?.can_view_users);
-      console.log('[Admin] listUsers - can_view_users type:', typeof permissions?.can_view_users);
       if (!permissions?.can_view_users) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -91,59 +78,25 @@ export const adminRouter = router({
         });
       }
 
-      const { page, pageSize, search, planId, role } = input;
-      const offset = (page - 1) * pageSize;
-
-      let conditions = [];
-      if (search) {
-        conditions.push(
-          or(
-            like(users.name, `%${search}%`),
-            like(users.email, `%${search}%`)
-          )
-        );
-      }
-      if (planId) {
-        conditions.push(eq(users.planId, planId));
-      }
-      if (role) {
-        conditions.push(eq(users.role, role));
-      }
-
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      const [usersList, totalCount] = await Promise.all([
-        db
-          .select({
-            id: users.id,
-            name: users.name,
-            email: users.email,
-            role: users.role,
-            planId: users.planId,
-            twoFactorEnabled: users.twoFactorEnabled,
-            createdAt: users.createdAt,
-            subscriptionEndDate: users.subscriptionEndDate,
-          })
-          .from(users)
-          .where(conditions.length > 0 ? sql`${conditions.join(" AND ")}` : undefined)
-          .orderBy(desc(users.createdAt))
-          .limit(pageSize)
-          .offset(offset),
-        db
-          .select({ count: sql<number>`count(*)` })
-          .from(users)
-          .where(conditions.length > 0 ? sql`${conditions.join(" AND ")}` : undefined)
-          .then((res) => Number(res[0]?.count || 0)),
-      ]);
+      // Get all users with plan information
+      const usersList: any = await db.execute(sql`
+        SELECT 
+          u.id,
+          u.name,
+          u.email,
+          u.plan_id,
+          u.is_restricted,
+          u.created_at,
+          p.name as plan_name
+        FROM users u
+        LEFT JOIN plans p ON u.plan_id = p.id
+        ORDER BY u.created_at DESC
+      `);
 
-      return {
-        users: usersList,
-        total: totalCount,
-        page,
-        pageSize,
-        totalPages: Math.ceil(totalCount / pageSize),
-      };
+      return usersList || [];
     }),
 
   // Update user

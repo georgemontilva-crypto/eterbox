@@ -223,7 +223,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <div className="bg-card border border-border/20 rounded-[20px] p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Registros Diarios</h3>
-            <div className="w-10 h-10 rounded-[12px] bg-blue-500/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[15px] bg-blue-500/10 flex items-center justify-center">
               <UserPlus className="w-5 h-5 text-blue-500" />
             </div>
           </div>
@@ -255,7 +255,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <div className="bg-card border border-border/20 rounded-[20px] p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Usuarios por Plan</h3>
-            <div className="w-10 h-10 rounded-[12px] bg-purple-500/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[15px] bg-purple-500/10 flex items-center justify-center">
               <Users className="w-5 h-5 text-purple-500" />
             </div>
           </div>
@@ -291,7 +291,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <div className="bg-card border border-border/20 rounded-[20px] p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Ingresos Diarios</h3>
-            <div className="w-10 h-10 rounded-[12px] bg-green-500/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[15px] bg-green-500/10 flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-green-500" />
             </div>
           </div>
@@ -320,7 +320,7 @@ function OverviewTab({ analytics, period, colors }: any) {
         <h3 className="text-lg font-semibold mb-4">Actividad Reciente</h3>
         <div className="space-y-3">
           {analytics.recentActivity?.slice(0, 5).map((activity: any, index: number) => (
-            <div key={index} className="flex items-center gap-4 p-3 bg-muted/50 rounded-[12px]">
+            <div key={index} className="flex items-center gap-4 p-3 bg-muted/50 rounded-[15px]">
               <div className={`w-10 h-10 rounded-[10px] ${
                 activity.type === 'registration' ? 'bg-blue-500/10' :
                 activity.type === 'payment' ? 'bg-green-500/10' :
@@ -470,7 +470,7 @@ function UsersTab() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Nombre o email..."
-              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
           <div>
@@ -478,7 +478,7 @@ function UsersTab() {
             <select
               value={filterPlan}
               onChange={(e) => setFilterPlan(e.target.value as any)}
-              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">Todos los planes</option>
               <option value="free">Free</option>
@@ -491,7 +491,7 @@ function UsersTab() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="all">Todos</option>
               <option value="active">Activos</option>
@@ -743,7 +743,7 @@ function RevenueTab({ period, colors }: any) {
             <h3 className="text-lg font-semibold">Historial de Transacciones</h3>
             <p className="text-sm text-muted-foreground">Últimas 50 transacciones</p>
           </div>
-          <div className="w-10 h-10 rounded-[12px] bg-blue-500/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-[15px] bg-blue-500/10 flex items-center justify-center">
             <Activity className="w-5 h-5 text-blue-500" />
           </div>
         </div>
@@ -890,7 +890,7 @@ function EmailsTab() {
           <button
             onClick={() => sendRemindersMutation.mutate()}
             disabled={sendRemindersMutation.isPending || !expiringUsers?.length}
-            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-[12px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-[15px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {sendRemindersMutation.isPending ? (
               <>
@@ -927,7 +927,7 @@ function EmailsTab() {
               <select
                 value={targetUsers}
                 onChange={(e) => setTargetUsers(e.target.value as any)}
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
               >
                 <option value="all">📧 Todos los usuarios</option>
                 <option value="free">🆓 Solo usuarios gratuitos</option>
@@ -942,7 +942,7 @@ function EmailsTab() {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Ej: Nuevas funciones en EterBox"
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
               />
             </div>
 
@@ -953,7 +953,7 @@ function EmailsTab() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ej: ¡Descubre las novedades!"
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent transition-all"
               />
             </div>
 
@@ -964,7 +964,7 @@ function EmailsTab() {
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="<p>Escribe el contenido del email en HTML...</p>"
                 rows={8}
-                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent font-mono text-sm transition-all resize-none"
+                className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent font-mono text-sm transition-all resize-none"
               />
               <p className="text-xs text-muted-foreground mt-2">
                 💡 Puedes usar HTML para dar formato al email
@@ -1144,7 +1144,7 @@ function AdminsTab({ permissions }: any) {
               value={newAdminEmail}
               onChange={(e) => setNewAdminEmail(e.target.value)}
               placeholder="usuario@ejemplo.com"
-              className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full px-4 py-2.5 bg-background border border-border/20 rounded-[15px] focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
@@ -1152,7 +1152,7 @@ function AdminsTab({ permissions }: any) {
             <label className="block text-sm font-medium mb-3">Permisos</label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {Object.entries(newAdminPerms).map(([key, value]) => (
-                <label key={key} className="flex items-center gap-3 p-3 bg-muted/30 rounded-[12px] cursor-pointer hover:bg-muted/50 transition-colors">
+                <label key={key} className="flex items-center gap-3 p-3 bg-muted/30 rounded-[15px] cursor-pointer hover:bg-muted/50 transition-colors">
                   <input
                     type="checkbox"
                     checked={value}
