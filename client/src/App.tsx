@@ -36,6 +36,7 @@ import { useState, useEffect } from "react";
 import { useInactivityTimer } from "./hooks/useInactivityTimer";
 import { InactivityWarningModal } from "./components/InactivityWarningModal";
 import { Toaster } from "@/components/ui/sonner";
+import { useLenis } from "./hooks/useLenis";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, loading, logout } = useAuth();
@@ -156,6 +157,9 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  // Inicializar Lenis para scroll suave
+  useLenis();
+  
   // Splash screen disabled temporarily - will be re-enabled after fixing auth issues
   // const [showSplash, setShowSplash] = useState(false);
 
