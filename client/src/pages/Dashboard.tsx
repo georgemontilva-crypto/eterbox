@@ -560,7 +560,7 @@ export default function Dashboard() {
           <p className="text-muted-foreground">Manage your passwords and credentials securely</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 md:gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
           <Card 
             className="p-3 md:p-4 border border-border/20 cursor-pointer hover:border-accent/50 transition-colors" 
             onClick={() => setLocation('/pricing')}
