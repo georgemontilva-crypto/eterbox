@@ -171,13 +171,13 @@ function DashboardLayoutContent({
                 <PanelLeft className="h-4 w-4 text-muted-foreground" />
               </button>
               {!isCollapsed ? (
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
                   <img 
                     src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                     alt="EterBox Logo" 
-                    className="h-8 w-auto flex-shrink-0" 
+                    className="h-6 w-auto flex-shrink-0" 
                   />
-                  <span className="text-xl font-bold tracking-tight truncate">
+                  <span className="text-base font-semibold tracking-tight truncate">
                     EterBox
                   </span>
                 </div>
@@ -252,14 +252,14 @@ function DashboardLayoutContent({
       <SidebarInset>
         {isMobile && (
           <div className="flex border-b h-14 items-center justify-between bg-background/95 px-2 backdrop-blur supports-[backdrop-filter]:backdrop-blur sticky top-0 z-40">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <SidebarTrigger className="h-9 w-9 rounded-lg bg-background" />
               <img 
                 src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                 alt="EterBox Logo" 
-                className="h-8 w-auto flex-shrink-0" 
+                className="h-6 w-auto flex-shrink-0" 
               />
-              <span className="text-xl font-bold tracking-tight">
+              <span className="text-base font-semibold tracking-tight">
                 EterBox
               </span>
             </div>
