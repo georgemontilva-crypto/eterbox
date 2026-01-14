@@ -341,7 +341,7 @@ export default function Dashboard() {
           </div>
           
           {!isSharedFolder && (
-            <div className="flex flex-col items-center gap-1 ml-2">
+            <div className="flex items-center gap-2 ml-2">
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}>
                 <Edit className="w-4 h-4" />
               </Button>
