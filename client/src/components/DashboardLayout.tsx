@@ -175,7 +175,7 @@ function DashboardLayoutContent({
                   <img 
                     src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                     alt="EterBox Logo" 
-                    className="h-6 w-auto flex-shrink-0" 
+                    className="h-8 w-auto flex-shrink-0" 
                   />
                   <span className="text-base font-semibold tracking-tight truncate">
                     EterBox
@@ -257,7 +257,7 @@ function DashboardLayoutContent({
               <img 
                 src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                 alt="EterBox Logo" 
-                className="h-6 w-auto flex-shrink-0" 
+                className="h-8 w-auto flex-shrink-0" 
               />
               <span className="text-base font-semibold tracking-tight">
                 EterBox

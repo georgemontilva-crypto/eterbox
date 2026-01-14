@@ -1118,7 +1118,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
     <>
       <Button variant="ghost" className="hover:bg-accent/10 flex items-center gap-2 px-2" onClick={handleOpenMenu}>
         <Menu className="w-5 h-5" />
-        <img src="/logo.png" alt="EterBox" className="w-6 h-6" />
+        <img src="/logo.png" alt="EterBox" className="w-8 h-8" />
         <span className="text-sm font-bold hidden sm:inline">EterBox</span>
       </Button>
       

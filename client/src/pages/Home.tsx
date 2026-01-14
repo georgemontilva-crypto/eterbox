@@ -66,7 +66,7 @@ export default function Home() {
             <img 
               src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
               alt="EterBox Logo" 
-              className="h-10 sm:h-12 w-auto flex-shrink-0" 
+              className="h-8 w-auto flex-shrink-0" 
             />
             <span className="text-2xl sm:text-3xl font-bold">EterBox</span>
           </div>
@@ -114,7 +114,7 @@ export default function Home() {
                     <img 
                       src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                       alt="EterBox Logo" 
-                      className="h-10 w-auto" 
+                      className="h-8 w-auto" 
                     />
                     <span className="text-2xl font-bold">EterBox</span>
                   </div>
@@ -339,7 +339,7 @@ export default function Home() {
                 <img 
                   src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                   alt="EterBox Logo" 
-                  className="h-8 w-auto" 
+                  className="h-6 w-auto" 
                 />
                 <span className="text-xl font-bold">EterBox</span>
               </div>
