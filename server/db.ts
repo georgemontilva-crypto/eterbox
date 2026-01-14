@@ -17,6 +17,7 @@ import {
   newsletterSubscriptions
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import * as folderSharesDb from './folder-shares-db';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _pool: any = null;
@@ -324,6 +325,26 @@ export async function getCredentialsByFolder(userId: number, folderId: number) {
   return await db.select().from(credentials).where(
     and(eq(credentials.userId, userId), eq(credentials.folderId, folderId))
   );
+}
+
+export async function getCredentialsByFolderWithSharedAccess(userId: number, folderId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  // Check if user owns the folder OR has shared access
+  const folder = await db.select().from(folders).where(eq(folders.id, folderId)).limit(1);
+  if (folder.length === 0) return [];
+
+  const isOwner = folder[0].userId === userId;
+  
+  if (!isOwner) {
+    // Check if folder is shared with user
+    const hasAccess = await folderSharesDb.isFolderSharedWithUser(folderId, userId);
+    if (!hasAccess) return [];
+  }
+
+  // Return credentials from the folder (owned by folder owner)
+  return await db.select().from(credentials).where(eq(credentials.folderId, folderId));
 }
 
 export async function countUserCredentials(userId: number) {

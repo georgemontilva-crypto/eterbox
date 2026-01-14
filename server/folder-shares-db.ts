@@ -39,6 +39,7 @@ export interface SharedFolderWithOwner {
   };
   permission: 'read';
   sharedAt: Date;
+  credentialCount: number;
 }
 
 /**
@@ -199,7 +200,8 @@ export async function getFoldersSharedWithUser(userId: number): Promise<SharedFo
         f.createdAt as folderCreatedAt,
         u.id as ownerId,
         u.name as ownerName,
-        u.email as ownerEmail
+        u.email as ownerEmail,
+        (SELECT COUNT(*) FROM credentials c WHERE c.folderId = f.id) as credentialCount
       FROM folder_shares fs
       INNER JOIN folders f ON fs.folder_id = f.id
       INNER JOIN users u ON fs.owner_id = u.id
@@ -226,6 +228,7 @@ export async function getFoldersSharedWithUser(userId: number): Promise<SharedFo
       },
       permission: row.permission,
       sharedAt: row.sharedAt,
+      credentialCount: Number(row.credentialCount) || 0,
     }));
   } catch (error) {
     console.error("[DB] Error getting folders shared with user:", error);

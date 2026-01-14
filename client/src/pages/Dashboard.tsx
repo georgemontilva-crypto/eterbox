@@ -64,6 +64,13 @@ export default function Dashboard() {
   const { data: credentials = [] } = trpc.credentials.list.useQuery(undefined, {
     enabled: !isSubscriptionExpired
   });
+  
+  // Get credentials for active folder (including shared folders)
+  const { data: folderCredentials = [] } = trpc.credentials.listByFolder.useQuery(
+    { folderId: activeFolderView! },
+    { enabled: activeFolderView !== null && !isSubscriptionExpired }
+  );
+  
   const { data: folders = [] } = trpc.folders.listWithShareCount.useQuery();
   const { data: sharedFolders = [] } = trpc.folders.getSharedWithMe.useQuery();
   const deleteCredentialMutation = trpc.credentials.delete.useMutation();
@@ -243,7 +250,8 @@ export default function Dashboard() {
 
   // Get active folder data
   const activeFolder = activeFolderView ? folders.find((f: any) => f.id === activeFolderView) : null;
-  const activeFolderCredentials = activeFolderView ? (credentialsByFolder[activeFolderView] || []) : [];
+  const isSharedFolder = activeFolderView ? sharedFolders.some((sf: any) => sf.folderId === activeFolderView) : false;
+  const activeFolderCredentials = activeFolderView ? folderCredentials : [];
   
   // Filter credentials within active folder
   const filteredActiveFolderCredentials = useMemo(() => {
@@ -329,19 +337,21 @@ export default function Dashboard() {
             )}
           </div>
           
-          <div className="flex flex-col items-center gap-1 ml-2">
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}>
-              <Edit className="w-4 h-4" />
-            </Button>
-            {showMoveOption && (
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
-                <Folder className="w-4 h-4" />
+          {!isSharedFolder && (
+            <div className="flex flex-col items-center gap-1 ml-2">
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}>
+                <Edit className="w-4 h-4" />
               </Button>
-            )}
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDeleteCredential(cred.id)}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
-          </div>
+              {showMoveOption && (
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
+                  <Folder className="w-4 h-4" />
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDeleteCredential(cred.id)}>
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
+          )}
         </div>
       </Card>
     );
@@ -392,14 +402,22 @@ export default function Dashboard() {
                 <p className="text-xs md:text-sm text-muted-foreground">{activeFolderCredentials.length} credential{activeFolderCredentials.length !== 1 ? 's' : ''}</p>
               </div>
             </div>
-            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full md:w-auto">
-              <Button className="h-9 md:h-10 text-sm" onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
-                <Plus className="w-4 h-4 mr-2" />Add New Credential
-              </Button>
-              <Button variant="outline" className="h-9 md:h-10 text-sm" onClick={() => setShowAddExistingModal(true)}>
-                <FolderPlus className="w-4 h-4 mr-2" />Add Existing
-              </Button>
-            </div>
+            {!isSharedFolder && (
+              <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full md:w-auto">
+                <Button className="h-9 md:h-10 text-sm" onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
+                  <Plus className="w-4 h-4 mr-2" />Add New Credential
+                </Button>
+                <Button variant="outline" className="h-9 md:h-10 text-sm" onClick={() => setShowAddExistingModal(true)}>
+                  <FolderPlus className="w-4 h-4 mr-2" />Add Existing
+                </Button>
+              </div>
+            )}
+            {isSharedFolder && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
+                <Lock className="w-4 h-4 text-green-500" />
+                <span className="text-sm text-green-500 font-medium">Read Only</span>
+              </div>
+            )}
           </div>
 
           <div className="mb-6">
@@ -427,10 +445,14 @@ export default function Dashboard() {
           ) : (
             <Card className="p-12 border border-border/20 text-center">
               <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-              <p className="text-muted-foreground">No credentials in this folder yet</p>
-              <Button className="mt-4" onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
-                <Plus className="w-4 h-4 mr-2" />Add First Credential
-              </Button>
+              <p className="text-muted-foreground">
+                {isSharedFolder ? "This shared folder is empty" : "No credentials in this folder yet"}
+              </p>
+              {!isSharedFolder && (
+                <Button className="mt-4" onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
+                  <Plus className="w-4 h-4 mr-2" />Add First Credential
+                </Button>
+              )}
             </Card>
           )}
         </main>
@@ -770,7 +792,7 @@ export default function Dashboard() {
             <h3 className="text-xl font-bold mb-4">Shared with Me</h3>
             <div className="space-y-4">
               {sharedFolders.map((sharedFolder: any) => {
-                const folderCreds = credentialsByFolder[sharedFolder.folderId] || [];
+                const credCount = sharedFolder.credentialCount || 0;
                 return (
                   <Card key={sharedFolder.id} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(sharedFolder.folderId)}>
                     <div className="flex items-center justify-between">
@@ -778,7 +800,7 @@ export default function Dashboard() {
                         <Folder className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                         <div className="flex flex-wrap items-baseline gap-2">
                           <p className="font-semibold">{sharedFolder.folder.name}</p>
-                          <p className="text-sm text-muted-foreground whitespace-nowrap">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
+                          <p className="text-sm text-muted-foreground whitespace-nowrap">{credCount} credential{credCount !== 1 ? 's' : ''}</p>
                           <div className="flex items-center gap-1 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
                             <Lock className="w-3 h-3 text-green-500" />
                             <span className="text-xs text-green-500 font-medium">Shared</span>

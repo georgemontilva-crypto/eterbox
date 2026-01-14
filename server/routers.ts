@@ -322,6 +322,34 @@ export const appRouter = router({
       });
     }),
 
+    listByFolder: protectedProcedure
+      .input(z.object({ folderId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        // Get credentials with shared access check
+        const credentials = await db.getCredentialsByFolderWithSharedAccess(ctx.user.id, input.folderId);
+        
+        // Get folder to determine owner for decryption
+        const folder = await db.getFolderById(input.folderId, ctx.user.id);
+        const isOwner = folder && folder.userId === ctx.user.id;
+        
+        // If not owner, check if folder is shared
+        if (!isOwner) {
+          const hasAccess = await folderSharesDb.isFolderSharedWithUser(input.folderId, ctx.user.id);
+          if (!hasAccess) {
+            throw new TRPCError({ code: "FORBIDDEN", message: "You don't have access to this folder" });
+          }
+        }
+        
+        return credentials.map(cred => {
+          // Decrypt using the credential owner's ID (not current user)
+          const decryptedPassword = cred.encryptedPassword ? crypto.decryptPassword(cred.encryptedPassword, String(cred.userId)) : "";
+          return {
+            ...cred,
+            encryptedPassword: decryptedPassword,
+          };
+        });
+      }),
+
     get: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
