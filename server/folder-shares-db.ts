@@ -54,7 +54,7 @@ export async function createFolderShare(
 
   try {
     const result = await db.execute(sql`
-      INSERT INTO folder_shares (folderId, ownerId, sharedWithUserId, permission)
+      INSERT INTO folder_shares (folder_id, owner_id, shared_with_user_id, permission)
       VALUES (${folderId}, ${ownerId}, ${sharedWithUserId}, 'read')
     `);
     return { insertId: Number((result as any).insertId) };
@@ -74,7 +74,7 @@ export async function deleteFolderShare(shareId: number, ownerId: number): Promi
   try {
     await db.execute(sql`
       DELETE FROM folder_shares
-      WHERE id = ${shareId} AND ownerId = ${ownerId}
+      WHERE id = ${shareId} AND owner_id = ${ownerId}
     `);
     return true;
   } catch (error) {
@@ -97,9 +97,9 @@ export async function deleteFolderShareByUserAndFolder(
   try {
     await db.execute(sql`
       DELETE FROM folder_shares
-      WHERE folderId = ${folderId} 
-        AND ownerId = ${ownerId}
-        AND sharedWithUserId = ${sharedWithUserId}
+      WHERE folder_id = ${folderId} 
+        AND owner_id = ${ownerId}
+        AND shared_with_user_id = ${sharedWithUserId}
     `);
     return true;
   } catch (error) {
@@ -119,30 +119,30 @@ export async function getFolderShares(folderId: number, ownerId: number): Promis
     const result = await db.execute(sql`
       SELECT 
         fs.id,
-        fs.folderId,
-        fs.ownerId,
-        fs.sharedWithUserId,
+        fs.folder_id,
+        fs.owner_id,
+        fs.shared_with_user_id,
         fs.permission,
-        fs.createdAt,
-        fs.updatedAt,
+        fs.created_at,
+        fs.updated_at,
         u.id as userId,
         u.name as userName,
         u.email as userEmail
       FROM folder_shares fs
-      INNER JOIN users u ON fs.sharedWithUserId = u.id
-      WHERE fs.folderId = ${folderId} AND fs.ownerId = ${ownerId}
-      ORDER BY fs.createdAt DESC
+      INNER JOIN users u ON fs.shared_with_user_id = u.id
+      WHERE fs.folder_id = ${folderId} AND fs.owner_id = ${ownerId}
+      ORDER BY fs.created_at DESC
     `);
 
     const rows = (result as any)[0] || [];
     return rows.map((row: any) => ({
       id: row.id,
-      folderId: row.folderId,
-      ownerId: row.ownerId,
-      sharedWithUserId: row.sharedWithUserId,
+      folderId: row.folder_id,
+      ownerId: row.owner_id,
+      sharedWithUserId: row.shared_with_user_id,
       permission: row.permission,
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
       sharedWithUser: {
         id: row.userId,
         name: row.userName,
@@ -166,7 +166,7 @@ export async function getFolderShareCount(folderId: number): Promise<number> {
     const result = await db.execute(sql`
       SELECT COUNT(*) as count
       FROM folder_shares
-      WHERE folderId = ${folderId}
+      WHERE folder_id = ${folderId}
     `);
 
     const rows = (result as any)[0] || [];
@@ -188,9 +188,9 @@ export async function getFoldersSharedWithUser(userId: number): Promise<SharedFo
     const result = await db.execute(sql`
       SELECT 
         fs.id,
-        fs.folderId,
+        fs.folder_id,
         fs.permission,
-        fs.createdAt as sharedAt,
+        fs.created_at as sharedAt,
         f.id as fId,
         f.name as folderName,
         f.description as folderDescription,
@@ -201,16 +201,16 @@ export async function getFoldersSharedWithUser(userId: number): Promise<SharedFo
         u.name as ownerName,
         u.email as ownerEmail
       FROM folder_shares fs
-      INNER JOIN folders f ON fs.folderId = f.id
-      INNER JOIN users u ON fs.ownerId = u.id
-      WHERE fs.sharedWithUserId = ${userId}
-      ORDER BY fs.createdAt DESC
+      INNER JOIN folders f ON fs.folder_id = f.id
+      INNER JOIN users u ON fs.owner_id = u.id
+      WHERE fs.shared_with_user_id = ${userId}
+      ORDER BY fs.created_at DESC
     `);
 
     const rows = (result as any)[0] || [];
     return rows.map((row: any) => ({
       id: row.id,
-      folderId: row.folderId,
+      folderId: row.folder_id,
       folder: {
         id: row.fId,
         name: row.folderName,
@@ -244,7 +244,7 @@ export async function isFolderSharedWithUser(folderId: number, userId: number): 
     const result = await db.execute(sql`
       SELECT COUNT(*) as count
       FROM folder_shares
-      WHERE folderId = ${folderId} AND sharedWithUserId = ${userId}
+      WHERE folder_id = ${folderId} AND shared_with_user_id = ${userId}
     `);
 
     const rows = (result as any)[0] || [];
@@ -266,7 +266,7 @@ export async function userHasFolderAccess(folderId: number, userId: number): Pro
     const result = await db.execute(sql`
       SELECT COUNT(*) as count
       FROM folders f
-      LEFT JOIN folder_shares fs ON f.id = fs.folderId AND fs.sharedWithUserId = ${userId}
+      LEFT JOIN folder_shares fs ON f.id = fs.folder_id AND fs.shared_with_user_id = ${userId}
       WHERE f.id = ${folderId} AND (f.userId = ${userId} OR fs.id IS NOT NULL)
     `);
 
