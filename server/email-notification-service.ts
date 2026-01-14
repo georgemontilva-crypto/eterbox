@@ -1,5 +1,6 @@
 import { getDb } from './db';
 import { sql } from 'drizzle-orm';
+import mysql from 'mysql2/promise';
 
 // Email service configuration (using Resend which is already configured in ENV)
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -351,10 +352,14 @@ export async function sendSecurityAlertEmail(params: {
   // Log to notification history
   const db = await getDb();
   if (db && result.success) {
-    await db.execute(sql`
-      INSERT INTO notification_history (user_id, type, title, body, data, sent_at)
-      VALUES (${userId}, 'security', ${message.subject}, ${message.title}, ${JSON.stringify(details)}, NOW())
-    `);
+    try {
+      await db.execute(sql.raw(`
+        INSERT INTO notification_history (user_id, type, title, body, data, sent_at)
+        VALUES (${userId}, 'security', ${mysql.escape(message.subject)}, ${mysql.escape(message.title)}, ${mysql.escape(JSON.stringify(details))}, NOW())
+      `));
+    } catch (error) {
+      console.error('[Email] Error logging to notification_history:', error);
+    }
   }
 
   return result;
@@ -403,10 +408,14 @@ export async function sendMarketingEmail(params: {
   // Log to notification history
   const db = await getDb();
   if (db && result.success) {
-    await db.execute(sql`
-      INSERT INTO notification_history (user_id, type, title, body, data, sent_at)
-      VALUES (${userId}, 'marketing', ${subject}, ${title}, '{}', NOW())
-    `);
+    try {
+      await db.execute(sql.raw(`
+        INSERT INTO notification_history (user_id, type, title, body, data, sent_at)
+        VALUES (${userId}, 'marketing', ${mysql.escape(subject)}, ${mysql.escape(title)}, '{}', NOW())
+      `));
+    } catch (error) {
+      console.error('[Email] Error logging to notification_history:', error);
+    }
   }
 
   return result;
