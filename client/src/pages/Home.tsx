@@ -62,13 +62,13 @@ export default function Home() {
       {/* Navigation */}
       <nav className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-50">
         <div className="container flex items-center justify-between py-4 px-4">
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-3">
             <img 
-              src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"} 
+              src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
               alt="EterBox Logo" 
-              className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" 
+              className="h-10 sm:h-12 w-auto flex-shrink-0" 
             />
-            <span className="text-xl sm:text-2xl font-bold">EterBox</span>
+            <span className="text-2xl sm:text-3xl font-bold">EterBox</span>
           </div>
           
           {/* Desktop Navigation */}
@@ -112,11 +112,11 @@ export default function Home() {
                 <div className="flex items-center justify-between p-6 border-b border-border/20">
                   <div className="flex items-center gap-3">
                     <img 
-                      src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"} 
+                      src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                       alt="EterBox Logo" 
-                      className="w-8 h-8" 
+                      className="h-10 w-auto" 
                     />
-                    <span className="text-xl font-bold">EterBox</span>
+                    <span className="text-2xl font-bold">EterBox</span>
                   </div>
                   <Button 
                     variant="ghost" 
@@ -335,13 +335,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-3 mb-4">
                 <img 
-                  src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"} 
+                  src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
                   alt="EterBox Logo" 
-                  className="w-6 h-6" 
+                  className="h-8 w-auto" 
                 />
-                <span className="text-lg font-bold">EterBox</span>
+                <span className="text-xl font-bold">EterBox</span>
               </div>
               <p className="text-sm text-muted-foreground">{t("home.footer.tagline")}</p>
             </div>
