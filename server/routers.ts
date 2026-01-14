@@ -8,7 +8,7 @@ import * as crypto from "./crypto";
 import * as folderSharesDb from "./folder-shares-db";
 import * as twoFactorService from "./2fa-service";
 import * as emailService from "./email-service";
-import { sendFolderSharedEmail } from "./email";
+import { sendFolderSharedEmail, sendSalesContactEmail } from "./email";
 import * as authService from "./auth-service";
 import * as paypalUtils from "./paypal-utils";
 import { randomBytes } from "crypto";
@@ -1184,6 +1184,36 @@ export const appRouter = router({
         limit: plan.maxGeneratedKeys,
       };
     }),
+  }),
+
+  // ============ SALES ============
+  sales: router({
+    contactForPlan: publicProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        email: z.string().email(),
+        phone: z.string().min(1),
+        planName: z.string(),
+        planPrice: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          await sendSalesContactEmail(
+            input.name,
+            input.email,
+            input.phone,
+            input.planName,
+            input.planPrice
+          );
+          return { success: true };
+        } catch (error) {
+          console.error('Error sending sales contact email:', error);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to send contact request',
+          });
+        }
+      }),
   }),
 });
 

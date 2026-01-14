@@ -6,7 +6,7 @@ import { useLocation, useSearch } from "wouter";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { PayPalCheckout } from "@/components/PayPalCheckout";
+import { PlanContactModal } from "@/components/PlanContactModal";
 
 // Updated plans with new pricing strategy
 const PLANS = [
@@ -139,31 +139,7 @@ export default function Pricing() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
-  const captureOrderMutation = trpc.paypal.captureOrder.useMutation({
-    onSuccess: (data) => {
-      if (data.success) {
-        toast.success(t("pricing.paymentSuccess"));
-        refetchUserPlan();
-        setLocation("/dashboard?upgraded=true");
-      } else {
-        toast.error("Payment was not completed");
-      }
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to process payment");
-    },
-  });
 
-  // Handle PayPal return
-  useEffect(() => {
-    const params = new URLSearchParams(search);
-    const token = params.get("token");
-    const payerId = params.get("PayerID");
-
-    if (token && payerId) {
-      captureOrderMutation.mutate({ orderId: token });
-    }
-  }, [search]);
 
   const isCurrentPlan = (planId: number) => {
     return userPlan?.id === planId;
@@ -172,17 +148,6 @@ export default function Pricing() {
   const handleSelectPlan = (plan: any) => {
     if (plan.id === 1) {
       toast.info(t("pricing.alreadyFree"));
-      return;
-    }
-
-    if (!user) {
-      toast.error(t("pricing.loginRequired"));
-      setLocation("/login?redirect=/pricing");
-      return;
-    }
-
-    if (isCurrentPlan(plan.id)) {
-      toast.info(t("pricing.alreadySubscribed"));
       return;
     }
 
@@ -364,21 +329,16 @@ export default function Pricing() {
           })}
         </div>
 
-        {/* PayPal Checkout Modal */}
+        {/* Plan Contact Modal */}
         {showCheckout && selectedPlan && (
-          <PayPalCheckout
-            planId={selectedPlan.id}
+          <PlanContactModal
+            isOpen={showCheckout}
+            onClose={() => setShowCheckout(false)}
             planName={selectedPlan.name}
-            price={getPrice(selectedPlan)}
-            period={billingPeriod === "yearly" ? "yearly" : "monthly"}
-            discount={billingPeriod === "yearly" ? selectedPlan.yearlyDiscount : undefined}
-            onSuccess={() => {
-              setShowCheckout(false);
-              toast.success(t("pricing.paymentSuccess"));
-              refetchUserPlan();
-              setLocation("/dashboard?upgraded=true");
-            }}
-            onCancel={() => setShowCheckout(false)}
+            planPrice={billingPeriod === "yearly" 
+              ? `$${selectedPlan.yearlyPrice}/year (Save ${selectedPlan.yearlyDiscount}%)`
+              : `$${selectedPlan.price}/month`
+            }
           />
         )}
       </main>

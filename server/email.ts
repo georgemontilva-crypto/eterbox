@@ -1168,3 +1168,138 @@ export async function sendFolderSharedEmail(
 
   return sendEmail({ to: recipientEmail, subject: t.subject, html });
 }
+
+
+// Sales Contact Email
+export function getSalesContactEmailTemplate(
+  name: string,
+  email: string,
+  phone: string,
+  planName: string,
+  planPrice: string
+) {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Plan Contact Request</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a;">
+      <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td align="center" style="padding: 40px 20px;">
+            <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; overflow: hidden;">
+              
+              <!-- Header -->
+              <tr>
+                <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                    🎯 New Plan Contact Request
+                  </h1>
+                </td>
+              </tr>
+              
+              <!-- Content -->
+              <tr>
+                <td style="padding: 40px;">
+                  <p style="margin: 0 0 30px; color: #a0a0a0; font-size: 16px; line-height: 1.6;">
+                    A potential customer is interested in purchasing a plan:
+                  </p>
+                  
+                  <!-- Plan Info -->
+                  <div style="background-color: #0f0f0f; border: 1px solid #2a2a2a; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                    <h2 style="margin: 0 0 10px; color: #667eea; font-size: 24px; font-weight: 700;">
+                      ${planName}
+                    </h2>
+                    <p style="margin: 0; color: #a0a0a0; font-size: 16px;">
+                      ${planPrice}
+                    </p>
+                  </div>
+                  
+                  <!-- Customer Info -->
+                  <h3 style="margin: 0 0 20px; color: #ffffff; font-size: 18px; font-weight: 600;">
+                    Customer Information:
+                  </h3>
+                  
+                  <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                    <tr>
+                      <td style="padding: 12px 0; border-bottom: 1px solid #2a2a2a;">
+                        <span style="color: #a0a0a0; font-size: 14px;">Name:</span>
+                      </td>
+                      <td style="padding: 12px 0; border-bottom: 1px solid #2a2a2a; text-align: right;">
+                        <span style="color: #ffffff; font-size: 14px; font-weight: 600;">${name}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; border-bottom: 1px solid #2a2a2a;">
+                        <span style="color: #a0a0a0; font-size: 14px;">Email:</span>
+                      </td>
+                      <td style="padding: 12px 0; border-bottom: 1px solid #2a2a2a; text-align: right;">
+                        <a href="mailto:${email}" style="color: #667eea; font-size: 14px; text-decoration: none;">${email}</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0;">
+                        <span style="color: #a0a0a0; font-size: 14px;">Phone:</span>
+                      </td>
+                      <td style="padding: 12px 0; text-align: right;">
+                        <a href="tel:${phone}" style="color: #667eea; font-size: 14px; text-decoration: none;">${phone}</a>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <!-- Action Buttons -->
+                  <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <tr>
+                      <td style="padding: 0 5px 0 0;">
+                        <a href="mailto:${email}" style="display: block; background-color: #667eea; color: #ffffff; text-align: center; padding: 14px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                          📧 Reply via Email
+                        </a>
+                      </td>
+                      <td style="padding: 0 0 0 5px;">
+                        <a href="tel:${phone}" style="display: block; background-color: #10b981; color: #ffffff; text-align: center; padding: 14px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                          📞 Call Now
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.6;">
+                    ⏰ Contact received: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'full', timeStyle: 'short' })}
+                  </p>
+                </td>
+              </tr>
+              
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 30px 40px; background-color: #0f0f0f; border-top: 1px solid #2a2a2a; text-align: center;">
+                  <p style="margin: 0; color: #666666; font-size: 12px;">
+                    This is an automated notification from ${APP_NAME}
+                  </p>
+                </td>
+              </tr>
+              
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+export async function sendSalesContactEmail(
+  name: string,
+  email: string,
+  phone: string,
+  planName: string,
+  planPrice: string
+) {
+  const salesEmail = 'sales@eterbox.com';
+  const subject = `🎯 New ${planName} Plan Contact Request - ${name}`;
+  const html = getSalesContactEmailTemplate(name, email, phone, planName, planPrice);
+
+  return sendEmail({ to: salesEmail, subject, html });
+}

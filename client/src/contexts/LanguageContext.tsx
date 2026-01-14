@@ -675,6 +675,22 @@ export const translations: Translations = {
   
   // Menu
   "menu.shared": { en: "Shared with Me", es: "Compartido Conmigo" },
+  
+  // Plan Contact Form
+  "planContact.title": { en: "Contact Sales", es: "Contactar Ventas" },
+  "planContact.subtitle": { en: "Interested in", es: "Interesado en" },
+  "planContact.name": { en: "Full Name", es: "Nombre Completo" },
+  "planContact.namePlaceholder": { en: "John Doe", es: "Juan Pérez" },
+  "planContact.email": { en: "Email Address", es: "Correo Electrónico" },
+  "planContact.emailPlaceholder": { en: "john@company.com", es: "juan@empresa.com" },
+  "planContact.phone": { en: "Phone Number", es: "Número de Teléfono" },
+  "planContact.agreeText": { en: "I want to hire this plan:", es: "Quiero contratar este plan:" },
+  "planContact.agreeError": { en: "Please confirm you want to hire this plan", es: "Por favor confirma que quieres contratar este plan" },
+  "planContact.submit": { en: "Send Request", es: "Enviar Solicitud" },
+  "planContact.submitting": { en: "Sending...", es: "Enviando..." },
+  "planContact.successTitle": { en: "Request Sent!", es: "¡Solicitud Enviada!" },
+  "planContact.successMessage": { en: "Our sales team will contact you soon.", es: "Nuestro equipo de ventas te contactará pronto." },
+  "planContact.submitError": { en: "Failed to send request. Please try again.", es: "Error al enviar solicitud. Inténtalo de nuevo." },
 };
 
 interface LanguageContextType {
