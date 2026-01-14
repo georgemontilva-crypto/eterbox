@@ -249,8 +249,11 @@ export default function Dashboard() {
   });
 
   // Get active folder data
-  const activeFolder = activeFolderView ? folders.find((f: any) => f.id === activeFolderView) : null;
   const isSharedFolder = activeFolderView ? sharedFolders.some((sf: any) => sf.folderId === activeFolderView) : false;
+  const activeFolder = activeFolderView 
+    ? (folders.find((f: any) => f.id === activeFolderView) || 
+       sharedFolders.find((sf: any) => sf.folderId === activeFolderView)?.folder)
+    : null;
   const activeFolderCredentials = activeFolderView ? folderCredentials : [];
   
   // Filter credentials within active folder

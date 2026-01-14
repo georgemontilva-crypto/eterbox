@@ -8,6 +8,7 @@ import * as crypto from "./crypto";
 import * as folderSharesDb from "./folder-shares-db";
 import * as twoFactorService from "./2fa-service";
 import * as emailService from "./email-service";
+import { sendFolderSharedEmail } from "./email";
 import * as authService from "./auth-service";
 import * as paypalUtils from "./paypal-utils";
 import { randomBytes } from "crypto";
@@ -222,7 +223,7 @@ export const appRouter = router({
 
         // Send email notification to the shared user
         try {
-          await emailService.sendFolderSharedEmail(
+          await sendFolderSharedEmail(
             sharedWithUser.email,
             sharedWithUser.name || "User",
             folder.name,
