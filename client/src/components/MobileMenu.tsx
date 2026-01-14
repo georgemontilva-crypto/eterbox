@@ -1125,7 +1125,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent 
           side="left" 
-          className="w-full sm:w-[400px] sm:max-w-[400px] bg-background border-r border-border/20 p-0 !animate-none data-[state=open]:!animate-slide-in-from-left data-[state=closed]:!animate-slide-out-to-left"
+          className="w-full sm:w-[400px] sm:max-w-[400px] bg-background border-r border-border/20 p-0"
         >
           <VisuallyHidden.Root>
             <SheetTitle>EterBox Menu</SheetTitle>
