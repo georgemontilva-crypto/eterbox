@@ -19,13 +19,16 @@ export interface EmailNotification {
 /**
  * Send email using Resend API
  */
-async function sendEmailViaResend(notification: EmailNotification): Promise<boolean> {
+async function sendEmailViaResend(notification: EmailNotification): Promise<{ success: boolean; error?: string }> {
   if (!RESEND_API_KEY) {
-    console.warn('[Email] RESEND_API_KEY not configured, skipping email');
-    return false;
+    const errorMsg = 'RESEND_API_KEY not configured';
+    console.warn('[Email]', errorMsg);
+    return { success: false, error: errorMsg };
   }
 
   try {
+    console.log('[Email] Sending email to:', notification.to, 'from:', FROM_EMAIL);
+    
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -42,15 +45,27 @@ async function sendEmailViaResend(notification: EmailNotification): Promise<bool
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('[Email] Resend API error:', error);
-      return false;
+      const errorText = await response.text();
+      console.error('[Email] Resend API error:', response.status, errorText);
+      
+      let errorMsg = 'Email service error';
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMsg = errorJson.message || errorMsg;
+      } catch {
+        errorMsg = errorText || errorMsg;
+      }
+      
+      return { success: false, error: errorMsg };
     }
 
-    return true;
+    const result = await response.json();
+    console.log('[Email] Email sent successfully:', result.id);
+    return { success: true };
   } catch (error) {
-    console.error('[Email] Error sending email:', error);
-    return false;
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Email] Error sending email:', errorMsg, error);
+    return { success: false, error: errorMsg };
   }
 }
 
@@ -326,7 +341,7 @@ export async function sendSecurityAlertEmail(params: {
     footerText: 'Si no reconoces esta actividad, contacta a nuestro equipo de soporte inmediatamente.'
   });
 
-  const sent = await sendEmailViaResend({
+  const result = await sendEmailViaResend({
     to: userEmail,
     subject: message.subject,
     html,
@@ -335,14 +350,14 @@ export async function sendSecurityAlertEmail(params: {
 
   // Log to notification history
   const db = await getDb();
-  if (db) {
+  if (db && result.success) {
     await db.execute(sql`
       INSERT INTO notification_history (user_id, type, title, body, data, sent_at)
       VALUES (${userId}, 'security', ${message.subject}, ${message.title}, ${JSON.stringify(details)}, NOW())
     `);
   }
 
-  return { success: sent };
+  return result;
 }
 
 /**
@@ -378,7 +393,7 @@ export async function sendMarketingEmail(params: {
     footerText: 'Puedes desactivar estos correos en cualquier momento desde tu configuración.'
   });
 
-  const sent = await sendEmailViaResend({
+  const result = await sendEmailViaResend({
     to: userEmail,
     subject,
     html,
@@ -387,14 +402,14 @@ export async function sendMarketingEmail(params: {
 
   // Log to notification history
   const db = await getDb();
-  if (db) {
+  if (db && result.success) {
     await db.execute(sql`
       INSERT INTO notification_history (user_id, type, title, body, data, sent_at)
       VALUES (${userId}, 'marketing', ${subject}, ${title}, '{}', NOW())
     `);
   }
 
-  return { success: sent };
+  return result;
 }
 
 /**

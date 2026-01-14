@@ -70,11 +70,13 @@ export function NotificationSettings() {
       if (result && result.success) {
         alert(t('notifications.testSent'));
       } else {
-        alert(t('notifications.testError'));
+        const errorMsg = result?.error || t('notifications.testError');
+        alert(`${t('notifications.testError')}: ${errorMsg}`);
       }
     } catch (error) {
       console.error('Error sending test notification:', error);
-      alert(t('notifications.testError'));
+      const errorMsg = error instanceof Error ? error.message : t('notifications.testError');
+      alert(`${t('notifications.testError')}: ${errorMsg}`);
     } finally {
       setTestingSecurity(false);
       setTestingMarketing(false);
