@@ -643,6 +643,38 @@ export const translations: Translations = {
   "security.contactDesc": { en: "If you have questions about our security practices or need more information, our support team is here to help.", es: "Si tienes preguntas sobre nuestras prácticas de seguridad o necesitas más información, nuestro equipo de soporte está aquí para ayudar." },
   "security.contactSupport": { en: "Contact Support", es: "Contactar Soporte" },
   "security.viewPrivacyPolicy": { en: "View Privacy Policy", es: "Ver Política de Privacidad" },
+  
+  // Folder Sharing
+  "shareFolder.title": { en: "Share Folder", es: "Compartir Carpeta" },
+  "shareFolder.shareWith": { en: "Share with user", es: "Compartir con usuario" },
+  "shareFolder.emailPlaceholder": { en: "user@example.com", es: "usuario@ejemplo.com" },
+  "shareFolder.shareButton": { en: "Share", es: "Compartir" },
+  "shareFolder.shareHint": { en: "The user will receive read-only access to this folder and its credentials.", es: "El usuario recibirá acceso de solo lectura a esta carpeta y sus credenciales." },
+  "shareFolder.sharedWith": { en: "Shared with", es: "Compartido con" },
+  "shareFolder.readOnly": { en: "Read Only", es: "Solo Lectura" },
+  "shareFolder.removeAccess": { en: "Remove access", es: "Remover acceso" },
+  "shareFolder.noShares": { en: "This folder is not shared with anyone yet.", es: "Esta carpeta aún no está compartida con nadie." },
+  "shareFolder.planRequired": { en: "Corporate or Enterprise Plan Required", es: "Se Requiere Plan Corporate o Enterprise" },
+  "shareFolder.planRequiredDesc": { en: "Folder sharing is only available for Corporate and Enterprise plans. Upgrade your plan to share folders with your team.", es: "Compartir carpetas solo está disponible para planes Corporate y Enterprise. Mejora tu plan para compartir carpetas con tu equipo." },
+  "shareFolder.enterEmail": { en: "Please enter an email address", es: "Por favor ingresa un correo electrónico" },
+  "shareFolder.sharedSuccess": { en: "Folder shared successfully! The user has been notified.", es: "¡Carpeta compartida exitosamente! El usuario ha sido notificado." },
+  "shareFolder.shareFailed": { en: "Failed to share folder", es: "Error al compartir carpeta" },
+  "shareFolder.unsharedSuccess": { en: "User removed successfully", es: "Usuario removido exitosamente" },
+  "shareFolder.unshareFailed": { en: "Failed to remove user", es: "Error al remover usuario" },
+  
+  // Shared Folders Page
+  "shared.title": { en: "Shared with Me", es: "Compartido Conmigo" },
+  "shared.description": { en: "Folders that other users have shared with you. You have read-only access.", es: "Carpetas que otros usuarios han compartido contigo. Tienes acceso de solo lectura." },
+  "shared.sharedBy": { en: "Shared by", es: "Compartido por" },
+  "shared.credentials": { en: "credentials", es: "credenciales" },
+  "shared.noFolders": { en: "No Shared Folders", es: "Sin Carpetas Compartidas" },
+  "shared.noFoldersDesc": { en: "When someone shares a folder with you, it will appear here.", es: "Cuando alguien comparta una carpeta contigo, aparecerá aquí." },
+  "shared.noCredentials": { en: "This folder has no credentials yet.", es: "Esta carpeta aún no tiene credenciales." },
+  "shared.sharedWithMe": { en: "Shared with Me", es: "Compartido Conmigo" },
+  "shared.badge": { en: "Shared", es: "Compartida" },
+  
+  // Menu
+  "menu.shared": { en: "Shared with Me", es: "Compartido Conmigo" },
 };
 
 interface LanguageContextType {

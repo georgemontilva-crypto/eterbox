@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell } from "lucide-react";
+import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell, Users } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -1049,6 +1049,16 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
           >
             <Home className="w-5 h-5 text-accent" />
             <span className="font-medium">{t("menu.dashboard")}</span>
+          </button>
+          <button
+            onClick={() => {
+              setOpen(false);
+              setLocation("/shared");
+            }}
+            className="w-full flex items-center gap-4 p-4 rounded-[15px] bg-card border border-border/20 hover:border-accent/50 transition-colors text-left"
+          >
+            <Users className="w-5 h-5 text-muted-foreground" />
+            <span className="font-medium">{t("menu.shared")}</span>
           </button>
           {adminCheck?.isAdmin && (
             <button

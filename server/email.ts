@@ -1016,3 +1016,155 @@ export async function sendVerificationEmail(
 
   return sendEmail({ to: email, subject: t.subject, html });
 }
+
+
+// Folder Shared Notification Email
+export function getFolderSharedEmailTemplate(
+  folderName: string,
+  ownerName: string,
+  ownerEmail: string,
+  dashboardLink: string,
+  language: 'en' | 'es' = 'en'
+) {
+  const translations = {
+    en: {
+      subject: `${APP_NAME} - Folder Shared with You`,
+      greeting: 'Hello!',
+      intro: `<strong>${ownerName}</strong> (${ownerEmail}) has shared a folder with you on ${APP_NAME}.`,
+      folderLabel: 'Folder Name:',
+      accessLabel: 'Access Level:',
+      accessValue: 'Read Only',
+      description: 'You now have read-only access to this folder and all its credentials. You can view and copy the credentials, but you cannot modify or delete them.',
+      button: 'View Shared Folder',
+      security: 'This folder contains sensitive information. Please keep it secure and do not share it with unauthorized persons.',
+      footer: `Best regards,<br>The ${APP_NAME} Team`,
+    },
+    es: {
+      subject: `${APP_NAME} - Carpeta Compartida Contigo`,
+      greeting: '¡Hola!',
+      intro: `<strong>${ownerName}</strong> (${ownerEmail}) ha compartido una carpeta contigo en ${APP_NAME}.`,
+      folderLabel: 'Nombre de Carpeta:',
+      accessLabel: 'Nivel de Acceso:',
+      accessValue: 'Solo Lectura',
+      description: 'Ahora tienes acceso de solo lectura a esta carpeta y todas sus credenciales. Puedes ver y copiar las credenciales, pero no puedes modificarlas ni eliminarlas.',
+      button: 'Ver Carpeta Compartida',
+      security: 'Esta carpeta contiene información sensible. Por favor manténla segura y no la compartas con personas no autorizadas.',
+      footer: `Saludos cordiales,<br>El equipo de ${APP_NAME}`,
+    },
+  };
+
+  const t = translations[language];
+
+  return `
+    <!DOCTYPE html>
+    <html lang="${language}">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${t.subject}</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a; color: #e5e5e5;">
+      <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td align="center" style="padding: 40px 0;">
+            <table role="presentation" style="width: 600px; max-width: 100%; border-collapse: collapse; background-color: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;">
+              <!-- Header -->
+              <tr>
+                <td style="padding: 40px 40px 20px; text-align: center;">
+                  <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #3b82f6;">📁 ${APP_NAME}</h1>
+                </td>
+              </tr>
+              
+              <!-- Content -->
+              <tr>
+                <td style="padding: 20px 40px;">
+                  <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.5; color: #e5e5e5;">
+                    ${t.greeting}
+                  </p>
+                  <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.5; color: #a3a3a3;">
+                    ${t.intro}
+                  </p>
+                  
+                  <!-- Folder Info Box -->
+                  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #0a0a0a; border: 1px solid #3b82f6; border-radius: 6px; margin: 20px 0;">
+                    <tr>
+                      <td style="padding: 20px;">
+                        <p style="margin: 0 0 10px; font-size: 14px; color: #a3a3a3;">
+                          ${t.folderLabel}
+                        </p>
+                        <p style="margin: 0 0 20px; font-size: 18px; font-weight: 600; color: #3b82f6;">
+                          ${folderName}
+                        </p>
+                        <p style="margin: 0 0 5px; font-size: 14px; color: #a3a3a3;">
+                          ${t.accessLabel}
+                        </p>
+                        <p style="margin: 0; font-size: 14px; color: #10b981; font-weight: 500;">
+                          🔒 ${t.accessValue}
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <p style="margin: 20px 0; font-size: 14px; line-height: 1.6; color: #a3a3a3;">
+                    ${t.description}
+                  </p>
+                  
+                  <!-- Button -->
+                  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td align="center" style="padding: 20px 0;">
+                        <a href="${dashboardLink}" style="display: inline-block; padding: 14px 32px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600;">
+                          ${t.button}
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <!-- Security Notice -->
+                  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #0a0a0a; border-left: 3px solid #f59e0b; margin: 20px 0;">
+                    <tr>
+                      <td style="padding: 15px;">
+                        <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #f59e0b;">
+                          ⚠️ ${t.security}
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 30px 40px; border-top: 1px solid #2a2a2a;">
+                  <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #a3a3a3;">
+                    ${t.footer}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+export async function sendFolderSharedEmail(
+  recipientEmail: string,
+  recipientName: string,
+  folderName: string,
+  ownerName: string,
+  ownerEmail: string,
+  language: 'en' | 'es' = 'en'
+) {
+  const dashboardLink = `${FRONTEND_URL}/shared`;
+  const translations = {
+    en: { subject: `${APP_NAME} - ${ownerName} shared "${folderName}" with you` },
+    es: { subject: `${APP_NAME} - ${ownerName} compartió "${folderName}" contigo` },
+  };
+  const t = translations[language];
+  const html = getFolderSharedEmailTemplate(folderName, ownerName, ownerEmail, dashboardLink, language);
+
+  return sendEmail({ to: recipientEmail, subject: t.subject, html });
+}

@@ -5,6 +5,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
 import * as crypto from "./crypto";
+import * as folderSharesDb from "./folder-shares-db";
 import * as twoFactorService from "./2fa-service";
 import * as emailService from "./email-service";
 import * as authService from "./auth-service";
@@ -165,6 +166,147 @@ export const appRouter = router({
 
         return { success: true, movedCredentials: input.deleteCredentials ? 0 : credentials.length };
       }),
+
+    // ============ FOLDER SHARING (Corporate & Enterprise only) ============
+    shareFolder: protectedProcedure
+      .input(z.object({
+        folderId: z.number(),
+        userEmail: z.string().email(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Check if user has Corporate or Enterprise plan
+        const user = await db.getUserById(ctx.user.id);
+        if (!user) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+
+        const plan = await db.getPlanById(user.planId);
+        if (!plan) throw new TRPCError({ code: "NOT_FOUND", message: "Plan not found" });
+
+        if (plan.name !== "Corporate" && plan.name !== "Enterprise") {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Folder sharing is only available for Corporate and Enterprise plans",
+          });
+        }
+
+        // Check if folder belongs to user
+        const folder = await db.getFolderById(input.folderId, ctx.user.id);
+        if (!folder) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Folder not found" });
+        }
+
+        // Find user to share with by email
+        const sharedWithUser = await db.getUserByEmail(input.userEmail);
+        if (!sharedWithUser) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "User with this email not found" });
+        }
+
+        // Check if user is trying to share with themselves
+        if (sharedWithUser.id === ctx.user.id) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "You cannot share a folder with yourself" });
+        }
+
+        // Check if already shared
+        const alreadyShared = await folderSharesDb.isFolderSharedWithUser(input.folderId, sharedWithUser.id);
+        if (alreadyShared) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Folder is already shared with this user" });
+        }
+
+        // Create share
+        const result = await folderSharesDb.createFolderShare(
+          input.folderId,
+          ctx.user.id,
+          sharedWithUser.id
+        );
+
+        await db.recordActivity(ctx.user.id, "folder_shared", "folder", input.folderId);
+
+        // Send email notification to the shared user
+        try {
+          await emailService.sendFolderSharedEmail(
+            sharedWithUser.email,
+            sharedWithUser.name || "User",
+            folder.name,
+            user.name || "A user",
+            user.email,
+            sharedWithUser.language || 'en'
+          );
+        } catch (emailError) {
+          console.error("Failed to send folder shared email:", emailError);
+          // Don't fail the share operation if email fails
+        }
+
+        return {
+          success: true,
+          message: "Folder shared successfully",
+          shareId: result?.insertId || 0,
+        };
+      }),
+
+    unshareFolder: protectedProcedure
+      .input(z.object({
+        folderId: z.number(),
+        sharedWithUserId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Check if folder belongs to user
+        const folder = await db.getFolderById(input.folderId, ctx.user.id);
+        if (!folder) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Folder not found" });
+        }
+
+        // Delete share
+        const success = await folderSharesDb.deleteFolderShareByUserAndFolder(
+          input.folderId,
+          ctx.user.id,
+          input.sharedWithUserId
+        );
+
+        if (!success) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to remove share" });
+        }
+
+        await db.recordActivity(ctx.user.id, "folder_unshared", "folder", input.folderId);
+
+        return {
+          success: true,
+          message: "User removed from folder successfully",
+        };
+      }),
+
+    getFolderShares: protectedProcedure
+      .input(z.object({ folderId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        // Check if folder belongs to user
+        const folder = await db.getFolderById(input.folderId, ctx.user.id);
+        if (!folder) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Folder not found" });
+        }
+
+        const shares = await folderSharesDb.getFolderShares(input.folderId, ctx.user.id);
+        return shares;
+      }),
+
+    getSharedWithMe: protectedProcedure.query(async ({ ctx }) => {
+      const sharedFolders = await folderSharesDb.getFoldersSharedWithUser(ctx.user.id);
+      return sharedFolders;
+    }),
+
+    listWithShareCount: protectedProcedure.query(async ({ ctx }) => {
+      const folders = await db.getUserFolders(ctx.user.id);
+      
+      // Get share count for each folder
+      const foldersWithShareCount = await Promise.all(
+        folders.map(async (folder) => {
+          const shareCount = await folderSharesDb.getFolderShareCount(folder.id);
+          return {
+            ...folder,
+            shareCount,
+          };
+        })
+      );
+
+      return foldersWithShareCount;
+    }),
   }),
 
   // ============ CREDENTIALS ============

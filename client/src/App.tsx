@@ -6,6 +6,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import Shared from "./pages/Shared";
 import Pricing from "./pages/Pricing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
@@ -139,6 +140,7 @@ function Router() {
       <Route path="/verify-2fa" component={Verify2FA} />
       <Route path="/verify-email" component={VerifyEmail} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/shared" component={() => <ProtectedRoute component={Shared} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
       <Route path="/change-password" component={() => <ProtectedRoute component={ChangePassword} />} />
       <Route path="/admin" component={() => <ProtectedRoute component={AdminDashboard} />} />

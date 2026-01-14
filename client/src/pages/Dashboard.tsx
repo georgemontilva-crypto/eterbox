@@ -10,9 +10,10 @@ import { BiometricSetupModal } from "@/components/BiometricSetupModal";
 import { PasswordGeneratorModal } from "@/components/PasswordGeneratorModal";
 import { ExportCredentialsModal } from "@/components/ExportCredentialsModal";
 import { ImportCredentialsModal } from "@/components/ImportCredentialsModal";
+import { ShareFolderModal } from "@/components/ShareFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit, Users } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { RenewalBanner } from "@/components/RenewalBanner";
 import { SubscriptionExpiredModal } from "@/components/SubscriptionExpiredModal";
@@ -47,6 +48,8 @@ export default function Dashboard() {
   const [selectedCredentialForEdit, setSelectedCredentialForEdit] = useState<any>(null);
   const [showEditFolderModal, setShowEditFolderModal] = useState(false);
   const [selectedFolderForEdit, setSelectedFolderForEdit] = useState<any>(null);
+  const [showShareFolderModal, setShowShareFolderModal] = useState(false);
+  const [selectedFolderForShare, setSelectedFolderForShare] = useState<{ id: number; name: string } | null>(null);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   
@@ -61,7 +64,8 @@ export default function Dashboard() {
   const { data: credentials = [] } = trpc.credentials.list.useQuery(undefined, {
     enabled: !isSubscriptionExpired
   });
-  const { data: folders = [] } = trpc.folders.list.useQuery();
+  const { data: folders = [] } = trpc.folders.listWithShareCount.useQuery();
+  const { data: sharedFolders = [] } = trpc.folders.getSharedWithMe.useQuery();
   const deleteCredentialMutation = trpc.credentials.delete.useMutation();
   const deleteFolderMutation = trpc.folders.delete.useMutation();
   const updateCredentialMutation = trpc.credentials.update.useMutation();
@@ -721,6 +725,12 @@ export default function Dashboard() {
                         <div className="flex flex-wrap items-baseline gap-2">
                           <p className="font-semibold">{folder.name}</p>
                           <p className="text-sm text-muted-foreground whitespace-nowrap">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
+                          {folder.shareCount > 0 && (
+                            <div className="flex items-center gap-1 px-2 py-0.5 bg-accent/10 border border-accent/20 rounded-full">
+                              <Users className="w-3 h-3 text-accent" />
+                              <span className="text-xs text-accent font-medium">{folder.shareCount}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -730,9 +740,53 @@ export default function Dashboard() {
                         <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFolderForEdit(folder); setShowEditFolderModal(true); }}>
                           <Edit className="w-4 h-4" />
                         </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setSelectedFolderForShare({ id: folder.id, name: folder.name }); 
+                            setShowShareFolderModal(true); 
+                          }}
+                          title="Share folder"
+                        >
+                          <Users className="w-4 h-4" />
+                        </Button>
                         <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}>
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {searchQuery.length === 0 && sharedFolders && sharedFolders.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-xl font-bold mb-4">Shared with Me</h3>
+            <div className="space-y-4">
+              {sharedFolders.map((sharedFolder: any) => {
+                const folderCreds = credentialsByFolder[sharedFolder.folderId] || [];
+                return (
+                  <Card key={sharedFolder.id} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(sharedFolder.folderId)}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-start gap-3">
+                        <Folder className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                        <div className="flex flex-wrap items-baseline gap-2">
+                          <p className="font-semibold">{sharedFolder.folder.name}</p>
+                          <p className="text-sm text-muted-foreground whitespace-nowrap">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
+                            <Lock className="w-3 h-3 text-green-500" />
+                            <span className="text-xs text-green-500 font-medium">Shared</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">by {sharedFolder.owner.name || sharedFolder.owner.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
                         <ChevronRight className="w-5 h-5 text-muted-foreground" />
                       </div>
                     </div>
@@ -806,6 +860,18 @@ export default function Dashboard() {
         onOpenChange={setShowEditFolderModal}
         folder={selectedFolderForEdit}
       />
+      {selectedFolderForShare && (
+        <ShareFolderModal
+          open={showShareFolderModal}
+          onClose={() => {
+            setShowShareFolderModal(false);
+            setSelectedFolderForShare(null);
+          }}
+          folderId={selectedFolderForShare.id}
+          folderName={selectedFolderForShare.name}
+          userPlan={userPlan?.name || "Free"}
+        />
+      )}
     </div>
   );
 }
