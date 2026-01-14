@@ -107,7 +107,7 @@ export default function Home() {
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[320px] p-0 flex flex-col">
+              <SheetContent side="left" className="w-[280px] sm:w-[320px] p-0 flex flex-col" hideClose={true}>
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-border/20">
                   <div className="flex items-center gap-3">
@@ -122,7 +122,7 @@ export default function Home() {
                     variant="ghost" 
                     size="icon" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="h-8 w-8"
+                    className="h-9 w-9 rounded-lg bg-background border border-primary/20 hover:bg-accent"
                   >
                     <X className="w-5 h-5" />
                   </Button>
