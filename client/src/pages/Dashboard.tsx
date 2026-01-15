@@ -71,8 +71,12 @@ export default function Dashboard() {
     { enabled: activeFolderView !== null && !isSubscriptionExpired }
   );
   
-  const { data: folders = [] } = trpc.folders.listWithShareCount.useQuery();
-  const { data: sharedFolders = [] } = trpc.folders.getSharedWithMe.useQuery();
+  const { data: folders = [] } = trpc.folders.listWithShareCount.useQuery(undefined, {
+    refetchInterval: 5000, // Refetch every 5 seconds to catch shared folders
+  });
+  const { data: sharedFolders = [] } = trpc.folders.getSharedWithMe.useQuery(undefined, {
+    refetchInterval: 5000, // Refetch every 5 seconds to catch new shares
+  });
   const deleteCredentialMutation = trpc.credentials.delete.useMutation();
   const deleteFolderMutation = trpc.folders.delete.useMutation();
   const updateCredentialMutation = trpc.credentials.update.useMutation();
