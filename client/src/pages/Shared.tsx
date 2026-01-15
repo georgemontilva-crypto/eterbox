@@ -40,7 +40,7 @@ export default function Shared() {
     return (
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <div className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-10">
+        <div className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-10 safe-area-top safe-area-x">
           <div className="container py-4 px-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ export default function Shared() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-10">
+      <div className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-10 safe-area-top safe-area-x">
         <div className="container py-4 px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

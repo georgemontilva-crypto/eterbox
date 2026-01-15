@@ -1178,7 +1178,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
           </VisuallyHidden.Root>
           <div className="flex flex-col h-full">
             {/* Persistent Header with Menu */}
-            <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-border/20">
+            <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-border/20 safe-area-top safe-area-x">
               <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   {activeView ? (

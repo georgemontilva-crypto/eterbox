@@ -147,6 +147,23 @@
 
 @layer components {
   /**
+   * PWA Safe Area Support
+   * Use this class on fixed headers/navbars to respect device safe areas
+   */
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /**
    * Custom container utility that centers content and adds responsive padding.
    *
    * This overrides Tailwind's default container behavior to:

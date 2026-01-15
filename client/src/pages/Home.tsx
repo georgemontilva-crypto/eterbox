@@ -60,7 +60,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Navigation */}
-      <nav className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-border/20 bg-card/50 backdrop-blur-md sticky top-0 z-50 safe-area-top safe-area-x">
         <div className="container flex items-center justify-between py-4 px-4">
           <div className="flex items-center gap-3">
             <img 

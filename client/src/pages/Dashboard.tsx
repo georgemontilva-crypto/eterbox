@@ -376,7 +376,7 @@ export default function Dashboard() {
   if (activeFolderView && activeFolder) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50 safe-area-top safe-area-x">
           <div className="container py-4">
             <div className="flex items-center justify-between">
               <MobileMenu 
@@ -521,7 +521,7 @@ export default function Dashboard() {
   // Main Dashboard View
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50 safe-area-top safe-area-x">
         <div className="container py-4">
           <div className="flex items-center justify-between">
             {/* Menu hamburguesa - visible en todas las pantallas */}
