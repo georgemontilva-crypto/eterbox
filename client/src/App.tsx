@@ -160,31 +160,30 @@ function App() {
   // Inicializar Lenis para scroll suave
   useLenis();
   
-  // Splash screen disabled temporarily - will be re-enabled after fixing auth issues
-  // const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(false);
 
-  // useEffect(() => {
-  //   const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-  //   const hasSeenSplash = sessionStorage.getItem('splash_shown');
-  //   
-  //   if (isPWA && !hasSeenSplash) {
-  //     setShowSplash(true);
-  //     sessionStorage.setItem('splash_shown', 'true');
-  //   }
-  // }, []);
+  useEffect(() => {
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    const hasSeenSplash = sessionStorage.getItem('splash_shown');
+    
+    if (isPWA && !hasSeenSplash) {
+      setShowSplash(true);
+      sessionStorage.setItem('splash_shown', 'true');
+    }
+  }, []);
 
-  // const handleSplashFinish = () => {
-  //   setShowSplash(false);
-  // };
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
 
-  // if (showSplash) {
-  //   return (
-  //     <SplashScreen 
-  //       onFinish={handleSplashFinish}
-  //       isAuthenticated={false}
-  //     />
-  //   );
-  // }
+  if (showSplash) {
+    return (
+      <SplashScreen 
+        onFinish={handleSplashFinish}
+        isAuthenticated={false}
+      />
+    );
+  }
 
   return (
     <ErrorBoundary>
