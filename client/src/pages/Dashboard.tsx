@@ -505,6 +505,13 @@ export default function Dashboard() {
           defaultFolderId={selectedFolderId}
           defaultPassword={defaultPassword}
         />
+        
+        <EditCredentialModal
+          open={showEditCredentialModal}
+          onOpenChange={setShowEditCredentialModal}
+          credential={selectedCredentialForEdit}
+          folders={folders}
+        />
       </div>
     );
   }
