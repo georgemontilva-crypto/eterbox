@@ -96,7 +96,7 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] max-h-[85vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Credential</DialogTitle>
         </DialogHeader>
