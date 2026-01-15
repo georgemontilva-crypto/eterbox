@@ -141,6 +141,7 @@ export default function Dashboard() {
       });
       toast.success("Credential added to folder");
       utils.credentials.list.invalidate();
+      utils.credentials.getByFolder.invalidate({ folderId: activeFolderView });
       setShowAddExistingModal(false);
     } catch (error) {
       toast.error("Failed to add credential to folder");
