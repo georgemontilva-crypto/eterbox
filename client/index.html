@@ -19,6 +19,11 @@
         margin: 0;
         padding: 0;
         background: #000000;
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+      }
+      html {
+        padding-bottom: env(safe-area-inset-bottom);
       }
     </style>
     
@@ -65,7 +70,7 @@
     THIS IS THE END OF A COMMENT BLOCK, BLOCK TO BE DELETED -->
   </head>
 
-  <body style="margin: 0; padding: 0; background: linear-gradient(to bottom right, #000000, #1f2937);">
+  <body style="margin: 0; padding: 0; padding-bottom: env(safe-area-inset-bottom); background: linear-gradient(to bottom right, #000000, #1f2937); min-height: 100vh; min-height: -webkit-fill-available;">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script
