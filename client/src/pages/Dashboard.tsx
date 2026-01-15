@@ -293,7 +293,12 @@ export default function Dashboard() {
           >
             <div className="flex items-center gap-2">
               <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
-              <p className="font-semibold text-sm md:text-base">{cred.platformName}</p>
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <p className="font-semibold text-sm md:text-base truncate">{cred.platformName}</p>
+                {(cred.username || cred.email) && (
+                  <span className="text-xs text-muted-foreground truncate">• {cred.username || cred.email}</span>
+                )}
+              </div>
             </div>
             
             {isExpanded && (

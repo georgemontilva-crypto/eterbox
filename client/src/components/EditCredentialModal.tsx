@@ -53,6 +53,7 @@ export function EditCredentialModal({ open, onOpenChange, credential, folders }:
       toast.success("Credential updated successfully!");
       onOpenChange(false);
       utils.credentials.list.invalidate();
+      utils.credentials.listByFolder.invalidate();
     } catch (error) {
       toast.error("Failed to update credential");
     }
