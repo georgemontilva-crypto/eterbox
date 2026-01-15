@@ -226,6 +226,13 @@ export const translations: Translations = {
   "password.confirm": { en: "Confirm New Password", es: "Confirmar Nueva Contraseña" },
   "password.update": { en: "Update Password", es: "Actualizar Contraseña" },
   "password.updating": { en: "Updating...", es: "Actualizando..." },
+  "password.currentPlaceholder": { en: "Enter current password", es: "Ingresa tu contraseña actual" },
+  "password.newPlaceholder": { en: "Enter new password", es: "Ingresa tu nueva contraseña" },
+  "password.confirmPlaceholder": { en: "Confirm new password", es: "Confirma tu nueva contraseña" },
+  "password.minLength": { en: "Must be at least 8 characters", es: "Debe tener al menos 8 caracteres" },
+  "password.fillAllFields": { en: "Please fill in all fields", es: "Por favor completa todos los campos" },
+  "password.updateSuccess": { en: "Password updated successfully!", es: "¡Contraseña actualizada exitosamente!" },
+  "password.updateError": { en: "Failed to update password", es: "Error al actualizar contraseña" },
   
   // Plans
   "plan.title": { en: "Your Plan", es: "Tu Plan" },
@@ -251,6 +258,8 @@ export const translations: Translations = {
   // Settings
   "settings.theme": { en: "Theme", es: "Tema" },
   "settings.language": { en: "Language", es: "Idioma" },
+  "settings.accountInfo": { en: "Account Information", es: "Información de Cuenta" },
+  "settings.name": { en: "Name", es: "Nombre" },
   "home.hero.title1": { en: "Your Passwords,", es: "Tus Contraseñas," },
   "home.hero.title2": { en: "Secured", es: "Protegidas" },
   "home.hero.subtitle": { en: "EterBox is a modern, secure password manager that keeps all your credentials safe with military-grade encryption.", es: "EterBox es un gestor de contraseñas moderno y seguro que mantiene todas tus credenciales protegidas con encriptación de grado militar." },
