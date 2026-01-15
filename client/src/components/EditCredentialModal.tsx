@@ -61,7 +61,7 @@ export function EditCredentialModal({ open, onOpenChange, credential, folders }:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="w-[90vw] sm:w-[800px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Credential</DialogTitle>
         </DialogHeader>
