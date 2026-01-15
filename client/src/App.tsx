@@ -160,16 +160,11 @@ function App() {
   // Inicializar Lenis para scroll suave
   useLenis();
   
-  const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-    const hasSeenSplash = sessionStorage.getItem('splash_shown');
-    
-    if (isPWA && !hasSeenSplash) {
-      setShowSplash(true);
-      sessionStorage.setItem('splash_shown', 'true');
-    }
+    // Show splash screen on every app load
+    setShowSplash(true);
   }, []);
 
   const handleSplashFinish = () => {
