@@ -300,10 +300,12 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
   });
 
   // Biometric hooks (must be called unconditionally)
+  const utils = trpc.useUtils();
   const { data: biometricStatus } = trpc.webauthn.checkBiometricStatus.useQuery();
   const disableBiometric = trpc.webauthn.disableBiometric.useMutation({
     onSuccess: () => {
       toast.success(t("biometric.disabled") || "Biometric authentication disabled");
+      utils.webauthn.checkBiometricStatus.invalidate();
       setActiveView(null);
     },
     onError: (error: any) => {
