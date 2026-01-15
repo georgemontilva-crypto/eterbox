@@ -38,7 +38,7 @@ export function SplashScreen({ onFinish, isAuthenticated }: SplashScreenProps) {
           EterBox
         </h1>
         <p className="text-sm text-gray-400 mt-4 tracking-wide">
-          Security Vault
+          Your Passwords, Secured
         </p>
       </div>
     </div>
