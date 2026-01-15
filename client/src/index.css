@@ -265,11 +265,12 @@ button, a, input, select, textarea {
 }
 
 /* Smooth accordion/collapse animations */
-[data-state="open"] {
+/* Excluimos Sheet para que use sus propias animaciones horizontales */
+[data-state="open"]:not([data-slot="sheet-content"]) {
   animation: slideDown 0.3s ease-out;
 }
 
-[data-state="closed"] {
+[data-state="closed"]:not([data-slot="sheet-content"]) {
   animation: slideUp 0.3s ease-out;
 }
 
