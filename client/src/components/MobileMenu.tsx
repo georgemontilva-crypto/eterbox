@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell, Users } from "lucide-react";
+import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell, Users, Moon, Sun } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { detectPlatform, getBiometricTypeName, type Platform } from "@/lib/platform";
@@ -221,7 +222,7 @@ interface MobileMenuProps {
   userEmail?: string;
 }
 
-type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "notifications" | "language" | "generator" | "payments" | "security" | "documentation" | null;
+type ActiveView = "menu" | "2fa" | "biometric" | "password" | "plan" | "settings" | "notifications" | "language" | "theme" | "generator" | "payments" | "security" | "documentation" | null;
 
 export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAddCredentialWithPassword, userEmail }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -229,6 +230,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
   const [viewHistory, setViewHistory] = useState<ActiveView[]>([]);
   const [, setLocation] = useLocation();
   const { language, setLanguage, t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const [platform] = useState<Platform>(detectPlatform());
   const biometricName = getBiometricTypeName(platform);
   
@@ -343,6 +345,18 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
       icon: Shield,
       label: t("menu.documentation"),
       description: t("menu.documentationDesc"),
+    },
+    {
+      id: "language" as ActiveView,
+      icon: Globe,
+      label: t("menu.language"),
+      description: language === "en" ? "English" : "Español",
+    },
+    {
+      id: "theme" as ActiveView,
+      icon: theme === "dark" ? Sun : Moon,
+      label: t("menu.theme"),
+      description: theme === "dark" ? "Dark Mode" : "Light Mode",
     },
   ];
 
@@ -924,6 +938,36 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
         <div className="flex flex-col h-full">
           <div className="flex-1 overflow-y-auto p-6">
             <NotificationSettings />
+          </div>
+        </div>
+      );
+    }
+
+    if (activeView === "theme") {
+      return (
+        <div className="p-6 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
+              {theme === "dark" ? <Sun className="w-8 h-8 text-accent" /> : <Moon className="w-8 h-8 text-accent" />}
+            </div>
+            <h2 className="text-xl font-bold">{t("menu.theme")}</h2>
+            <p className="text-sm text-muted-foreground">Current: {theme === "dark" ? "Dark Mode" : "Light Mode"}</p>
+          </div>
+          <div className="space-y-3">
+            <button
+              onClick={() => {
+                toggleTheme();
+                toast.success(`Switched to ${theme === "dark" ? "Light" : "Dark"} Mode`);
+                handleBack();
+              }}
+              className="w-full flex items-center justify-between p-4 rounded-[15px] bg-card/50 border border-border/20 hover:border-accent/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                {theme === "dark" ? <Sun className="w-5 h-5 text-accent" /> : <Moon className="w-5 h-5 text-accent" />}
+                <span className="font-medium">Switch to {theme === "dark" ? "Light" : "Dark"} Mode</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
           </div>
         </div>
       );
