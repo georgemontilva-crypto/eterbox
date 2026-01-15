@@ -20,10 +20,12 @@ import { SubscriptionExpiredModal } from "@/components/SubscriptionExpiredModal"
 import { useLocation } from "wouter";
 import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { startRegistration } from "@simplewebauthn/browser";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const { data: adminCheck } = trpc.admin.isAdmin.useQuery();
   const [, setLocation] = useLocation();
   const [showCredentialModal, setShowCredentialModal] = useState(false);
@@ -106,16 +108,16 @@ export default function Dashboard() {
 
   const copyToClipboard = async (text: string) => {
     await navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard!");
+    toast.success(t("dashboard.copiedToClipboard"));
   };
 
   const handleDeleteCredential = async (id: number) => {
     try {
       await deleteCredentialMutation.mutateAsync({ id });
-      toast.success("Credential deleted");
+      toast.success(t("dashboard.credentialDeleted"));
       utils.credentials.list.invalidate();
     } catch (error) {
-      toast.error("Failed to delete credential");
+      toast.error(t("dashboard.failedToDelete"));
     }
   };
 
@@ -139,12 +141,12 @@ export default function Dashboard() {
         id: credentialId, 
         folderId: activeFolderView 
       });
-      toast.success("Credential added to folder");
+      toast.success(t("dashboard.credentialAddedToFolder"));
       utils.credentials.list.invalidate();
       utils.credentials.getByFolder.invalidate({ folderId: activeFolderView });
       setShowAddExistingModal(false);
     } catch (error) {
-      toast.error("Failed to add credential to folder");
+      toast.error(t("dashboard.failedToAdd"));
     }
   };
 
@@ -198,18 +200,18 @@ export default function Dashboard() {
       });
       console.log("[Biometric] Registration verified successfully!");
 
-      toast.success("¡Autenticación biométrica activada exitosamente!");
+      toast.success(t("dashboard.biometricActivated"));
       setShowBiometricSetup(false);
       utils.webauthn.checkBiometricStatus.invalidate();
     } catch (err: any) {
       console.error("[Biometric] Registration failed:", err);
       console.error("[Biometric] Error details:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
       
-      let errorMessage = "Error al activar biometría";
+      let errorMessage = t("dashboard.biometricError");
       if (err.name === 'NotAllowedError') {
-        errorMessage = "Permiso denegado. Por favor, intenta de nuevo y acepta el prompt de autenticación.";
+        errorMessage = t("dashboard.permissionDenied");
       } else if (err.name === 'InvalidStateError') {
-        errorMessage = "Esta credencial ya está registrada. Intenta desde otro dispositivo o elimina la credencial existente.";
+        errorMessage = t("dashboard.credentialExists");
       } else if (err.message) {
         errorMessage = `Error: ${err.message}`;
       }
@@ -306,7 +308,7 @@ export default function Dashboard() {
                 {/* Username with copy button */}
                 {cred.username && (
                   <div className="flex items-center gap-1">
-                    <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Username:</span>
+                    <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">{t("dashboard.username")}</span>
                     <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.username}</code>
                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.username)}>
                       <Copy className="w-3 h-3" />
@@ -317,7 +319,7 @@ export default function Dashboard() {
                 {/* Email with copy button */}
                 {cred.email && (
                   <div className="flex items-center gap-1">
-                    <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Email:</span>
+                    <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">{t("dashboard.email")}</span>
                     <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">{cred.email}</code>
                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0" onClick={() => copyToClipboard(cred.email)}>
                       <Copy className="w-3 h-3" />
@@ -327,7 +329,7 @@ export default function Dashboard() {
                 
                 {/* Password with eye and copy buttons */}
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">Password:</span>
+                  <span className="text-xs text-muted-foreground min-w-[60px] md:min-w-[70px]">{t("dashboard.password")}</span>
                   <code className="text-xs bg-card/50 px-1.5 py-0.5 rounded border border-border/20 flex-1 truncate">
                     {visiblePasswords.has(cred.id) ? cred.encryptedPassword : "••••••••••••"}
                   </code>
@@ -342,7 +344,7 @@ export default function Dashboard() {
                 {/* Notes */}
                 {cred.notes && (
                   <div className="mt-2 pt-2 border-t border-border/20">
-                    <p className="text-xs text-muted-foreground mb-0.5">Notes:</p>
+                    <p className="text-xs text-muted-foreground mb-0.5">{t("dashboard.notes")}</p>
                     <p className="text-xs md:text-sm text-foreground/80 break-words">{cred.notes}</p>
                   </div>
                 )}
