@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { MobileMenu } from "@/components/MobileMenu";
 import { useLocation } from "wouter";
-import DashboardLayout from "@/components/DashboardLayout";
 
 export default function QRDashboard() {
   const { user, logout } = useAuth();
@@ -122,9 +121,35 @@ export default function QRDashboard() {
     const folderQRCodes = qrCodesByFolder[activeFolderId] || [];
 
     return (
-      <DashboardLayout>
-        <div className="min-h-screen bg-background">
-          <div className="container mx-auto px-4 py-8">
+      <div className="min-h-screen bg-background text-foreground">
+        <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50 safe-area-top safe-area-x">
+          <div className="container py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <MobileMenu 
+                  planName={planName} 
+                  onLogout={logout}
+                  userEmail={user?.email}
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                {adminCheck?.isAdmin && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLocation("/admin")}
+                    className="hidden md:flex items-center gap-2 text-accent hover:text-accent/80"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Admin
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="container py-8">
             <Button
               variant="ghost"
               size="sm"
@@ -195,15 +220,14 @@ export default function QRDashboard() {
               </div>
             )}
           </div>
-        </div>
-      </DashboardLayout>
+        </main>
+      </div>
     );
   }
 
   // Main Dashboard View
   return (
-    <DashboardLayout>
-      <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
         <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50 safe-area-top safe-area-x">
           <div className="container py-4">
             <div className="flex items-center justify-between">
@@ -437,6 +461,6 @@ export default function QRDashboard() {
             </Card>
           </div>
       )}
-    </DashboardLayout>
+    </div>
   );
 }
