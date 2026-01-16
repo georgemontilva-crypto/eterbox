@@ -1,6 +1,7 @@
 /**
  * Apple-style Animation Presets
  * Smooth, natural animations with spring physics
+ * Optimized for iOS/Safari and mobile devices
  */
 
 import { Variants, Transition } from "framer-motion";
