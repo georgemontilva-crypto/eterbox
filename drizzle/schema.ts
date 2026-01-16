@@ -331,6 +331,10 @@ export const qrCodes = mysqlTable("qr_codes", {
   // QR Code data (stored as base64 image)
   qrImage: text("qrImage").notNull(), // Base64 encoded PNG image
   
+  // Dynamic QR support
+  shortCode: varchar("shortCode", { length: 20 }).unique(), // Unique short code for dynamic QR redirect
+  isDynamic: boolean("isDynamic").default(true).notNull(), // If true, QR points to /qr/:shortCode which redirects to content
+  
   // Metadata
   description: text("description"),
   scans: int("scans").default(0).notNull(), // Track how many times it was scanned

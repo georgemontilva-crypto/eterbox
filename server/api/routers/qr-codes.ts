@@ -49,6 +49,8 @@ export const qrCodesRouter = router({
         folderId: z.number().nullable().optional(),
         description: z.string().optional(),
         qrImage: z.string(), // Base64 encoded image
+        shortCode: z.string().optional(),
+        isDynamic: z.boolean().default(true),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -64,6 +66,8 @@ export const qrCodesRouter = router({
         folderId: input.folderId || null,
         description: input.description || null,
         qrImage: input.qrImage,
+        shortCode: input.shortCode || null,
+        isDynamic: input.isDynamic,
         scans: 0,
       });
       

@@ -38,25 +38,42 @@ export default function CreateQRCodeModal({
   const [type, setType] = useState("url");
   const [folderId, setFolderId] = useState<string>("");
   const [description, setDescription] = useState("");
+  const [isDynamic, setIsDynamic] = useState(true); // Dynamic by default
   const [qrPreview, setQrPreview] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
   const createQRMutation = trpc.qrCodes.create.useMutation();
 
-  // Generate QR code preview when content changes
+  // Generate a random short code
+  const generateShortCode = () => {
+    const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
+
+  // Generate QR code preview when content or isDynamic changes
   useEffect(() => {
     if (content) {
       generateQRPreview();
     } else {
       setQrPreview("");
     }
-  }, [content]);
+  }, [content, isDynamic]);
 
   const generateQRPreview = async () => {
     try {
       setIsGenerating(true);
-      const qrDataUrl = await QRCode.toDataURL(content, {
+      
+      // For dynamic QR, show preview with placeholder URL
+      const qrContent = isDynamic 
+        ? `${window.location.origin}/qr/PREVIEW` 
+        : content;
+      
+      const qrDataUrl = await QRCode.toDataURL(qrContent, {
         width: 300,
         margin: 2,
         color: {
@@ -82,8 +99,17 @@ export default function CreateQRCodeModal({
     setIsSaving(true);
 
     try {
+      // Generate shortCode for dynamic QR
+      const shortCode = isDynamic ? generateShortCode() : undefined;
+      
+      // For dynamic QR, the QR image points to /qr/:shortCode
+      // For static QR, it points directly to the content
+      const qrContent = isDynamic 
+        ? `${window.location.origin}/qr/${shortCode}` 
+        : content;
+      
       // Generate final QR code
-      const qrDataUrl = await QRCode.toDataURL(content, {
+      const qrDataUrl = await QRCode.toDataURL(qrContent, {
         width: 512,
         margin: 2,
         color: {
@@ -99,6 +125,8 @@ export default function CreateQRCodeModal({
         folderId: folderId && folderId !== "none" ? parseInt(folderId) : null,
         description,
         qrImage: qrDataUrl,
+        shortCode,
+        isDynamic,
       });
 
       onSuccess();
@@ -117,6 +145,7 @@ export default function CreateQRCodeModal({
     setType("url");
     setFolderId("");
     setDescription("");
+    setIsDynamic(true);
     setQrPreview("");
     onClose();
   };
@@ -206,6 +235,26 @@ export default function CreateQRCodeModal({
                   placeholder="Add any notes..."
                   rows={2}
                 />
+              </div>
+
+              <div className="flex items-center space-x-2 p-3 bg-accent/5 rounded-lg border border-accent/20">
+                <input
+                  type="checkbox"
+                  id="isDynamic"
+                  checked={isDynamic}
+                  onChange={(e) => setIsDynamic(e.target.checked)}
+                  className="w-4 h-4 text-accent bg-background border-border rounded focus:ring-accent focus:ring-2"
+                />
+                <div className="flex-1">
+                  <Label htmlFor="isDynamic" className="cursor-pointer font-medium">
+                    🔄 Dynamic QR Code
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {isDynamic 
+                      ? "✅ You can edit the destination without changing the QR pattern" 
+                      : "⚠️ Static QR - Editing will regenerate the QR code"}
+                  </p>
+                </div>
               </div>
             </div>
 

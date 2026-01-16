@@ -71,6 +71,35 @@ export async function incrementQrScans(id: number, userId: number) {
     .where(and(eq(qrCodes.id, id), eq(qrCodes.userId, userId)));
 }
 
+export async function getQrCodeByShortCode(shortCode: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select()
+    .from(qrCodes)
+    .where(eq(qrCodes.shortCode, shortCode))
+    .limit(1);
+  
+  return result[0] || null;
+}
+
+export async function incrementQrScansByShortCode(shortCode: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const qrCode = await getQrCodeByShortCode(shortCode);
+  if (!qrCode) throw new Error("QR code not found");
+  
+  return await db
+    .update(qrCodes)
+    .set({
+      scans: (qrCode.scans || 0) + 1,
+      lastScanned: new Date(),
+    })
+    .where(eq(qrCodes.shortCode, shortCode));
+}
+
 // ============ QR FOLDERS QUERIES ============
 
 export async function createQrFolder(data: InsertQrFolder) {

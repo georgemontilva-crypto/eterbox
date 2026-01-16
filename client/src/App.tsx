@@ -7,6 +7,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import QRDashboard from "./pages/QRDashboard";
+import QRRedirect from "./pages/QRRedirect";
 import Shared from "./pages/Shared";
 import Pricing from "./pages/Pricing";
 import Support from "./pages/Support";
@@ -141,6 +142,7 @@ function Router() {
       <Route path="/faq" component={FAQ} />
       <Route path="/verify-2fa" component={Verify2FA} />
       <Route path="/verify-email" component={VerifyEmail} />
+      <Route path="/qr/:shortCode" component={QRRedirect} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/qr-codes" component={() => <ProtectedRoute component={QRDashboard} />} />
       <Route path="/shared" component={() => <ProtectedRoute component={Shared} />} />

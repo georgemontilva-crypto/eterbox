@@ -58,12 +58,12 @@ export default function EditQRCodeModal({
     }
   }, [qrCode, isOpen]);
 
-  // Generate QR code preview when content changes
+  // Generate QR code preview when content changes (only for static QR)
   useEffect(() => {
-    if (content && content !== qrCode?.content) {
+    if (content && content !== qrCode?.content && !qrCode?.isDynamic) {
       generateQRPreview();
     }
-  }, [content]);
+  }, [content, qrCode?.isDynamic]);
 
   const generateQRPreview = async () => {
     try {
@@ -94,9 +94,10 @@ export default function EditQRCodeModal({
     setIsSaving(true);
 
     try {
-      // Generate final QR code if content changed
+      // For dynamic QR, keep the same QR image (it points to /qr/:shortCode)
+      // For static QR, regenerate if content changed
       let qrImage = qrCode.qrImage;
-      if (content !== qrCode.content) {
+      if (content !== qrCode.content && !qrCode.isDynamic) {
         qrImage = await QRCode.toDataURL(content, {
           width: 512,
           margin: 2,
@@ -244,9 +245,21 @@ export default function EditQRCodeModal({
                     alt="QR Code Preview"
                     className="w-full max-w-[300px] rounded-lg border-2 border-border"
                   />
-                  <p className="text-sm text-muted-foreground text-center">
-                    {content !== qrCode.content ? "Updated Preview" : "Current QR Code"}
-                  </p>
+                  <div className="text-center space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      {content !== qrCode.content ? "Updated Preview" : "Current QR Code"}
+                    </p>
+                    {qrCode.isDynamic && (
+                      <div className="p-2 bg-accent/10 rounded-lg">
+                        <p className="text-xs text-accent font-medium">
+                          🔄 Dynamic QR
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          The QR pattern stays the same, only the destination changes
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="text-center text-muted-foreground">
