@@ -22,15 +22,16 @@ import {
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useTheme } from "@/contexts/ThemeContext";
-import { LayoutDashboard, LogOut, PanelLeft, Users, Languages, Moon, Sun } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, Languages, Moon, Sun, Lock, QrCode, Barcode } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: Lock, label: "Passwords", path: "/" },
+  { icon: QrCode, label: "QR Codes", path: "/qr-codes" },
+  { icon: Barcode, label: "Bar Codes", path: "/bar-codes" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
