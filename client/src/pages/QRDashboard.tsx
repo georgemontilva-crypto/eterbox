@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CreateQRCodeModal from "@/components/CreateQRCodeModal";
+import EditQRCodeModal from "@/components/EditQRCodeModal";
 import { CreateQRFolderModal } from "@/components/CreateQRFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -16,6 +17,7 @@ export default function QRDashboard() {
   const { t } = useLanguage();
   
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFolderId, setActiveFolderId] = useState<number | null>(null);
@@ -77,6 +79,11 @@ export default function QRDashboard() {
   const handleViewQR = (qrCode: any) => {
     setSelectedQRCode(qrCode);
     setShowQRDetail(true);
+  };
+
+  const handleEditQR = (qrCode: any) => {
+    setSelectedQRCode(qrCode);
+    setShowEditModal(true);
   };
 
   const openFolderView = (folderId: number) => {
@@ -148,6 +155,9 @@ export default function QRDashboard() {
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewQR(qrCode)}>
                         <Eye className="w-4 h-4" />
                       </Button>
+                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleEditQR(qrCode)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                      </Button>
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDownloadQR(qrCode)}>
                         <Download className="w-4 h-4" />
                       </Button>
@@ -172,6 +182,17 @@ export default function QRDashboard() {
           }}
           folders={folders}
           defaultFolderId={activeFolderId}
+        />
+
+        <EditQRCodeModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSuccess={() => {
+            refetchQRCodes();
+            toast.success("QR code updated successfully");
+          }}
+          qrCode={selectedQRCode}
+          folders={folders}
         />
 
         {/* QR Detail Modal */}
@@ -348,6 +369,9 @@ export default function QRDashboard() {
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewQR(qrCode)}>
                         <Eye className="w-4 h-4" />
                       </Button>
+                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleEditQR(qrCode)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                      </Button>
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDownloadQR(qrCode)}>
                         <Download className="w-4 h-4" />
                       </Button>
@@ -371,6 +395,17 @@ export default function QRDashboard() {
           refetchQRCodes();
           toast.success("QR code created successfully");
         }}
+        folders={folders}
+      />
+
+      <EditQRCodeModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSuccess={() => {
+          refetchQRCodes();
+          toast.success("QR code updated successfully");
+        }}
+        qrCode={selectedQRCode}
         folders={folders}
       />
 

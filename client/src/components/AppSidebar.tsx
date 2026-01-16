@@ -90,13 +90,15 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
         <div className="p-6 border-b border-border/20 flex-shrink-0">
           <div className="flex items-center gap-3">
             {/* Logo PNG de EterBox - Adaptable al tema */}
+            {/* Logo blanco para tema dark */}
             <img 
-              src="/logo-icon-dark.png" 
+              src="/logo-light.png" 
               alt="EterBox Logo" 
               className="w-10 h-10 flex-shrink-0 dark:block hidden"
             />
+            {/* Logo oscuro para tema light */}
             <img 
-              src="/logo-light.png" 
+              src="/logo-icon-dark.png" 
               alt="EterBox Logo" 
               className="w-10 h-10 flex-shrink-0 dark:hidden block"
             />
