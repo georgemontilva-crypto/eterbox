@@ -1,0 +1,229 @@
+/**
+ * Apple-style Animations - iOS/Safari Optimized
+ * Smooth, performant animations with hardware acceleration
+ */
+
+/* Enable hardware acceleration for smooth animations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimize transforms for better performance */
+[class*="transition"],
+[class*="animate"],
+[class*="duration"] {
+  will-change: transform, opacity;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Smooth scrolling for iOS */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove tap highlight on iOS */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth backdrop blur for iOS */
+[class*="backdrop-blur"] {
+  -webkit-backdrop-filter: blur(var(--blur-amount, 8px));
+  backdrop-filter: blur(var(--blur-amount, 8px));
+}
+
+/* Optimize button press animations */
+button,
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+a,
+[role="button"],
+[role="link"] {
+  transition-property: transform, opacity, background-color, border-color, color, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Active state for touch devices (iOS-like) */
+button:active:not(:disabled),
+[role="button"]:active:not([aria-disabled="true"]) {
+  transform: scale(0.96);
+  opacity: 0.9;
+  transition-duration: 100ms;
+}
+
+/* Smooth modal animations */
+[data-slot="dialog-overlay"] {
+  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+[data-slot="dialog-content"] {
+  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Smooth sidebar slide */
+aside {
+  will-change: transform;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Optimize card hover effects */
+[class*="Card"] {
+  will-change: transform, box-shadow, border-color;
+  transition-property: transform, box-shadow, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Smooth chevron rotation */
+[class*="ChevronDown"],
+[class*="ChevronUp"],
+[class*="ChevronLeft"],
+[class*="ChevronRight"] {
+  will-change: transform;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Smooth fade animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Smooth slide animations */
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Smooth scale animations */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  [data-slot="dialog-overlay"] {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Light mode optimizations */
+@media (prefers-color-scheme: light) {
+  [data-slot="dialog-overlay"] {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* iOS safe area support */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Smooth input focus */
+input,
+textarea,
+select {
+  transition: border-color 200ms cubic-bezier(0.4, 0.0, 0.2, 1),
+              box-shadow 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Optimize image loading */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Smooth skeleton loading */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 1000px 100%;
+}

@@ -82,7 +82,7 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-lg z-40 md:hidden animate-in fade-in duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -90,8 +90,8 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
       {/* Sidebar - Altura completa */}
       <aside
         className={`
-          fixed top-14 md:top-0 left-0 h-[calc(100vh-3.5rem)] md:h-screen bg-card border-r border-border/20 z-40
-          transition-transform duration-300 ease-in-out
+          fixed top-14 md:top-0 left-0 h-[calc(100vh-3.5rem)] md:h-screen bg-card border-r border-border/20 z-40 shadow-2xl
+          transition-transform duration-400 ease-[cubic-bezier(0.4,0.0,0.2,1)]
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:fixed
           w-64 flex flex-col

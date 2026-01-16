@@ -287,14 +287,14 @@ export default function Dashboard() {
     const isExpanded = expandedCredentials.has(cred.id);
     
     return (
-      <Card key={cred.id} className="p-3 md:p-4 border border-border/20 hover:border-accent/50 transition-colors">
+      <Card key={cred.id} className="p-3 md:p-4 border border-border/20 hover:border-accent/50 transition-all duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)] hover:shadow-lg">
         <div className="flex items-start justify-between gap-2">
           <div 
             className="flex-1 min-w-0 cursor-pointer" 
             onClick={() => toggleCredentialExpansion(cred.id)}
           >
             <div className="flex items-center gap-2">
-              <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)] flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <p className="font-semibold text-sm md:text-base truncate">{cred.platformName}</p>
                 {(cred.username || cred.email) && (
@@ -304,7 +304,7 @@ export default function Dashboard() {
             </div>
             
             {isExpanded && (
-              <div className="mt-3 space-y-1.5" onClick={(e) => e.stopPropagation()}>
+              <div className="mt-3 space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300" onClick={(e) => e.stopPropagation()}>
                 {/* Username with copy button */}
                 {cred.username && (
                   <div className="flex items-center gap-1">
