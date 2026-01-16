@@ -22,7 +22,7 @@ import {
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useTheme } from "@/contexts/ThemeContext";
-import { LayoutDashboard, LogOut, PanelLeft, Users, Languages, Moon, Sun, Lock, QrCode, Barcode } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, Languages, Moon, Sun, Lock, QrCode, Barcode, Settings as SettingsIcon, Shield, UserCircle } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -30,9 +30,13 @@ import { Button } from "./ui/button";
 
 // Navigation menu items - v2.0
 const menuItems = [
-  { icon: Lock, label: "Passwords", path: "/" },
+  { icon: Lock, label: "Passwords", path: "/dashboard" },
   { icon: QrCode, label: "QR Codes", path: "/qr-codes" },
   { icon: Barcode, label: "Bar Codes", path: "/bar-codes" },
+  { icon: Users, label: "Shared", path: "/shared" },
+  { icon: SettingsIcon, label: "Settings", path: "/settings" },
+  { icon: Shield, label: "Security", path: "/change-password" },
+  { icon: UserCircle, label: "Admin", path: "/admin" },
 ];
 
 console.log('DashboardLayout loaded with navigation:', menuItems.map(i => i.label));
@@ -200,7 +204,7 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
-                      className={`h-10 transition-all font-normal hover:border hover:border-accent/50 ${
+                      className={`h-10 font-normal hover:border hover:border-accent/50 ${
                         isActive 
                           ? "bg-[#1e40af] text-white hover:bg-[#1e40af] hover:border-[#1e40af]" 
                           : ""
@@ -209,7 +213,9 @@ function DashboardLayoutContent({
                       }`}
                     >
                       <item.icon
-                        className={`h-4 w-4 ${
+                        className={`${
+                          isCollapsed ? "h-5 w-5" : "h-4 w-4"
+                        } ${
                           isActive 
                             ? "text-white" 
                             : isCollapsed 
