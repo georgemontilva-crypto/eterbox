@@ -309,15 +309,15 @@ function DashboardLayoutContent({
 
       <SidebarInset>
         {isMobile && (
-          <div className="flex border-b h-14 items-center justify-between bg-background/95 px-2 backdrop-blur supports-[backdrop-filter]:backdrop-blur sticky top-0 z-40 safe-area-top safe-area-x">
-            <div className="flex items-center gap-2">
-              <SidebarTrigger className="h-9 w-9 rounded-lg bg-background" />
+          <div className="flex h-14 items-center bg-black px-4 sticky top-0 z-50 safe-area-top safe-area-x border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger className="h-9 w-9 rounded-lg bg-white/10 hover:bg-white/20 text-white" />
               <img 
-                src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
+                src="/logo-light.png" 
                 alt="EterBox Logo" 
-                className="h-8 w-auto flex-shrink-0" 
+                className="h-7 w-auto flex-shrink-0" 
               />
-              <span className="text-base font-semibold tracking-tight">
+              <span className="text-base font-semibold tracking-tight text-white">
                 EterBox
               </span>
             </div>
