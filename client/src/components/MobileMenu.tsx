@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell, Users, Moon, Sun } from "lucide-react";
+import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell, Users, Moon, Sun, QrCode, Barcode } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -317,46 +317,16 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
 
   const menuItems = [
     {
-      id: "plan" as ActiveView,
-      icon: CreditCard,
-      label: t("menu.viewPlan"),
-      description: `${t("plan.current")}: ${planName}`,
-    },
-    {
       id: "settings" as ActiveView,
       icon: Settings,
       label: t("menu.settings"),
       description: t("menu.settingsDesc"),
     },
     {
-      id: "generator" as ActiveView,
-      icon: Wand2,
-      label: t("generator.title"),
-      description: t("generator.secureKeys"),
-    },
-    {
-      id: "payments" as ActiveView,
-      icon: Receipt,
-      label: t("payments.history"),
-      description: t("payments.historyDesc"),
-    },
-    {
       id: "documentation" as ActiveView,
       icon: Shield,
       label: t("menu.documentation"),
       description: t("menu.documentationDesc"),
-    },
-    {
-      id: "language" as ActiveView,
-      icon: Globe,
-      label: t("menu.language"),
-      description: language === "en" ? "English" : "Español",
-    },
-    {
-      id: "theme" as ActiveView,
-      icon: theme === "dark" ? Sun : Moon,
-      label: t("menu.theme"),
-      description: theme === "dark" ? "Dark Mode" : "Light Mode",
     },
   ];
 
@@ -1105,6 +1075,26 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
           >
             <Users className="w-5 h-5 text-muted-foreground" />
             <span className="font-medium">{t("menu.shared")}</span>
+          </button>
+          <button
+            onClick={() => {
+              setOpen(false);
+              setLocation("/qr-codes");
+            }}
+            className="w-full flex items-center gap-4 p-4 rounded-[15px] bg-card border border-border/20 hover:border-accent/50 transition-colors text-left"
+          >
+            <QrCode className="w-5 h-5 text-muted-foreground" />
+            <span className="font-medium">{t("qr.title") || "QR Codes"}</span>
+          </button>
+          <button
+            onClick={() => {
+              setOpen(false);
+              setLocation("/bar-codes");
+            }}
+            className="w-full flex items-center gap-4 p-4 rounded-[15px] bg-card border border-border/20 hover:border-accent/50 transition-colors text-left"
+          >
+            <Barcode className="w-5 h-5 text-muted-foreground" />
+            <span className="font-medium">{t("barcode.title") || "Bar Codes"}</span>
           </button>
           {adminCheck?.isAdmin && (
             <button
