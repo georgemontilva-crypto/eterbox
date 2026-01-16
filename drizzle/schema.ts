@@ -343,3 +343,19 @@ export const qrCodes = mysqlTable("qr_codes", {
 
 export type QrCode = typeof qrCodes.$inferSelect;
 export type InsertQrCode = typeof qrCodes.$inferInsert;
+
+/**
+ * QR Folder Shares for sharing QR folders with other users
+ */
+export const qrFolderShares = mysqlTable("qr_folder_shares", {
+  id: int("id").autoincrement().primaryKey(),
+  folderId: int("folder_id").notNull(), // Reference to qr_folders
+  ownerId: int("owner_id").notNull(), // User who owns the folder
+  sharedWithUserId: int("shared_with_user_id").notNull(), // User the folder is shared with
+  permission: varchar("permission", { length: 20 }).default("edit").notNull(), // 'read' or 'edit'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export type QrFolderShare = typeof qrFolderShares.$inferSelect;
+export type InsertQrFolderShare = typeof qrFolderShares.$inferInsert;

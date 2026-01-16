@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import CreateQRCodeModal from "@/components/CreateQRCodeModal";
 import EditQRCodeModal from "@/components/EditQRCodeModal";
 import QRExportModal from "@/components/QRExportModal";
+import { ShareQRFolderModal } from "@/components/ShareQRFolderModal";
 import { CreateQRFolderModal } from "@/components/CreateQRFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -25,6 +26,8 @@ export default function QRDashboard() {
   const [activeFolderId, setActiveFolderId] = useState<number | null>(null);
   const [selectedQRCode, setSelectedQRCode] = useState<any>(null);
   const [showQRDetail, setShowQRDetail] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState<any>(null);
 
   const { data: qrCodes = [], refetch: refetchQRCodes } = trpc.qrCodes.list.useQuery();
   const { data: folders = [], refetch: refetchFolders } = trpc.qrCodes.folders.list.useQuery();
@@ -85,6 +88,11 @@ export default function QRDashboard() {
 
   const openFolderView = (folderId: number) => {
     setActiveFolderId(folderId);
+  };
+
+  const handleShareFolder = (folder: any) => {
+    setSelectedFolder(folder);
+    setShowShareModal(true);
   };
 
   // Folder View
@@ -310,17 +318,31 @@ export default function QRDashboard() {
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center justify-between">
                         <Folder className="w-6 h-6 text-accent" />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteFolder(folder.id);
-                          }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                        </Button>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShareFolder(folder);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            title="Share folder"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteFolder(folder.id);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                          </Button>
+                        </div>
                       </div>
                       <div>
                         <p className="font-semibold truncate">{folder.name}</p>
@@ -425,6 +447,13 @@ export default function QRDashboard() {
           refetchFolders();
           toast.success("Folder created successfully");
         }}
+      />
+
+      <ShareQRFolderModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        folderId={selectedFolder?.id || 0}
+        folderName={selectedFolder?.name || ""}
       />
 
       {/* QR Detail Modal */}
