@@ -98,31 +98,8 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
           overflow-hidden
         `}
       >
-        {/* Header con Logo PNG */}
-        <div className="p-6 border-b border-border/20 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            {/* Logo PNG de EterBox - Adaptable al tema */}
-            {/* Logo blanco para tema dark */}
-            <img 
-              src="/logo-light.png" 
-              alt="EterBox Logo" 
-              className="w-10 h-10 flex-shrink-0 dark:block hidden"
-            />
-            {/* Logo oscuro para tema light */}
-            <img 
-              src="/logo-icon-dark.png" 
-              alt="EterBox Logo" 
-              className="w-10 h-10 flex-shrink-0 dark:hidden block"
-            />
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold truncate">EterBox</h1>
-              <p className="text-xs text-muted-foreground truncate">{planName} Plan</p>
-            </div>
-          </div>
-        </div>
-
         {/* Main Navigation - Scrollable */}
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-4 pt-6 space-y-2 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -175,9 +152,14 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
 
           {/* User Info & Logout */}
           <div className="pt-4 border-t border-border/20">
+            {/* Plan Badge - Destacado */}
+            <div className="px-4 py-3 mb-3 bg-accent/10 rounded-lg border border-accent/20">
+              <p className="text-xs text-muted-foreground mb-1">Current Plan</p>
+              <p className="text-sm font-bold text-accent">{planName} Plan</p>
+            </div>
+            {/* User Email */}
             <div className="px-4 py-2 mb-2">
               <p className="text-sm font-medium truncate">{user?.email}</p>
-              <p className="text-xs text-muted-foreground">{planName} Plan</p>
             </div>
             <button
               onClick={handleLogout}
