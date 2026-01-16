@@ -205,7 +205,7 @@ function DashboardLayoutContent({
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
                       className={`font-normal transition-none ${
-                        isCollapsed 
+                        isCollapsed && !isMobile
                           ? `h-12 w-12 border-2 rounded-lg flex items-center justify-center ${
                               isActive 
                                 ? "bg-[#1e40af] border-[#1e40af] text-white" 
@@ -220,16 +220,20 @@ function DashboardLayoutContent({
                     >
                       <item.icon
                         className={`${
-                          isCollapsed ? "h-6 w-6" : "h-4 w-4"
+                          isCollapsed && !isMobile ? "h-6 w-6" : "h-4 w-4"
                         } ${
                           isActive 
                             ? "text-white" 
-                            : isCollapsed 
+                            : (isCollapsed && !isMobile)
                             ? "text-white" 
                             : ""
                         }`}
                       />
-                      {!isCollapsed && <span className={isActive ? "text-white" : ""}>{item.label}</span>}
+                      {(!isCollapsed || isMobile) && (
+                        <span className={isActive ? "text-white" : ""}>
+                          {item.label}
+                        </span>
+                      )}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
