@@ -90,7 +90,7 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
       {/* Sidebar - Altura completa */}
       <aside
         className={`
-          fixed top-0 left-0 h-screen bg-card border-r border-border/20 z-40
+          fixed top-14 md:top-0 left-0 h-[calc(100vh-3.5rem)] md:h-screen bg-card border-r border-border/20 z-40
           transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:fixed
