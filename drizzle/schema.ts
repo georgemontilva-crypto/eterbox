@@ -295,3 +295,51 @@ export const notificationPreferences = mysqlTable("notification_preferences", {
 
 export type NotificationPreferences = typeof notificationPreferences.$inferSelect;
 export type InsertNotificationPreferences = typeof notificationPreferences.$inferInsert;
+
+
+/**
+ * QR Folders for organizing QR codes
+ */
+export const qrFolders = mysqlTable("qr_folders", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  parentFolderId: int("parentFolderId"), // For nested folders
+  color: varchar("color", { length: 7 }).default("#3B82F6"),
+  icon: varchar("icon", { length: 50 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type QrFolder = typeof qrFolders.$inferSelect;
+export type InsertQrFolder = typeof qrFolders.$inferInsert;
+
+/**
+ * QR Codes table
+ */
+export const qrCodes = mysqlTable("qr_codes", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  folderId: int("folderId"), // Reference to qr_folders
+  
+  // QR Code details
+  name: varchar("name", { length: 255 }).notNull(),
+  content: text("content").notNull(), // The actual content/URL encoded in the QR
+  type: varchar("type", { length: 50 }).notNull().default("url"), // 'url', 'text', 'email', 'phone', 'wifi', 'vcard'
+  
+  // QR Code data (stored as base64 image)
+  qrImage: text("qrImage").notNull(), // Base64 encoded PNG image
+  
+  // Metadata
+  description: text("description"),
+  scans: int("scans").default(0).notNull(), // Track how many times it was scanned
+  
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  lastScanned: timestamp("lastScanned"),
+});
+
+export type QrCode = typeof qrCodes.$inferSelect;
+export type InsertQrCode = typeof qrCodes.$inferInsert;
