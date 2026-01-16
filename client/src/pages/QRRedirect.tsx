@@ -21,12 +21,10 @@ export default function QRRedirect() {
           url = 'https://' + url;
         }
         
-        console.log('[QRRedirect] Redirecting to:', url);
-        
         // Redirect to the content URL
         window.location.href = url;
       } catch (err) {
-        console.error('[QRRedirect] Error during redirect:', err);
+        // Silent fail - redirect will happen or show error
       }
     }
   }, [data]);
@@ -43,7 +41,6 @@ export default function QRRedirect() {
   }
 
   if (error) {
-    console.error('[QRRedirect] TRPC Error:', error);
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center max-w-md mx-auto p-8">
