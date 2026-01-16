@@ -84,13 +84,13 @@ export function NotificationSettings() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 overflow-hidden">
         <div className="flex items-center gap-3">
           <Bell className="w-6 h-6 text-accent" />
           <div>
-            <h2 className="text-xl font-bold">{t('notifications.title')}</h2>
+            <h2 className="text-lg md:text-xl font-bold">{t('notifications.title')}</h2>
             <p className="text-xs text-muted-foreground mt-1">
               {t('notifications.subtitle')}
             </p>
@@ -107,11 +107,11 @@ export function NotificationSettings() {
           onClick={() => setExpandedSecurity(!expandedSecurity)}
           className="w-full flex items-center justify-between p-4 text-left hover:bg-card/50 transition-colors"
         >
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 flex-1 overflow-hidden">
             <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
               <Shield className="w-5 h-5 text-red-500" />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 overflow-hidden">
               <h3 className="font-semibold">{t('notifications.security.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
                 {t('notifications.security.desc')}
@@ -125,7 +125,7 @@ export function NotificationSettings() {
                 handleTestNotification('security');
               }}
               disabled={testingSecurity || !preferences.security_alerts}
-              className="px-2 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-1.5 py-1 text-[10px] sm:text-xs bg-muted hover:bg-muted/80 rounded-md disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {testingSecurity ? '...' : t('notifications.security.test')}
             </button>
@@ -163,11 +163,11 @@ export function NotificationSettings() {
           onClick={() => setExpandedMarketing(!expandedMarketing)}
           className="w-full flex items-center justify-between p-4 text-left hover:bg-card/50 transition-colors"
         >
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 flex-1 overflow-hidden">
             <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
               <TrendingUp className="w-5 h-5 text-blue-500" />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 overflow-hidden">
               <h3 className="font-semibold">{t('notifications.marketing.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
                 {t('notifications.marketing.desc')}
@@ -181,7 +181,7 @@ export function NotificationSettings() {
                 handleTestNotification('marketing');
               }}
               disabled={testingMarketing || !preferences.marketing_promos}
-              className="px-2 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-1.5 py-1 text-[10px] sm:text-xs bg-muted hover:bg-muted/80 rounded-md disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {testingMarketing ? '...' : t('notifications.security.test')}
             </button>
@@ -219,11 +219,11 @@ export function NotificationSettings() {
           onClick={() => setExpandedUpdates(!expandedUpdates)}
           className="w-full flex items-center justify-between p-4 text-left hover:bg-card/50 transition-colors"
         >
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 flex-1 overflow-hidden">
             <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
               <Mail className="w-5 h-5 text-green-500" />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 overflow-hidden">
               <h3 className="font-semibold">{t('notifications.updates.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
                 {t('notifications.updates.desc')}
@@ -265,11 +265,11 @@ export function NotificationSettings() {
           onClick={() => setExpandedActivity(!expandedActivity)}
           className="w-full flex items-center justify-between p-4 text-left hover:bg-card/50 transition-colors"
         >
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 flex-1 overflow-hidden">
             <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
               <Activity className="w-5 h-5 text-purple-500" />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 overflow-hidden">
               <h3 className="font-semibold">{t('notifications.activity.title')}</h3>
               <p className="text-xs text-muted-foreground truncate">
                 {t('notifications.activity.desc')}
