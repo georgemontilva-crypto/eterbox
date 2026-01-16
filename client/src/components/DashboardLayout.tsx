@@ -204,7 +204,7 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
-                      className={`font-normal ${
+                      className={`font-normal transition-none ${
                         isCollapsed 
                           ? `h-12 w-12 border-2 rounded-lg flex items-center justify-center ${
                               isActive 
