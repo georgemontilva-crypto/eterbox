@@ -14,7 +14,7 @@ import { ShareFolderModal } from "@/components/ShareFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit, Users } from "lucide-react";
-import { MobileMenu } from "@/components/MobileMenu";
+import { AppLayout } from "@/components/AppLayout";
 import { RenewalBanner } from "@/components/RenewalBanner";
 import { SubscriptionExpiredModal } from "@/components/SubscriptionExpiredModal";
 import { useLocation } from "wouter";
@@ -520,43 +520,8 @@ export default function Dashboard() {
 
   // Main Dashboard View
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50 safe-area-top safe-area-x">
-        <div className="container py-4">
-          <div className="flex items-center justify-between">
-            {/* Menu hamburguesa - visible en todas las pantallas */}
-            <div>
-              <MobileMenu 
-                planName={planName} 
-                onLogout={logout}
-                userEmail={user?.email}
-                onAddCredentialWithPassword={(password) => {
-                  setDefaultPassword(password);
-                  setSelectedFolderId(undefined);
-                  setShowCredentialModal(true);
-                }}
-              />
-            </div>
-            
-            {/* Admin Button - only on desktop */}
-            <div className="flex items-center gap-3">
-              {adminCheck?.isAdmin && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setLocation("/admin")}
-                  className="hidden md:flex items-center gap-2 text-accent hover:text-accent/80"
-                >
-                  <Shield className="w-4 h-4" />
-                  Admin
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="container py-8">
+    <AppLayout currentPath="/dashboard">
+      <div className="container py-8">
         {/* Renewal Banner */}
         {userPlan?.subscriptionEndDate && userPlan?.name !== "Free" && (
           <RenewalBanner 
@@ -854,7 +819,7 @@ export default function Dashboard() {
             ) : null}
           </div>
         )}
-      </main>
+      </div>
 
       <CreateCredentialModal 
           open={showCredentialModal} 
@@ -916,6 +881,7 @@ export default function Dashboard() {
           userPlan={userPlan?.name || "Free"}
         />
       )}
-    </div>
+      </div>
+    </AppLayout>
   );
 }
