@@ -41,6 +41,8 @@ export default function CreateQRCodeModal({
   const [qrPreview, setQrPreview] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  const createQRMutation = trpc.qrCodes.create.useMutation();
 
   // Generate QR code preview when content changes
   useEffect(() => {
@@ -90,7 +92,7 @@ export default function CreateQRCodeModal({
         },
       });
 
-      await trpc.qrCodes.create.mutate({
+      await createQRMutation.mutateAsync({
         name,
         content,
         type,
