@@ -171,29 +171,14 @@ export default function QRDashboard() {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleViewQR(qrCode)}
-                        >
+                      <div className="flex items-center gap-2 ml-2">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewQR(qrCode)}>
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleDownloadQR(qrCode)}
-                        >
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDownloadQR(qrCode)}>
                           <Download className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleDeleteQR(qrCode.id)}
-                        >
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDeleteQR(qrCode.id)}>
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
                       </div>
@@ -318,29 +303,14 @@ export default function QRDashboard() {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleViewQR(qrCode)}
-                        >
+                      <div className="flex items-center gap-2 ml-2">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewQR(qrCode)}>
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleDownloadQR(qrCode)}
-                        >
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDownloadQR(qrCode)}>
                           <Download className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleDeleteQR(qrCode.id)}
-                        >
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDeleteQR(qrCode.id)}>
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
                       </div>
