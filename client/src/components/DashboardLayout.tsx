@@ -308,7 +308,7 @@ function DashboardLayoutContent({
       </div>
 
       <SidebarInset>
-        {/* Mobile header with black background and logo - ALWAYS RENDERED */}
+        {/* Mobile header with black background and logo - BUILD: 2026-01-16-16:30 */}
         <div 
           className="flex lg:hidden h-14 items-center bg-black px-4 sticky top-0 z-50 safe-area-top safe-area-x border-b border-white/10"
           style={{ 
