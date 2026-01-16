@@ -94,7 +94,7 @@ export default function CreateQRCodeModal({
         name,
         content,
         type,
-        folderId: folderId ? parseInt(folderId) : null,
+        folderId: folderId && folderId !== "none" ? parseInt(folderId) : null,
         description,
         qrImage: qrDataUrl,
       });
@@ -185,7 +185,7 @@ export default function CreateQRCodeModal({
                     <SelectValue placeholder="No folder" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No folder</SelectItem>
+                    <SelectItem value="none">No folder</SelectItem>
                     {folders.map((folder) => (
                       <SelectItem key={folder.id} value={folder.id.toString()}>
                         {folder.name}
