@@ -421,6 +421,7 @@ export default function QRDashboard() {
           toast.success("QR code created successfully");
         }}
         folders={folders}
+        defaultFolderId={activeFolderId}
       />
 
       <EditQRCodeModal

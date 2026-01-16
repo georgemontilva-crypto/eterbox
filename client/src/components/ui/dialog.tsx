@@ -80,6 +80,9 @@ function DialogOverlay({
       data-slot="dialog-overlay"
       className={cn(
         "fixed inset-0 z-50 bg-black/30 backdrop-blur-md",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "transition-all duration-200 ease-out",
         className
       )}
       {...props}
@@ -124,7 +127,13 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "bg-background fixed inset-x-4 top-[5%] z-50 grid w-auto max-h-[90vh] overflow-y-auto gap-4 rounded-lg border p-6 shadow-lg transition-opacity duration-300 data-[state=open]:opacity-100 data-[state=closed]:opacity-0 sm:inset-x-auto sm:left-[50%] sm:top-[50%] sm:w-[800px] sm:translate-x-[-50%] sm:translate-y-[-50%]",
+          "bg-background fixed inset-x-4 top-[5%] z-50 grid w-auto max-h-[90vh] overflow-y-auto gap-4 rounded-lg border p-6 shadow-lg",
+          "transition-all duration-200 ease-out",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "data-[state=closed]:slide-out-to-top-[2%] data-[state=open]:slide-in-from-top-[2%]",
+          "sm:inset-x-auto sm:left-[50%] sm:top-[50%] sm:w-[800px] sm:translate-x-[-50%] sm:translate-y-[-50%]",
           className
         )}
         onEscapeKeyDown={handleEscapeKeyDown}

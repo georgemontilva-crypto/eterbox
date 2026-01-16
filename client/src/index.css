@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Global smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Smooth scrolling for all scrollable elements */
+* {
+  scroll-behavior: smooth;
+}
+
 /* Splash Screen Animations */
 @keyframes fadeIn {
   from {
