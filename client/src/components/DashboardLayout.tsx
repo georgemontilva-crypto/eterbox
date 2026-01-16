@@ -204,6 +204,7 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
+                      style={{ transition: 'none' }}
                       className={`font-normal !transition-none ${
                         isCollapsed && !isMobile
                           ? `h-12 w-12 border-2 rounded-lg flex items-center justify-center !transition-none ${
@@ -219,7 +220,8 @@ function DashboardLayoutContent({
                       }`}
                     >
                       <item.icon
-                        className={`${
+                        style={{ transition: 'none' }}
+                        className={`transition-none ${
                           isCollapsed && !isMobile ? "h-6 w-6" : "h-4 w-4"
                         } ${
                           isActive 
@@ -230,7 +232,7 @@ function DashboardLayoutContent({
                         }`}
                       />
                       {(!isCollapsed || isMobile) && (
-                        <span className={isActive ? "text-white" : ""}>
+                        <span style={{ transition: 'none' }} className={`transition-none ${isActive ? "text-white" : ""}`}>
                           {item.label}
                         </span>
                       )}

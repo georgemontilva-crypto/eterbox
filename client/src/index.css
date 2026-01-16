@@ -309,7 +309,10 @@ button:not([data-sidebar]), a:not([data-sidebar]), input, select, textarea {
 }
 
 /* IMPORTANTE: Sin transiciones en elementos del sidebar */
-[data-sidebar] {
+[data-sidebar],
+[data-sidebar] *,
+[data-sidebar]::before,
+[data-sidebar]::after {
   transition: none !important;
 }
 
