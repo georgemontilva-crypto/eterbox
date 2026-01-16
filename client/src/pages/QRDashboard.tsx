@@ -175,24 +175,24 @@ export default function QRDashboard() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="h-7 w-7 p-0"
                           onClick={() => handleViewQR(qrCode)}
-                          className="hover:border hover:border-accent/50"
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="h-7 w-7 p-0"
                           onClick={() => handleDownloadQR(qrCode)}
-                          className="hover:border hover:border-accent/50"
                         >
                           <Download className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="h-7 w-7 p-0"
                           onClick={() => handleDeleteQR(qrCode.id)}
-                          className="hover:border hover:border-destructive/50"
                         >
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
@@ -322,24 +322,24 @@ export default function QRDashboard() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="h-7 w-7 p-0"
                           onClick={() => handleViewQR(qrCode)}
-                          className="hover:border hover:border-accent/50"
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="h-7 w-7 p-0"
                           onClick={() => handleDownloadQR(qrCode)}
-                          className="hover:border hover:border-accent/50"
                         >
                           <Download className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="h-7 w-7 p-0"
                           onClick={() => handleDeleteQR(qrCode.id)}
-                          className="hover:border hover:border-destructive/50"
                         >
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
