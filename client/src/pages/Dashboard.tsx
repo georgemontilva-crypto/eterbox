@@ -821,6 +821,7 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Modals */}
       <CreateCredentialModal 
           open={showCredentialModal} 
           onOpenChange={(open) => {
@@ -881,7 +882,6 @@ export default function Dashboard() {
           userPlan={userPlan?.name || "Free"}
         />
       )}
-      </div>
     </AppLayout>
   );
 }
