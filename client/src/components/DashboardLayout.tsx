@@ -308,6 +308,7 @@ function DashboardLayoutContent({
       </div>
 
       <SidebarInset>
+        {/* Mobile header with black background and logo */}
         {isMobile && (
           <div className="flex h-14 items-center bg-black px-4 sticky top-0 z-50 safe-area-top safe-area-x border-b border-white/10">
             <div className="flex items-center gap-3">
