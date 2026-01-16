@@ -188,6 +188,85 @@ async function startServer() {
       createContext,
     })
   );
+
+  // Server-side QR redirect (before static files)
+  app.get("/qr/:shortCode", async (req, res) => {
+    try {
+      const { shortCode } = req.params;
+      const { getQrCodeByShortCode, incrementQrScansByShortCode } = await import("../qr-codes-db");
+      
+      const qrCode = await getQrCodeByShortCode(shortCode);
+      
+      if (!qrCode) {
+        return res.status(404).send(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>QR Not Found - EterBox</title>
+              <style>
+                body { font-family: system-ui; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #0a0a0a; color: #fff; }
+                .container { text-align: center; padding: 2rem; }
+                h1 { font-size: 3rem; margin: 0 0 1rem; }
+                p { color: #999; margin: 0 0 2rem; }
+                a { color: #6366f1; text-decoration: none; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>❌</h1>
+                <h2>QR Code Not Found</h2>
+                <p>The QR code you're looking for doesn't exist or has been deleted.</p>
+                <a href="/">Go to Home</a>
+              </div>
+            </body>
+          </html>
+        `);
+      }
+      
+      // Increment scan count
+      await incrementQrScansByShortCode(shortCode).catch(err => {
+        console.error("Failed to increment scan count:", err);
+      });
+      
+      // Ensure URL has protocol
+      let url = qrCode.content;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      
+      // Redirect to the content
+      res.redirect(302, url);
+    } catch (error) {
+      console.error("QR redirect error:", error);
+      res.status(500).send(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Error - EterBox</title>
+            <style>
+              body { font-family: system-ui; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #0a0a0a; color: #fff; }
+              .container { text-align: center; padding: 2rem; }
+              h1 { font-size: 3rem; margin: 0 0 1rem; }
+              p { color: #999; margin: 0 0 2rem; }
+              a { color: #6366f1; text-decoration: none; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>⚠️</h1>
+              <h2>An Error Occurred</h2>
+              <p>Please try again later.</p>
+              <a href="/">Go to Home</a>
+            </div>
+          </body>
+        </html>
+      `);
+    }
+  });
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
