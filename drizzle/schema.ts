@@ -333,7 +333,7 @@ export const qrCodes = mysqlTable("qr_codes", {
   
   // Dynamic QR support
   shortCode: varchar("shortCode", { length: 20 }).unique(), // Unique short code for dynamic QR redirect
-  isDynamic: boolean("isDynamic").default(true).notNull(), // If true, QR points to /qr/:shortCode which redirects to content
+  isDynamic: boolean("isDynamic").default(false), // If true, QR points to /qr/:shortCode which redirects to content
   
   // Metadata
   description: text("description"),

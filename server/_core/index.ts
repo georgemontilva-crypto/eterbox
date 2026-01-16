@@ -12,6 +12,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./jwt-context";
 import { serveStatic, setupVite } from "./vite";
 import cookieParser from "cookie-parser";
+import { runAutoMigrations } from "../migrations/auto-migrate";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -33,6 +34,9 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  // Run auto-migrations before starting server
+  await runAutoMigrations();
+  
   const app = express();
   const server = createServer(app);
   
