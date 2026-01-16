@@ -81,7 +81,7 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
           fixed top-0 left-0 h-screen bg-card border-r border-border/20 z-40
           transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:translate-x-0 md:static
+          md:translate-x-0 md:fixed
           w-64 flex flex-col
           overflow-hidden
         `}
@@ -89,11 +89,16 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
         {/* Header con Logo PNG */}
         <div className="p-6 border-b border-border/20 flex-shrink-0">
           <div className="flex items-center gap-3">
-            {/* Logo PNG de EterBox */}
+            {/* Logo PNG de EterBox - Adaptable al tema */}
             <img 
               src="/logo-icon-dark.png" 
               alt="EterBox Logo" 
-              className="w-10 h-10 flex-shrink-0"
+              className="w-10 h-10 flex-shrink-0 dark:block hidden"
+            />
+            <img 
+              src="/logo-light.png" 
+              alt="EterBox Logo" 
+              className="w-10 h-10 flex-shrink-0 dark:hidden block"
             />
             <div className="flex-1 min-w-0">
               <h1 className="text-lg font-bold truncate">EterBox</h1>

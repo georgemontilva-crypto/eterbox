@@ -665,7 +665,7 @@ export default function Dashboard() {
                 <div>
                   <p className="text-sm font-semibold text-muted-foreground mb-2">Folders</p>
                   <div className="space-y-2">
-                    {filteredFolders.map((folder: any) => (
+                    {[...filteredFolders].reverse().map((folder: any) => (
                       <Card key={`folder-${folder.id}`} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(folder.id)}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -724,7 +724,7 @@ export default function Dashboard() {
           <div className="mb-12">
             <h3 className="text-xl font-bold mb-4">Your Folders</h3>
             <div className="space-y-4">
-              {folders.map((folder: any) => {
+              {[...folders].reverse().map((folder: any) => {
                 const folderCreds = credentialsByFolder[folder.id] || [];
                 return (
                   <Card key={folder.id} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(folder.id)}>
