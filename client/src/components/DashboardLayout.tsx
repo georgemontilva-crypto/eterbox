@@ -200,12 +200,24 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
-                      className={`h-10 transition-all font-normal`}
+                      className={`h-10 transition-all font-normal hover:border hover:border-accent/50 ${
+                        isActive 
+                          ? "bg-[#1e40af] text-white hover:bg-[#1e40af] hover:border-[#1e40af]" 
+                          : ""
+                      } ${
+                        isCollapsed ? "justify-center" : ""
+                      }`}
                     >
                       <item.icon
-                        className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
+                        className={`h-4 w-4 ${
+                          isActive 
+                            ? "text-white" 
+                            : isCollapsed 
+                            ? "text-white" 
+                            : ""
+                        }`}
                       />
-                      <span>{item.label}</span>
+                      <span className={isActive ? "text-white" : ""}>{item.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -237,7 +249,7 @@ function DashboardLayoutContent({
                   onClick={() => {
                     const newTheme = theme === "dark" ? "light" : "dark";
                     localStorage.setItem("theme", newTheme);
-                    window.location.reload();
+                    document.documentElement.classList.toggle("dark");
                   }}
                   className="cursor-pointer"
                 >
@@ -249,7 +261,7 @@ function DashboardLayoutContent({
                     const currentLang = localStorage.getItem("language") || "en";
                     const newLang = currentLang === "en" ? "es" : "en";
                     localStorage.setItem("language", newLang);
-                    window.location.reload();
+                    window.dispatchEvent(new Event("languagechange"));
                   }}
                   className="cursor-pointer"
                 >

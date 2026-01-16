@@ -6,7 +6,7 @@ import CreateQRCodeModal from "@/components/CreateQRCodeModal";
 import { CreateQRFolderModal } from "@/components/CreateQRFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Plus, Search, Folder, QrCode, Download, Trash2, Eye, FolderPlus, ArrowLeft } from "lucide-react";
+import { Plus, Search, Folder, QrCode, Download, Trash2, Eye, FolderPlus, ArrowLeft, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -34,6 +34,9 @@ export default function QRDashboard() {
     // Filter by folder
     if (activeFolderId !== null) {
       filtered = filtered.filter(qr => qr.folderId === activeFolderId);
+    } else {
+      // Show only QR codes without folder
+      filtered = filtered.filter(qr => !qr.folderId);
     }
 
     // Filter by search query
@@ -48,6 +51,20 @@ export default function QRDashboard() {
 
     return filtered;
   }, [qrCodes, activeFolderId, searchQuery]);
+
+  // Get QR codes by folder
+  const qrCodesByFolder = useMemo(() => {
+    const result: Record<number, any[]> = {};
+    qrCodes.forEach(qr => {
+      if (qr.folderId) {
+        if (!result[qr.folderId]) {
+          result[qr.folderId] = [];
+        }
+        result[qr.folderId].push(qr);
+      }
+    });
+    return result;
+  }, [qrCodes]);
 
   const handleDeleteQR = async (id: number) => {
     if (!confirm("Are you sure you want to delete this QR code?")) return;
@@ -88,170 +105,256 @@ export default function QRDashboard() {
     setShowQRDetail(true);
   };
 
+  const openFolderView = (folderId: number) => {
+    setActiveFolderId(folderId);
+  };
+
+  // Folder View
+  if (activeFolderId !== null) {
+    const currentFolder = folders.find(f => f.id === activeFolderId);
+    const folderQRCodes = qrCodesByFolder[activeFolderId] || [];
+
+    return (
+      <DashboardLayout>
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-8">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setActiveFolderId(null)}
+              className="mb-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to All Folders
+            </Button>
+
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold mb-2">{currentFolder?.name}</h1>
+              {currentFolder?.description && (
+                <p className="text-muted-foreground">{currentFolder.description}</p>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <Button onClick={() => setShowCreateModal(true)} size="lg" className="w-full md:w-auto">
+                <Plus className="w-4 h-4 mr-2" />
+                Add QR Code to Folder
+              </Button>
+            </div>
+
+            {folderQRCodes.length === 0 ? (
+              <Card className="p-12 border border-border/20 text-center">
+                <QrCode className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No QR codes in this folder</h3>
+                <p className="text-muted-foreground mb-4">
+                  Add your first QR code to this folder
+                </p>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {folderQRCodes.map((qrCode) => (
+                  <Card key={qrCode.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 flex-1">
+                        <img
+                          src={qrCode.qrImage}
+                          alt={qrCode.name}
+                          className="w-16 h-16 rounded border border-border/20"
+                        />
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{qrCode.name}</h3>
+                          <p className="text-sm text-muted-foreground">{qrCode.type}</p>
+                          {qrCode.scans > 0 && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Scans: {qrCode.scans}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleViewQR(qrCode)}
+                          className="hover:border hover:border-accent/50"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDownloadQR(qrCode)}
+                          className="hover:border hover:border-accent/50"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteQR(qrCode.id)}
+                          className="hover:border hover:border-destructive/50"
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Main Dashboard View
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-background">
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-background border-b border-border safe-area-top">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <QrCode className="w-6 h-6 text-primary" />
-                <h1 className="text-2xl font-bold">QR Codes</h1>
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={() => setShowFolderModal(true)} variant="outline" size="sm">
-                  <FolderPlus className="w-4 h-4 mr-2" />
-                  New Folder
-                </Button>
-                <Button onClick={() => setShowCreateModal(true)} size="sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create QR Code
-                </Button>
-              </div>
-            </div>
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">QR Codes</h1>
+            <p className="text-muted-foreground">Manage your QR codes and organize them in folders</p>
+          </div>
 
-            {/* Search */}
+          {/* Action Buttons */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <Button size="lg" className="w-full" onClick={() => setShowCreateModal(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Create QR Code
+            </Button>
+            <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)}>
+              <FolderPlus className="w-4 h-4 mr-2" />
+              Create Folder
+            </Button>
+          </div>
+
+          {/* Search */}
+          <div className="mb-8">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
                 type="text"
                 placeholder="Search QR codes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="w-full pl-10 pr-4 py-3 rounded-[15px] border border-border/30 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/30 transition-colors"
               />
             </div>
           </div>
-        </div>
 
-        <div className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Sidebar - Folders */}
-            <div className="lg:col-span-1">
-              <Card className="p-4">
-                <h2 className="font-semibold mb-4 flex items-center gap-2">
-                  <Folder className="w-4 h-4" />
-                  Folders
-                </h2>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => setActiveFolderId(null)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      activeFolderId === null
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
-                    }`}
-                  >
-                    All QR Codes ({qrCodes.length})
-                  </button>
-                  {folders.map((folder) => (
-                    <div
+          {/* Folders Section */}
+          {folders.length > 0 && (
+            <div className="mb-12">
+              <h3 className="text-xl font-bold mb-4">Your Folders</h3>
+              <div className="space-y-4">
+                {folders.map((folder) => {
+                  const folderQRs = qrCodesByFolder[folder.id] || [];
+                  return (
+                    <Card
                       key={folder.id}
-                      className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                        activeFolderId === folder.id
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-muted"
-                      }`}
+                      className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors"
+                      onClick={() => openFolderView(folder.id)}
                     >
-                      <button
-                        onClick={() => setActiveFolderId(folder.id)}
-                        className="flex-1 text-left"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Folder className="w-4 h-4" />
-                          <span>{folder.name}</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-start gap-3">
+                          <Folder className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                          <div className="flex flex-wrap items-baseline gap-2">
+                            <p className="font-semibold">{folder.name}</p>
+                            <p className="text-sm text-muted-foreground whitespace-nowrap">
+                              {folderQRs.length} QR code{folderQRs.length !== 1 ? 's' : ''}
+                            </p>
+                          </div>
                         </div>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteFolder(folder.id)}
-                        className="p-1 hover:bg-destructive/20 rounded"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
-
-            {/* Main Content - QR Codes Grid */}
-            <div className="lg:col-span-3">
-              {activeFolderId !== null && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveFolderId(null)}
-                  className="mb-4"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to All QR Codes
-                </Button>
-              )}
-
-              {filteredQRCodes.length === 0 ? (
-                <Card className="p-12 text-center">
-                  <QrCode className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">No QR codes yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Create your first QR code to get started
-                  </p>
-                  <Button onClick={() => setShowCreateModal(true)}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create QR Code
-                  </Button>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {filteredQRCodes.map((qrCode) => (
-                    <Card key={qrCode.id} className="p-4 hover:shadow-lg transition-shadow">
-                      <div className="flex flex-col items-center">
-                        <img
-                          src={qrCode.qrImage}
-                          alt={qrCode.name}
-                          className="w-full max-w-[200px] rounded-lg border-2 border-border mb-3"
-                        />
-                        <h3 className="font-semibold text-center mb-1">{qrCode.name}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">{qrCode.type}</p>
-                        {qrCode.scans > 0 && (
-                          <p className="text-xs text-muted-foreground mb-3">
-                            Scans: {qrCode.scans}
-                          </p>
-                        )}
-                        <div className="flex gap-2 w-full">
+                        <div className="flex items-center gap-2">
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
-                            onClick={() => handleViewQR(qrCode)}
-                            className="flex-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteFolder(folder.id);
+                            }}
+                            className="hover:border hover:border-destructive/50"
                           >
-                            <Eye className="w-4 h-4 mr-1" />
-                            View
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDownloadQR(qrCode)}
-                            className="flex-1"
-                          >
-                            <Download className="w-4 h-4 mr-1" />
-                            Download
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteQR(qrCode.id)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4 text-destructive" />
                           </Button>
                         </div>
                       </div>
                     </Card>
-                  ))}
-                </div>
-              )}
+                  );
+                })}
+              </div>
             </div>
+          )}
+
+          {/* QR Codes without folder */}
+          <div>
+            <h3 className="text-xl font-bold mb-4">Your QR Codes</h3>
+            {filteredQRCodes.length === 0 ? (
+              <Card className="p-12 border border-border/20 text-center">
+                <QrCode className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No QR codes yet</h3>
+                <p className="text-muted-foreground mb-4">
+                  Create your first QR code to get started
+                </p>
+                <Button onClick={() => setShowCreateModal(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create QR Code
+                </Button>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {filteredQRCodes.map((qrCode) => (
+                  <Card key={qrCode.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 flex-1">
+                        <img
+                          src={qrCode.qrImage}
+                          alt={qrCode.name}
+                          className="w-16 h-16 rounded border border-border/20"
+                        />
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{qrCode.name}</h3>
+                          <p className="text-sm text-muted-foreground">{qrCode.type}</p>
+                          {qrCode.scans > 0 && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Scans: {qrCode.scans}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleViewQR(qrCode)}
+                          className="hover:border hover:border-accent/50"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDownloadQR(qrCode)}
+                          className="hover:border hover:border-accent/50"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteQR(qrCode.id)}
+                          className="hover:border hover:border-destructive/50"
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -278,7 +381,7 @@ export default function QRDashboard() {
         {/* QR Detail Modal */}
         {showQRDetail && selectedQRCode && (
           <div
-            className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
             onClick={() => setShowQRDetail(false)}
           >
             <Card

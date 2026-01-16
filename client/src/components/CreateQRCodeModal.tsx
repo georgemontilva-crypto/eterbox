@@ -126,11 +126,11 @@ export default function CreateQRCodeModal({
           <DialogTitle>Create New QR Code</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column - Form */}
-            <div className="space-y-4">
-              <div>
+            <div className="space-y-5">
+              <div className="space-y-2">
                 <Label htmlFor="name">Name *</Label>
                 <Input
                   id="name"
@@ -141,7 +141,7 @@ export default function CreateQRCodeModal({
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="type">Type</Label>
                 <Select value={type} onValueChange={setType}>
                   <SelectTrigger>
@@ -158,7 +158,7 @@ export default function CreateQRCodeModal({
                 </Select>
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="content">Content *</Label>
                 <Textarea
                   id="content"
@@ -178,7 +178,7 @@ export default function CreateQRCodeModal({
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="folder">Folder (Optional)</Label>
                 <Select value={folderId} onValueChange={setFolderId}>
                   <SelectTrigger>
@@ -195,7 +195,7 @@ export default function CreateQRCodeModal({
                 </Select>
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="description">Description (Optional)</Label>
                 <Textarea
                   id="description"

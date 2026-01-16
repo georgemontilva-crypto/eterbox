@@ -810,6 +810,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("eterbox-language", language);
   }, [language]);
 
+  // Listen for language change events
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      const newLang = localStorage.getItem("language") || "en";
+      if (newLang === "en" || newLang === "es") {
+        setLanguageState(newLang);
+      }
+    };
+
+    window.addEventListener("languagechange", handleLanguageChange);
+    return () => window.removeEventListener("languagechange", handleLanguageChange);
+  }, []);
+
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
   };

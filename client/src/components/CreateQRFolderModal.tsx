@@ -65,8 +65,8 @@ export function CreateQRFolderModal({
           <DialogTitle>Create New Folder</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
             <Label htmlFor="name">Folder Name *</Label>
             <Input
               id="name"
@@ -77,7 +77,7 @@ export function CreateQRFolderModal({
             />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="description">Description (Optional)</Label>
             <Textarea
               id="description"
