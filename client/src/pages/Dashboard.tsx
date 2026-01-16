@@ -375,36 +375,8 @@ export default function Dashboard() {
   // Folder Detail View
   if (activeFolderView && activeFolder) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50 safe-area-top safe-area-x">
-          <div className="container py-4">
-            <div className="flex items-center justify-between">
-              <MobileMenu 
-                planName={planName} 
-                onLogout={logout}
-                userEmail={user?.email}
-                onAddCredentialWithPassword={(password) => {
-                  setDefaultPassword(password);
-                  setSelectedFolderId(activeFolderView);
-                  setShowCredentialModal(true);
-                }}
-              />
-              {adminCheck?.isAdmin && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setLocation("/admin")}
-                  className="hidden md:flex items-center gap-2 text-accent hover:text-accent/80"
-                >
-                  <Shield className="w-4 h-4" />
-                  Admin
-                </Button>
-              )}
-            </div>
-          </div>
-        </header>
-
-        <main className="container py-8">
+      <AppLayout currentPath="/dashboard">
+        <div className="container py-8">
           <Button variant="ghost" className="mb-6" onClick={() => setActiveFolderView(null)}>
             <ArrowLeft className="w-4 h-4 mr-2" />Back to Dashboard
           </Button>
@@ -470,7 +442,6 @@ export default function Dashboard() {
               )}
             </Card>
           )}
-        </main>
 
         {showAddExistingModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -514,7 +485,8 @@ export default function Dashboard() {
           credential={selectedCredentialForEdit}
           folders={folders}
         />
-      </div>
+        </div>
+      </AppLayout>
     );
   }
 
