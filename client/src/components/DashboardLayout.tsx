@@ -204,14 +204,14 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
-                      className={`font-normal transition-none ${
+                      className={`font-normal !transition-none ${
                         isCollapsed && !isMobile
-                          ? `h-12 w-12 border-2 rounded-lg flex items-center justify-center ${
+                          ? `h-12 w-12 border-2 rounded-lg flex items-center justify-center !transition-none ${
                               isActive 
                                 ? "bg-[#1e40af] border-[#1e40af] text-white" 
                                 : "border-accent/50 hover:border-accent"
                             }` 
-                          : `h-10 hover:border hover:border-accent/50 ${
+                          : `h-10 hover:border hover:border-accent/50 !transition-none ${
                               isActive 
                                 ? "bg-[#1e40af] text-white hover:bg-[#1e40af] hover:border-[#1e40af]" 
                                 : ""

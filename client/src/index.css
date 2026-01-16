@@ -304,8 +304,13 @@ main, .page-content, [data-page] {
 }
 
 /* Smooth transitions for all interactive elements */
-button, a, input, select, textarea {
+button:not([data-sidebar]), a:not([data-sidebar]), input, select, textarea {
   transition: all 0.2s ease-in-out;
+}
+
+/* IMPORTANTE: Sin transiciones en elementos del sidebar */
+[data-sidebar] {
+  transition: none !important;
 }
 
 /* Smooth accordion/collapse animations */
