@@ -195,7 +195,7 @@ function DashboardLayoutContent({
           </SidebarHeader>
 
           <SidebarContent className="gap-0">
-            <SidebarMenu className="px-2 py-1">
+            <SidebarMenu className={isCollapsed ? "px-2 py-2 space-y-3" : "px-2 py-1"}>
               {menuItems.map(item => {
                 const isActive = location === item.path;
                 return (
@@ -204,12 +204,18 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
-                      className={`h-10 font-normal hover:border hover:border-accent/50 ${
-                        isActive 
-                          ? "bg-[#1e40af] text-white hover:bg-[#1e40af] hover:border-[#1e40af]" 
-                          : ""
-                      } ${
-                        isCollapsed ? "justify-center" : ""
+                      className={`font-normal ${
+                        isCollapsed 
+                          ? `h-12 w-12 border-2 rounded-lg flex items-center justify-center ${
+                              isActive 
+                                ? "bg-[#1e40af] border-[#1e40af] text-white" 
+                                : "border-accent/50 hover:border-accent"
+                            }` 
+                          : `h-10 hover:border hover:border-accent/50 ${
+                              isActive 
+                                ? "bg-[#1e40af] text-white hover:bg-[#1e40af] hover:border-[#1e40af]" 
+                                : ""
+                            }`
                       }`}
                     >
                       <item.icon
@@ -223,7 +229,7 @@ function DashboardLayoutContent({
                             : ""
                         }`}
                       />
-                      <span className={isActive ? "text-white" : ""}>{item.label}</span>
+                      {!isCollapsed && <span className={isActive ? "text-white" : ""}>{item.label}</span>}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
