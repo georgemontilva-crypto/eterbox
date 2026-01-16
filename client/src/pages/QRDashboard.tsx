@@ -6,14 +6,21 @@ import CreateQRCodeModal from "@/components/CreateQRCodeModal";
 import { CreateQRFolderModal } from "@/components/CreateQRFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Plus, Search, Folder, QrCode, Download, Trash2, Eye, FolderPlus, ArrowLeft, Edit } from "lucide-react";
+import { Plus, Search, Folder, QrCode, Download, Trash2, Eye, FolderPlus, ArrowLeft, Edit, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { MobileMenu } from "@/components/MobileMenu";
+import { useLocation } from "wouter";
 import DashboardLayout from "@/components/DashboardLayout";
 
 export default function QRDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const [, setLocation] = useLocation();
+  const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
+  const { data: adminCheck } = trpc.admin.isAdmin.useQuery();
+  
+  const planName = userPlan?.name || "Free";
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -196,8 +203,38 @@ export default function QRDashboard() {
   // Main Dashboard View
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
+      <div className="min-h-screen bg-background text-foreground">
+        <header className="border-b border-border/20 bg-card/50 backdrop-blur-sm sticky top-0 z-50 safe-area-top safe-area-x">
+          <div className="container py-4">
+            <div className="flex items-center justify-between">
+              {/* Menu hamburguesa - visible en todas las pantallas */}
+              <div>
+                <MobileMenu 
+                  planName={planName} 
+                  onLogout={logout}
+                  userEmail={user?.email}
+                />
+              </div>
+              
+              {/* Admin Button - only on desktop */}
+              <div className="flex items-center gap-3">
+                {adminCheck?.isAdmin && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLocation("/admin")}
+                    className="hidden md:flex items-center gap-2 text-accent hover:text-accent/80"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Admin
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="container py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">QR Codes</h1>
             <p className="text-muted-foreground">Manage your QR codes and organize them in folders</p>
@@ -320,10 +357,11 @@ export default function QRDashboard() {
               </div>
             )}
           </div>
-        </div>
+        </main>
+      </div>
 
-        {/* Modals */}
-        <CreateQRCodeModal
+      {/* Modals */}
+      <CreateQRCodeModal
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
           onSuccess={() => {
@@ -331,19 +369,19 @@ export default function QRDashboard() {
             toast.success("QR code created successfully");
           }}
           folders={folders}
-        />
+      />
 
-        <CreateQRFolderModal
+      <CreateQRFolderModal
           isOpen={showFolderModal}
           onClose={() => setShowFolderModal(false)}
           onSuccess={() => {
             refetchFolders();
             toast.success("Folder created successfully");
           }}
-        />
+      />
 
-        {/* QR Detail Modal */}
-        {showQRDetail && selectedQRCode && (
+      {/* QR Detail Modal */}
+      {showQRDetail && selectedQRCode && (
           <div
             className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
             onClick={() => setShowQRDetail(false)}
@@ -398,8 +436,7 @@ export default function QRDashboard() {
               </div>
             </Card>
           </div>
-        )}
-      </div>
+      )}
     </DashboardLayout>
   );
 }
