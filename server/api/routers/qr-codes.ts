@@ -65,7 +65,7 @@ export const qrCodesRouter = router({
         scans: 0,
       });
       
-      return { success: true, id: result[0].insertId };
+      return { success: true, id: result.insertId };
     }),
 
   // Update a QR code
@@ -161,7 +161,7 @@ export const qrCodesRouter = router({
           icon: input.icon || null,
         });
         
-        return { success: true, id: result[0].insertId };
+        return { success: true, id: result.insertId };
       }),
 
     // Update a folder
