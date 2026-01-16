@@ -94,29 +94,37 @@ export default function EditQRCodeModal({
     setIsSaving(true);
 
     try {
-      // For dynamic QR, keep the same QR image (it points to /qr/:shortCode)
-      // For static QR, regenerate if content changed
-      let qrImage = qrCode.qrImage;
-      if (content !== qrCode.content && !qrCode.isDynamic) {
-        qrImage = await QRCode.toDataURL(content, {
-          width: 512,
-          margin: 2,
-          color: {
-            dark: "#000000",
-            light: "#FFFFFF",
-          },
-        });
-      }
-
-      await updateQRMutation.mutateAsync({
+      // Prepare update data
+      const updateData: any = {
         id: qrCode.id,
         name,
         content,
         type,
         folderId: folderId && folderId !== "none" ? parseInt(folderId) : null,
         description,
-        qrImage,
-      });
+      };
+
+      // For dynamic QR, DO NOT send qrImage (keep the original that points to /qr/:shortCode)
+      // For static QR, regenerate qrImage if content changed
+      if (!qrCode.isDynamic) {
+        if (content !== qrCode.content) {
+          // Regenerate QR for static codes when content changes
+          updateData.qrImage = await QRCode.toDataURL(content, {
+            width: 512,
+            margin: 2,
+            color: {
+              dark: "#000000",
+              light: "#FFFFFF",
+            },
+          });
+        } else {
+          // Keep the same image if content didn't change
+          updateData.qrImage = qrCode.qrImage;
+        }
+      }
+      // For dynamic QR, qrImage is intentionally omitted from updateData
+
+      await updateQRMutation.mutateAsync(updateData);
 
       onSuccess();
       handleClose();
