@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import QRCode from "qrcode";
 import { Loader2 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 interface CreateQRCodeModalProps {
   isOpen: boolean;
@@ -89,25 +90,14 @@ export default function CreateQRCodeModal({
         },
       });
 
-      const response = await fetch("/api/qr-codes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          name,
-          content,
-          type,
-          folderId: folderId ? parseInt(folderId) : null,
-          description,
-          qrImage: qrDataUrl,
-        }),
+      await trpc.qrCodes.create.mutate({
+        name,
+        content,
+        type,
+        folderId: folderId ? parseInt(folderId) : null,
+        description,
+        qrImage: qrDataUrl,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to create QR code");
-      }
 
       onSuccess();
       handleClose();
