@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CreateQRCodeModal from "@/components/CreateQRCodeModal";
 import EditQRCodeModal from "@/components/EditQRCodeModal";
+import QRExportModal from "@/components/QRExportModal";
 import { CreateQRFolderModal } from "@/components/CreateQRFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -18,6 +19,7 @@ export default function QRDashboard() {
   
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFolderId, setActiveFolderId] = useState<number | null>(null);
@@ -67,13 +69,8 @@ export default function QRDashboard() {
   };
 
   const handleDownloadQR = (qrCode: any) => {
-    const link = document.createElement('a');
-    link.href = qrCode.qrImage;
-    link.download = `${qrCode.name}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success("QR code downloaded");
+    setSelectedQRCode(qrCode);
+    setShowExportModal(true);
   };
 
   const handleViewQR = (qrCode: any) => {
@@ -193,6 +190,12 @@ export default function QRDashboard() {
           }}
           qrCode={selectedQRCode}
           folders={folders}
+        />
+
+        <QRExportModal
+          isOpen={showExportModal}
+          onClose={() => setShowExportModal(false)}
+          qrCode={selectedQRCode}
         />
 
         {/* QR Detail Modal */}
@@ -407,6 +410,12 @@ export default function QRDashboard() {
         }}
         qrCode={selectedQRCode}
         folders={folders}
+      />
+
+      <QRExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        qrCode={selectedQRCode}
       />
 
       <CreateQRFolderModal
