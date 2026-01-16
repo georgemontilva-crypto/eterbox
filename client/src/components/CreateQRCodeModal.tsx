@@ -156,7 +156,7 @@ export default function CreateQRCodeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[95vw] sm:w-[900px] max-w-[900px] max-h-[95vh] overflow-hidden p-0">
+      <DialogContent className="w-[95vw] sm:w-[900px] max-w-[900px] max-h-[90vh] overflow-hidden p-0 flex flex-col">
         <div className="flex flex-col h-full max-h-[95vh]">
           {/* Header */}
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-border/50">
@@ -164,7 +164,7 @@ export default function CreateQRCodeModal({
           </DialogHeader>
 
           {/* Content */}
-          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto flex flex-col">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 min-h-full">
               {/* Left Column - Form */}
               <div className="p-6 space-y-4 border-r border-border/30">
@@ -311,8 +311,8 @@ export default function CreateQRCodeModal({
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border/50 bg-muted/20">
+            {/* Footer - Sticky at bottom */}
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border/50 bg-muted/20 sticky bottom-0 mt-auto">
               <Button
                 type="button"
                 variant="outline"
