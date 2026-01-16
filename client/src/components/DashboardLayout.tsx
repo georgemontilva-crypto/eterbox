@@ -214,7 +214,7 @@ function DashboardLayoutContent({
                     >
                       <item.icon
                         className={`${
-                          isCollapsed ? "h-5 w-5" : "h-4 w-4"
+                          isCollapsed ? "h-6 w-6" : "h-4 w-4"
                         } ${
                           isActive 
                             ? "text-white" 
