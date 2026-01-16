@@ -89,7 +89,7 @@ export default function QRDashboard() {
     const folderQRCodes = qrCodesByFolder[activeFolderId] || [];
 
     return (
-      <AppLayout currentPath="/qr-dashboard">
+      <AppLayout currentPath="/qr-codes">
         <div className="container py-8">
           <Button
             variant="ghost"
@@ -167,7 +167,7 @@ export default function QRDashboard() {
 
   // Main Dashboard View
   return (
-    <AppLayout currentPath="/qr-dashboard">
+    <AppLayout currentPath="/qr-codes">
       <div className="container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">QR Codes</h1>
