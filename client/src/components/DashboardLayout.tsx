@@ -28,11 +28,14 @@ import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
+// Navigation menu items - v2.0
 const menuItems = [
   { icon: Lock, label: "Passwords", path: "/" },
   { icon: QrCode, label: "QR Codes", path: "/qr-codes" },
   { icon: Barcode, label: "Bar Codes", path: "/bar-codes" },
 ];
+
+console.log('DashboardLayout loaded with navigation:', menuItems.map(i => i.label));
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
 const DEFAULT_WIDTH = 280;
