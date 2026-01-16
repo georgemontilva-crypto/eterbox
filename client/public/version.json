@@ -1,0 +1,11 @@
+{
+  "version": "2.0.1",
+  "buildDate": "2026-01-16T15:45:00Z",
+  "commit": "f4a787e",
+  "features": [
+    "mobile-header-with-black-background",
+    "logo-and-hamburger-menu",
+    "sticky-qr-modal-footer"
+  ],
+  "note": "If you see this file, the latest build is deployed"
+}
