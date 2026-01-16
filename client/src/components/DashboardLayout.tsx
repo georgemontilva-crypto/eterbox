@@ -308,10 +308,9 @@ function DashboardLayoutContent({
       </div>
 
       <SidebarInset>
-        {/* Mobile header with black background and logo - Shows only on mobile devices */}
-        {isMobile && (
+        {/* Mobile header with black background and logo - ALWAYS RENDERED */}
         <div 
-          className="flex h-14 items-center bg-black px-4 sticky top-0 z-50 safe-area-top safe-area-x border-b border-white/10"
+          className="flex lg:hidden h-14 items-center bg-black px-4 sticky top-0 z-50 safe-area-top safe-area-x border-b border-white/10"
           style={{ 
             backgroundColor: '#000000',
             display: 'flex',
@@ -336,7 +335,6 @@ function DashboardLayoutContent({
             </span>
           </div>
         </div>
-        )}
         <main className="flex-1 p-4">{children}</main>
       </SidebarInset>
     </>
