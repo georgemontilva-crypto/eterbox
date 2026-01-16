@@ -57,15 +57,27 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="md:hidden fixed top-4 left-4 z-50 h-10 w-10"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-      </Button>
+      {/* Mobile Header Bar - Estilo Binance */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-black border-b border-white/10 z-50 flex items-center px-4 gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 rounded-lg bg-white/10 hover:bg-white/20 text-white flex-shrink-0"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </Button>
+        
+        <img 
+          src="/logo-light.png" 
+          alt="EterBox Logo" 
+          className="h-7 w-auto flex-shrink-0" 
+        />
+        
+        <span className="text-base font-semibold tracking-tight text-white">
+          EterBox
+        </span>
+      </div>
 
       {/* Overlay for mobile */}
       {isOpen && (
