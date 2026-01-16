@@ -161,6 +161,76 @@ export default function QRDashboard() {
             </div>
           )}
         </div>
+
+        {/* Modals */}
+        <CreateQRCodeModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={() => {
+            refetchQRCodes();
+            toast.success("QR code created successfully");
+          }}
+          folders={folders}
+          defaultFolderId={activeFolderId}
+        />
+
+        {/* QR Detail Modal */}
+        {showQRDetail && selectedQRCode && (
+          <div
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setShowQRDetail(false)}
+          >
+            <Card
+              className="max-w-md w-full p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-xl font-bold mb-4">{selectedQRCode.name}</h2>
+              <img
+                src={selectedQRCode.qrImage}
+                alt={selectedQRCode.name}
+                className="w-full rounded-lg border-2 border-border mb-4"
+              />
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="font-semibold">Type:</span> {selectedQRCode.type}
+                </div>
+                <div>
+                  <span className="font-semibold">Content:</span>{" "}
+                  <span className="break-all">{selectedQRCode.content}</span>
+                </div>
+                {selectedQRCode.description && (
+                  <div>
+                    <span className="font-semibold">Description:</span>{" "}
+                    {selectedQRCode.description}
+                  </div>
+                )}
+                <div>
+                  <span className="font-semibold">Scans:</span> {selectedQRCode.scans}
+                </div>
+                <div>
+                  <span className="font-semibold">Created:</span>{" "}
+                  {new Date(selectedQRCode.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+              <div className="flex gap-2 mt-6">
+                <Button
+                  onClick={() => handleDownloadQR(selectedQRCode)}
+                  className="flex-1"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowQRDetail(false)}
+                  className="flex-1"
+                >
+                  Close
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
       </AppLayout>
     );
   }
