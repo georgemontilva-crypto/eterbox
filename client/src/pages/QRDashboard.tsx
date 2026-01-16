@@ -219,7 +219,6 @@ export default function QRDashboard() {
                 ))}
               </div>
             )}
-          </div>
         </main>
       </div>
     );
@@ -380,7 +379,6 @@ export default function QRDashboard() {
                 ))}
               </div>
             )}
-          </div>
         </main>
       </div>
 
