@@ -248,26 +248,18 @@ export default function QRDashboard() {
           {folders.length > 0 && (
             <div className="mb-12">
               <h3 className="text-xl font-bold mb-4">Your Folders</h3>
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {folders.map((folder) => {
                   const folderQRs = qrCodesByFolder[folder.id] || [];
                   return (
                     <Card
                       key={folder.id}
-                      className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors"
+                      className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors group"
                       onClick={() => openFolderView(folder.id)}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-start gap-3">
-                          <Folder className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                          <div className="flex flex-wrap items-baseline gap-2">
-                            <p className="font-semibold">{folder.name}</p>
-                            <p className="text-sm text-muted-foreground whitespace-nowrap">
-                              {folderQRs.length} QR code{folderQRs.length !== 1 ? 's' : ''}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          <Folder className="w-6 h-6 text-accent" />
                           <Button
                             variant="ghost"
                             size="sm"
@@ -275,10 +267,16 @@ export default function QRDashboard() {
                               e.stopPropagation();
                               handleDeleteFolder(folder.id);
                             }}
-                            className="hover:border hover:border-destructive/50"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
                           >
-                            <Trash2 className="w-4 h-4 text-destructive" />
+                            <Trash2 className="w-3.5 h-3.5 text-destructive" />
                           </Button>
+                        </div>
+                        <div>
+                          <p className="font-semibold truncate">{folder.name}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {folderQRs.length} QR code{folderQRs.length !== 1 ? 's' : ''}
+                          </p>
                         </div>
                       </div>
                     </Card>
@@ -295,13 +293,9 @@ export default function QRDashboard() {
               <Card className="p-12 border border-border/20 text-center">
                 <QrCode className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                 <h3 className="text-lg font-semibold mb-2">No QR codes yet</h3>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-muted-foreground">
                   Create your first QR code to get started
                 </p>
-                <Button onClick={() => setShowCreateModal(true)}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create QR Code
-                </Button>
               </Card>
             ) : (
               <div className="space-y-3">
