@@ -309,7 +309,20 @@ function DashboardLayoutContent({
 
       <SidebarInset>
         {/* Mobile header with black background and logo - Always rendered, hidden on desktop with CSS */}
-        <div className="flex md:hidden h-14 items-center bg-black px-4 sticky top-0 z-50 safe-area-top safe-area-x border-b border-white/10">
+        <div 
+          className="flex md:hidden h-14 items-center bg-black px-4 sticky top-0 z-50 safe-area-top safe-area-x border-b border-white/10"
+          style={{ 
+            backgroundColor: '#000000',
+            display: 'flex',
+            height: '3.5rem',
+            alignItems: 'center',
+            padding: '0 1rem',
+            position: 'sticky',
+            top: 0,
+            zIndex: 50,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+          }}
+        >
           <div className="flex items-center gap-3">
             <SidebarTrigger className="h-9 w-9 rounded-lg bg-white/10 hover:bg-white/20 text-white" />
             <img 
