@@ -52,6 +52,7 @@ export default function Dashboard() {
   const [selectedFolderForEdit, setSelectedFolderForEdit] = useState<any>(null);
   const [showShareFolderModal, setShowShareFolderModal] = useState(false);
   const [selectedFolderForShare, setSelectedFolderForShare] = useState<{ id: number; name: string } | null>(null);
+  const [savedScrollPosition, setSavedScrollPosition] = useState<number>(0);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   
@@ -130,6 +131,10 @@ export default function Dashboard() {
   const handleFolderDeleted = () => {
     if (folderToDelete && activeFolderView === folderToDelete.id) {
       setActiveFolderView(null);
+      // Restore scroll position after deleting folder
+      setTimeout(() => {
+        window.scrollTo({ top: savedScrollPosition, behavior: 'instant' });
+      }, 0);
     }
     setFolderToDelete(null);
   };
@@ -278,6 +283,8 @@ export default function Dashboard() {
   const availableCredentials = credentials.filter((cred: any) => cred.folderId !== activeFolderView);
 
   const openFolderView = (folderId: number) => {
+    // Save current scroll position before opening folder
+    setSavedScrollPosition(window.scrollY);
     setActiveFolderView(folderId);
     setSearchQuery("");
     setFolderSearchQuery("");
@@ -377,7 +384,13 @@ export default function Dashboard() {
     return (
       <AppLayout currentPath="/dashboard">
         <div className="container py-8">
-          <Button variant="ghost" className="mb-6" onClick={() => setActiveFolderView(null)}>
+          <Button variant="ghost" className="mb-6" onClick={() => {
+            setActiveFolderView(null);
+            // Restore scroll position after React re-renders
+            setTimeout(() => {
+              window.scrollTo({ top: savedScrollPosition, behavior: 'instant' });
+            }, 0);
+          }}>
             <ArrowLeft className="w-4 h-4 mr-2" />Back to Dashboard
           </Button>
 
