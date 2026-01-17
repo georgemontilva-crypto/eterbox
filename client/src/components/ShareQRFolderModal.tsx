@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { X, Share2, UserPlus, Mail, Shield } from "lucide-react";
+import { X, Share2, UserPlus, Mail, Shield, Edit, Eye } from "lucide-react";
 import { trpc } from "../lib/trpc";
 import { toast } from "sonner";
 
@@ -124,7 +124,8 @@ export function ShareQRFolderModal({ isOpen, onClose, folderId, folderName }: Sh
                   onClick={() => setPermission('edit')}
                   disabled={isSharing}
                 >
-                  <span className="text-sm">✏️ Edit</span>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
                 </Button>
                 <Button
                   type="button"
@@ -133,7 +134,8 @@ export function ShareQRFolderModal({ isOpen, onClose, folderId, folderName }: Sh
                   onClick={() => setPermission('read')}
                   disabled={isSharing}
                 >
-                  <span className="text-sm">👁️ View Only</span>
+                  <Eye className="w-4 h-4 mr-2" />
+                  View Only
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -168,8 +170,18 @@ export function ShareQRFolderModal({ isOpen, onClose, folderId, folderName }: Sh
                       {share.sharedWithUser.name && (
                         <p className="text-xs text-muted-foreground">{share.sharedWithUser.name}</p>
                       )}
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {share.permission === 'edit' ? '✏️ Can edit' : '👁️ View only'}
+                      <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        {share.permission === 'edit' ? (
+                          <>
+                            <Edit className="w-3 h-3" />
+                            Can edit
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="w-3 h-3" />
+                            View only
+                          </>
+                        )}
                       </p>
                     </div>
                     <Button
