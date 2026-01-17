@@ -575,7 +575,45 @@ export default function Dashboard() {
 
         <div className="mb-6">
           {/* Primary Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Mobile: Single Dropdown */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="lg" className="w-full h-12">
+                  <Plus className="w-4 h-4 mr-2" />Actions
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="w-[calc(100vw-2rem)]">
+                <DropdownMenuItem onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }} disabled={isSubscriptionExpired}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Credential
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowFolderModal(true)} disabled={isSubscriptionExpired}>
+                  <FolderPlus className="w-4 h-4 mr-2" />
+                  Create Folder
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowPasswordGenerator(true)}>
+                  <Lock className="w-4 h-4 mr-2" />
+                  Generate Password
+                </DropdownMenuItem>
+                {userPlan && userPlan.name !== "Free" && (
+                  <>
+                    <DropdownMenuItem onClick={() => setShowImportModal(true)}>
+                      <Upload className="w-4 h-4 mr-2" />
+                      Import Credentials
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setShowExportModal(true)}>
+                      <Download className="w-4 h-4 mr-2" />
+                      Export Credentials
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Desktop: Grid of Buttons */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
             <Button size="lg" className="w-full h-12" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }} disabled={isSubscriptionExpired}>
               <Plus className="w-4 h-4 mr-2" />Add Credential
             </Button>
