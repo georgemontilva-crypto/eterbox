@@ -153,7 +153,7 @@ export default function Dashboard() {
       });
       toast.success(t("dashboard.credentialAddedToFolder"));
       utils.credentials.list.invalidate();
-      utils.credentials.getByFolder.invalidate({ folderId: activeFolderView });
+      utils.credentials.listByFolder.invalidate({ folderId: activeFolderView });
       setShowAddExistingModal(false);
     } catch (error) {
       toast.error(t("dashboard.failedToAdd"));

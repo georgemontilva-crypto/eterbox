@@ -125,9 +125,9 @@ export function CreateCredentialModal({
         folderId: formData.selectedFolderId && formData.selectedFolderId !== "none" ? Number(formData.selectedFolderId) : null,
       });
 
-      await utils.credentials.getAll.invalidate();
+      await utils.credentials.list.invalidate();
       await utils.credentials.listByFolder.invalidate();
-      await utils.folders.getAll.invalidate();
+      await utils.folders.list.invalidate();
       await utils.folders.listWithShareCount.invalidate();
 
       toast.success("Credential created successfully!");
