@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Upload, FileJson, FileSpreadsheet, CheckCircle2, XCircle } from "lucide-react";
+import { Upload, FileJson, FileSpreadsheet, CheckCircle2, XCircle, FileUp } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
@@ -139,24 +139,30 @@ export function ImportCredentialsModal({ open, onOpenChange }: ImportCredentials
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Upload className="w-5 h-5" />
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader className="pb-4 border-b border-border/30 bg-gradient-to-br from-accent/5 to-transparent">
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <FileUp className="w-5 h-5 text-accent" />
             Import Credentials
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-muted-foreground">
             Upload a JSON or CSV file to import your credentials.
           </DialogDescription>
         </DialogHeader>
 
         {!importResults ? (
-          <div className="space-y-4 mt-4">
-            <label htmlFor="file-upload" className="cursor-pointer">
-              <div className="border-2 border-dashed border-border/50 rounded-lg p-8 text-center hover:border-accent/50 transition-colors">
-                <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-sm font-medium mb-1">Click to upload or drag and drop</p>
-                <p className="text-xs text-muted-foreground">JSON or CSV files only</p>
+          <div className="space-y-5 pt-2">
+            {/* Drop Zone */}
+            <label htmlFor="file-upload" className="cursor-pointer block">
+              <div className="relative border-2 border-dashed border-accent/30 rounded-xl p-10 text-center hover:border-accent/50 hover:bg-accent/5 transition-all duration-200 bg-gradient-to-br from-muted/20 to-transparent">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-200" />
+                <div className="relative z-10">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Upload className="w-8 h-8 text-accent" />
+                  </div>
+                  <p className="text-base font-semibold mb-2">Click to upload or drag and drop</p>
+                  <p className="text-sm text-muted-foreground">JSON or CSV files only</p>
+                </div>
               </div>
               <input
                 id="file-upload"
@@ -168,58 +174,89 @@ export function ImportCredentialsModal({ open, onOpenChange }: ImportCredentials
               />
             </label>
 
-            <div className="space-y-2">
-              <div className="flex items-start gap-2 text-xs">
-                <FileJson className="w-4 h-4 text-blue-500 mt-0.5" />
-                <div>
-                  <p className="font-medium">JSON Format</p>
-                  <p className="text-muted-foreground">Array of objects with: platformName, username, email, password, notes</p>
+            {/* Format Info */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-500/5 border border-blue-500/20">
+                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <FileJson className="w-4 h-4 text-blue-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold mb-1">JSON Format</p>
+                  <p className="text-xs text-muted-foreground">Array of objects with: platformName, username, email, password, notes</p>
                 </div>
               </div>
-              <div className="flex items-start gap-2 text-xs">
-                <FileSpreadsheet className="w-4 h-4 text-green-500 mt-0.5" />
-                <div>
-                  <p className="font-medium">CSV Format</p>
-                  <p className="text-muted-foreground">Headers: Platform, Username, Email, Password, Notes</p>
+              
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
+                <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <FileSpreadsheet className="w-4 h-4 text-green-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold mb-1">CSV Format</p>
+                  <p className="text-xs text-muted-foreground">Headers: Platform, Username, Email, Password, Notes</p>
                 </div>
               </div>
             </div>
 
+            {/* Loading State */}
             {importing && (
-              <div className="text-center py-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mx-auto"></div>
-                <p className="text-sm text-muted-foreground mt-2">Importing credentials...</p>
+              <div className="flex flex-col items-center justify-center py-6 px-4 rounded-lg bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
+                <div className="w-12 h-12 rounded-full border-4 border-accent/20 border-t-accent animate-spin mb-3"></div>
+                <p className="text-sm font-medium text-accent">Importing credentials...</p>
+                <p className="text-xs text-muted-foreground mt-1">Please wait</p>
               </div>
             )}
           </div>
         ) : (
-          <div className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-green-600">
-                <CheckCircle2 className="w-5 h-5" />
-                <span className="font-medium">{importResults.success} credentials imported successfully</span>
+          <div className="space-y-5 pt-2">
+            {/* Results */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
+                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-green-600 dark:text-green-500">
+                    {importResults.success} credentials imported successfully
+                  </p>
+                </div>
               </div>
               
               {importResults.failed > 0 && (
-                <div className="flex items-center gap-2 text-destructive">
-                  <XCircle className="w-5 h-5" />
-                  <span className="font-medium">{importResults.failed} credentials failed to import</span>
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-br from-red-500/10 to-red-500/5 border border-red-500/20">
+                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                    <XCircle className="w-5 h-5 text-red-500" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-red-600 dark:text-red-500">
+                      {importResults.failed} credentials failed to import
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
 
+            {/* Errors */}
             {importResults.errors.length > 0 && (
-              <div className="max-h-32 overflow-y-auto bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                <p className="text-xs font-medium text-destructive mb-2">Errors:</p>
+              <div className="max-h-40 overflow-y-auto rounded-lg bg-destructive/10 border border-destructive/20 p-4 space-y-1">
+                <p className="text-xs font-semibold text-destructive mb-2">Errors:</p>
                 {importResults.errors.map((error, index) => (
-                  <p key={index} className="text-xs text-muted-foreground">{error}</p>
+                  <p key={index} className="text-xs text-muted-foreground pl-2 border-l-2 border-destructive/30">
+                    {error}
+                  </p>
                 ))}
               </div>
             )}
 
-            <Button onClick={handleClose} className="w-full">
-              Close
-            </Button>
+            {/* Close Button */}
+            <div className="pt-3 border-t border-border/30">
+              <Button 
+                onClick={handleClose} 
+                className="w-full h-11 bg-accent hover:bg-accent/90 shadow-lg shadow-accent/20"
+              >
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                Close
+              </Button>
+            </div>
           </div>
         )}
       </DialogContent>

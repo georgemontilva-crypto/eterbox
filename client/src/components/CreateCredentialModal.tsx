@@ -1,9 +1,13 @@
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
-import { useState } from "react";
-import * as React from "react";
 import { toast } from "sonner";
+import { Globe, User, Mail, Lock, Folder, FileText, Key } from "lucide-react";
 
 interface CreateCredentialModalProps {
   open: boolean;
@@ -14,7 +18,14 @@ interface CreateCredentialModalProps {
   defaultPassword?: string;
 }
 
-export function CreateCredentialModal({ open, onOpenChange, folderId, folders, defaultFolderId, defaultPassword }: CreateCredentialModalProps) {
+export function CreateCredentialModal({ 
+  open, 
+  onOpenChange, 
+  folderId, 
+  folders, 
+  defaultFolderId, 
+  defaultPassword 
+}: CreateCredentialModalProps) {
   const [formData, setFormData] = useState({
     platformName: "",
     username: "",
@@ -65,10 +76,8 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Clear previous errors
     setErrors({});
     
-    // Validate form
     if (!validateForm()) {
       toast.error("Please fix the errors in the form");
       return;
@@ -81,29 +90,47 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
         email: formData.email,
         password: formData.password,
         notes: formData.notes,
-        folderId: formData.selectedFolderId ? Number(formData.selectedFolderId) : undefined,
+        folderId: formData.selectedFolderId ? Number(formData.selectedFolderId) : null,
       });
+
+      await utils.credentials.getAll.invalidate();
+      await utils.folders.getAll.invalidate();
+
       toast.success("Credential created successfully!");
-      setFormData({ platformName: "", username: "", email: "", password: "", notes: "", selectedFolderId: folderId || "" });
-      setErrors({});
       onOpenChange(false);
-      utils.credentials.list.invalidate();
+      
+      setFormData({
+        platformName: "",
+        username: "",
+        email: "",
+        password: "",
+        notes: "",
+        selectedFolderId: "",
+      });
     } catch (error: any) {
-      const errorMessage = error?.message || "Failed to create credential";
-      toast.error(errorMessage);
+      toast.error(error.message || "Failed to create credential");
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[90vw] sm:w-[800px] max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add New Credential</DialogTitle>
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-4 border-b border-border/30 bg-gradient-to-br from-accent/5 to-transparent">
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Key className="w-5 h-5 text-accent" />
+            Add New Credential
+          </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3 pb-safe">
-          <div>
-            <label className="block text-sm font-medium mb-2">Platform</label>
-            <input
+        
+        <form onSubmit={handleSubmit} className="space-y-5 pt-2 pb-safe">
+          {/* Platform */}
+          <div className="space-y-2">
+            <Label htmlFor="platform" className="text-sm font-medium flex items-center gap-2">
+              <Globe className="w-4 h-4 text-muted-foreground" />
+              Platform *
+            </Label>
+            <Input
+              id="platform"
               type="text"
               placeholder="e.g., Gmail, GitHub, Shopify"
               value={formData.platformName}
@@ -111,18 +138,24 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
                 setFormData({ ...formData, platformName: e.target.value });
                 if (errors.platformName) setErrors({ ...errors, platformName: "" });
               }}
-              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
-                errors.platformName ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              className={`h-11 border-border/50 focus:border-accent ${
+                errors.platformName ? "border-red-500" : ""
               }`}
               required
             />
             {errors.platformName && (
-              <p className="text-red-500 text-sm mt-1">{errors.platformName}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.platformName}</p>
             )}
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Username</label>
-            <input
+
+          {/* Username */}
+          <div className="space-y-2">
+            <Label htmlFor="username" className="text-sm font-medium flex items-center gap-2">
+              <User className="w-4 h-4 text-muted-foreground" />
+              Username
+            </Label>
+            <Input
+              id="username"
               type="text"
               placeholder="Your username"
               value={formData.username}
@@ -130,17 +163,23 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
                 setFormData({ ...formData, username: e.target.value });
                 if (errors.username) setErrors({ ...errors, username: "" });
               }}
-              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
-                errors.username ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              className={`h-11 border-border/50 focus:border-accent ${
+                errors.username ? "border-red-500" : ""
               }`}
             />
             {errors.username && (
-              <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.username}</p>
             )}
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
-            <input
+
+          {/* Email */}
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
+              <Mail className="w-4 h-4 text-muted-foreground" />
+              Email
+            </Label>
+            <Input
+              id="email"
               type="email"
               placeholder="your@email.com"
               value={formData.email}
@@ -148,17 +187,23 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
                 setFormData({ ...formData, email: e.target.value });
                 if (errors.email) setErrors({ ...errors, email: "" });
               }}
-              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
-                errors.email ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              className={`h-11 border-border/50 focus:border-accent ${
+                errors.email ? "border-red-500" : ""
               }`}
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
             )}
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Password</label>
-            <input
+
+          {/* Password */}
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-sm font-medium flex items-center gap-2">
+              <Lock className="w-4 h-4 text-muted-foreground" />
+              Password *
+            </Label>
+            <Input
+              id="password"
               type="password"
               placeholder="••••••••"
               value={formData.password}
@@ -166,45 +211,85 @@ export function CreateCredentialModal({ open, onOpenChange, folderId, folders, d
                 setFormData({ ...formData, password: e.target.value });
                 if (errors.password) setErrors({ ...errors, password: "" });
               }}
-              className={`w-full px-3 py-2.5 rounded-[15px] bg-input border focus:outline-none focus:ring-2 text-base ${
-                errors.password ? "border-red-500 focus:ring-red-500" : "border-border/30 focus:ring-accent"
+              className={`h-11 border-border/50 focus:border-accent ${
+                errors.password ? "border-red-500" : ""
               }`}
               required
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
             )}
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Folder (Optional)</label>
-            <select
-              value={formData.selectedFolderId}
-              onChange={(e) => setFormData({ ...formData, selectedFolderId: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent text-base"
+
+          {/* Folder */}
+          <div className="space-y-2">
+            <Label htmlFor="folder" className="text-sm font-medium flex items-center gap-2">
+              <Folder className="w-4 h-4 text-muted-foreground" />
+              Folder (Optional)
+            </Label>
+            <Select 
+              value={formData.selectedFolderId.toString()} 
+              onValueChange={(value) => setFormData({ ...formData, selectedFolderId: value })}
             >
-              <option value="">No folder</option>
-              {folders && folders.map((folder: any) => (
-                <option key={folder.id} value={folder.id}>
-                  {folder.name}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="h-11 border-border/50 focus:border-accent">
+                <SelectValue placeholder="No folder" />
+              </SelectTrigger>
+              <SelectContent className="border-border/50">
+                <SelectItem value="">No folder</SelectItem>
+                {folders && folders.map((folder: any) => (
+                  <SelectItem key={folder.id} value={folder.id.toString()}>
+                    <div className="flex items-center gap-2">
+                      <Folder className="w-4 h-4 text-muted-foreground" />
+                      {folder.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Notes (Optional)</label>
-            <textarea
+
+          {/* Notes */}
+          <div className="space-y-2">
+            <Label htmlFor="notes" className="text-sm font-medium flex items-center gap-2">
+              <FileText className="w-4 h-4 text-muted-foreground" />
+              Notes (Optional)
+            </Label>
+            <Textarea
+              id="notes"
               placeholder="Add any notes..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-[15px] bg-input border border-border/30 focus:outline-none focus:ring-2 focus:ring-accent min-h-20 text-base"
+              className="resize-none border-border/50 focus:border-accent min-h-[80px]"
             />
           </div>
-          <div className="flex gap-3">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+
+          {/* Footer */}
+          <div className="flex gap-3 pt-4 border-t border-border/30 bg-gradient-to-br from-muted/20 to-transparent -mx-6 px-6 -mb-6 pb-6">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="flex-1 h-11 border-border/50 hover:border-border"
+              disabled={createMutation.isPending}
+            >
               Cancel
             </Button>
-            <Button type="submit" className="flex-1" disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Creating..." : "Create"}
+            <Button
+              type="submit"
+              className="flex-1 h-11 bg-accent hover:bg-accent/90 shadow-lg shadow-accent/20"
+              disabled={createMutation.isPending}
+            >
+              {createMutation.isPending ? (
+                <>
+                  <span className="animate-spin mr-2">⏳</span>
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Key className="w-4 h-4 mr-2" />
+                  Create
+                </>
+              )}
             </Button>
           </div>
         </form>
