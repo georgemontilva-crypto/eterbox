@@ -84,10 +84,10 @@ export default function Settings() {
 
   return (
     <AppLayout currentPath="/settings">
-      <main className="container px-4 py-6 md:py-16 max-w-2xl">
+      <main className="container px-4 py-6 md:py-16 max-w-2xl overflow-x-hidden">
         <h2 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8">{t("menu.settings")}</h2>
 
-        <Card className="p-4 md:p-8 border border-border/20 mb-6">
+        <Card className="p-4 md:p-8 border border-border/20 mb-6 overflow-hidden max-w-full">
           <h3 className="text-lg md:text-xl font-bold mb-4">{t("settings.accountInfo")}</h3>
           <div className="space-y-4">
             <div>
@@ -96,12 +96,12 @@ export default function Settings() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">{t("common.email")}</p>
-              <p className="font-medium">{user?.email}</p>
+              <p className="font-medium break-all">{user?.email}</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4 md:p-8 border border-border/20 mb-6">
+        <Card className="p-4 md:p-8 border border-border/20 mb-6 overflow-hidden max-w-full">
           <h3 className="text-lg md:text-xl font-bold mb-4 flex items-center gap-2">
             <Shield className="w-5 h-5" />
             {t("menu.security")}
@@ -228,7 +228,7 @@ export default function Settings() {
           </Button>
         </Card>
 
-        <Card className="p-8 border border-border/20">
+        <Card className="p-4 md:p-8 border border-border/20 overflow-hidden max-w-full">
           <NotificationSettings />
         </Card>
 
