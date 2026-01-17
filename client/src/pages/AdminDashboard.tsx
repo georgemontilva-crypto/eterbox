@@ -410,6 +410,39 @@ function UsersTab() {
     }
   };
 
+  const handleExportEmails = () => {
+    if (!users || users.length === 0) {
+      toast.error('No hay usuarios para exportar');
+      return;
+    }
+
+    // Create CSV content
+    const csvHeader = 'Name,Email,Plan,Status,Created At\n';
+    const csvRows = users.map((user: any) => {
+      const name = (user.name || '').replace(/,/g, ' ');
+      const email = user.email || '';
+      const plan = user.plan_name || 'Free';
+      const status = user.is_restricted ? 'Restricted' : 'Active';
+      const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleDateString('es-ES') : '';
+      return `${name},${email},${plan},${status},${createdAt}`;
+    }).join('\n');
+    
+    const csvContent = csvHeader + csvRows;
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `eterbox-users-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success(`${users.length} emails exportados correctamente`);
+  };
+
   const filteredUsers = users?.filter((user: any) => {
     const matchesSearch = (user.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
                          (user.email?.toLowerCase() || '').includes(searchQuery.toLowerCase());
