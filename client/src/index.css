@@ -327,12 +327,12 @@ button:not([data-sidebar]), a:not([data-sidebar]), input, select, textarea {
 }
 
 /* Smooth accordion/collapse animations */
-/* Excluimos Sheet y Dialog para que usen sus propias animaciones */
-[data-state="open"]:not([data-slot="sheet-content"]):not([data-slot="dialog-overlay"]):not([data-slot="dialog-content"]) {
+/* Excluimos Sheet, Dialog y Select para que usen sus propias animaciones */
+[data-state="open"]:not([data-slot="sheet-content"]):not([data-slot="dialog-overlay"]):not([data-slot="dialog-content"]):not([data-slot="select-content"]) {
   animation: slideDown 0.3s ease-out;
 }
 
-[data-state="closed"]:not([data-slot="sheet-content"]):not([data-slot="dialog-overlay"]):not([data-slot="dialog-content"]) {
+[data-state="closed"]:not([data-slot="sheet-content"]):not([data-slot="dialog-overlay"]):not([data-slot="dialog-content"]):not([data-slot="select-content"]) {
   animation: slideUp 0.3s ease-out;
 }
 
@@ -362,10 +362,10 @@ button:not([data-sidebar]), a:not([data-sidebar]), input, select, textarea {
   }
 }
 
-/* Smooth dropdown animations */
-[role="menu"], [role="listbox"], .dropdown-content {
+/* Smooth dropdown animations - DISABLED for instant appearance */
+/* [role="menu"], [role="listbox"], .dropdown-content {
   animation: fadeIn 0.2s ease-out;
-}
+} */
 
 /* Mobile-specific smooth transitions */
 @media (max-width: 768px) {
