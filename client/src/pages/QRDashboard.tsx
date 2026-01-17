@@ -167,7 +167,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleViewQR(qrCode); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
@@ -175,7 +175,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                       </Button>
@@ -183,7 +183,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleDownloadQR(qrCode); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                       >
                         <Download className="w-4 h-4" />
                       </Button>
@@ -191,7 +191,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
@@ -427,7 +427,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleViewQR(qrCode); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
@@ -435,7 +435,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                       </Button>
@@ -443,7 +443,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleDownloadQR(qrCode); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                       >
                         <Download className="w-4 h-4" />
                       </Button>
@@ -451,7 +451,7 @@ export default function QRDashboard() {
                         variant="ghost" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
                       >
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
