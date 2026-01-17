@@ -296,23 +296,40 @@ export default function Dashboard() {
     
     return (
       <Card key={cred.id} className="p-3 md:p-4 border border-border/20 hover:border-accent/50 transition-all duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)] hover:shadow-lg">
-        <div className="flex items-start justify-between gap-2">
-          <div 
-            className="flex-1 min-w-0 cursor-pointer" 
-            onClick={() => toggleCredentialExpansion(cred.id)}
-          >
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-2">
+          {/* Header Row: Title + Buttons */}
+          <div className="flex items-start justify-between gap-2">
+            <div 
+              className="flex items-center gap-2 flex-1 min-w-0 cursor-pointer" 
+              onClick={() => toggleCredentialExpansion(cred.id)}
+            >
               <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)] flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                <p className="font-semibold text-sm md:text-base truncate">{cred.platformName}</p>
-                {(cred.username || cred.email) && (
-                  <span className="text-xs text-muted-foreground truncate">• {cred.username || cred.email}</span>
-                )}
-              </div>
+              <p className="font-semibold text-sm md:text-base truncate">{cred.platformName}</p>
+              {(cred.username || cred.email) && (
+                <span className="text-xs text-muted-foreground truncate">• {cred.username || cred.email}</span>
+              )}
             </div>
             
-            {isExpanded && (
-              <div className="mt-3 space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300" onClick={(e) => e.stopPropagation()}>
+            {!isSharedFolder && (
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}>
+                  <Edit className="w-4 h-4" />
+                </Button>
+                {showMoveOption && (
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
+                    <Folder className="w-4 h-4" />
+                  </Button>
+                )}
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDeleteCredential(cred.id)}>
+                  <Trash2 className="w-4 h-4 text-destructive" />
+                </Button>
+              </div>
+            )}
+          </div>
+            
+          {/* Expanded Content: Full Width */}
+          {isExpanded && (
+            <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300" onClick={(e) => e.stopPropagation()}>
                 {/* Username with copy button */}
                 {cred.username && (
                   <div className="flex items-center gap-1">
@@ -356,23 +373,6 @@ export default function Dashboard() {
                     <p className="text-xs md:text-sm text-foreground/80 break-words">{cred.notes}</p>
                   </div>
                 )}
-              </div>
-            )}
-          </div>
-          
-          {!isSharedFolder && (
-            <div className="flex items-center gap-2 ml-2">
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}>
-                <Edit className="w-4 h-4" />
-              </Button>
-              {showMoveOption && (
-                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => { setSelectedCredentialForMove(cred); setShowMoveDialog(true); }}>
-                  <Folder className="w-4 h-4" />
-                </Button>
-              )}
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDeleteCredential(cred.id)}>
-                <Trash2 className="w-4 h-4 text-destructive" />
-              </Button>
             </div>
           )}
         </div>
