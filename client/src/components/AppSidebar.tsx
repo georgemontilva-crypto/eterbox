@@ -99,7 +99,7 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
         `}
       >
         {/* Main Navigation - Scrollable */}
-        <nav className="flex-1 p-4 pt-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-4 pt-6 space-y-2 overflow-y-auto min-h-0">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
