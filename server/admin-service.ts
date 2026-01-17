@@ -165,11 +165,18 @@ export async function addAdmin(
       SELECT id FROM users WHERE email = ${userEmail}
     `);
 
+    console.log('[Admin] addAdmin - userResult:', userResult);
+
     if (!userResult || userResult.length === 0) {
       return { success: false, message: 'Usuario no encontrado' };
     }
 
-    const userId = userResult[0].id;
+    const userId = userResult[0]?.id;
+    console.log('[Admin] addAdmin - userId:', userId, 'type:', typeof userId);
+
+    if (!userId) {
+      return { success: false, message: 'ID de usuario no válido' };
+    }
 
     // Insert or update permissions
     await db.execute(sql`
