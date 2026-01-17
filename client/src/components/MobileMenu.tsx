@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Menu, Shield, Key, LogOut, CreditCard, Settings, Lock, ChevronRight, ArrowLeft, Home, Globe, Check, Copy, Loader2, Wand2, RefreshCw, Plus, Receipt, UserCog, Bell, Users, Moon, Sun, QrCode, Barcode } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -367,6 +367,34 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
     setActiveView(null);
     setViewHistory([]);
   };
+
+  // Handle browser back button / swipe back gesture
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      
+      // If we're in a subview, go back to previous view instead of closing
+      if (activeView !== null) {
+        handleBack();
+      } else {
+        // If we're in main menu, close the sheet
+        handleClose();
+      }
+    };
+
+    // Push a state when sheet opens so back button can be intercepted
+    if (open) {
+      window.history.pushState({ menuOpen: true }, '');
+    }
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [open, activeView]);
 
   const handleGoToDashboard = () => {
     setOpen(false);
