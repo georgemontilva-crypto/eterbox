@@ -845,56 +845,7 @@ export default function Dashboard() {
           <div>
             <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {credentialsWithoutFolder.map((cred: any) => (
-                <Card 
-                  key={cred.id} 
-                  className="group relative p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors"
-                  onClick={() => toggleCredentialExpansion(cred.id)}
-                >
-                  <div className="flex flex-col gap-3">
-                    {/* Header with Icon and Actions */}
-                    <div className="flex items-center justify-between">
-                      <Lock className="w-6 h-6 text-accent" />
-                      <div className="flex items-center gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
-                          onClick={(e) => { e.stopPropagation(); copyToClipboard(cred.encryptedPassword); }}
-                          title="Copy password"
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
-                          onClick={(e) => { e.stopPropagation(); setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}
-                          title="Edit credential"
-                        >
-                          <Edit className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
-                          onClick={(e) => { e.stopPropagation(); openDeleteCredentialDialog(cred); }}
-                          title="Delete credential"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                        </Button>
-                      </div>
-                    </div>
-                    {/* Credential Info */}
-                    <div>
-                      <p className="font-semibold truncate">{cred.platformName}</p>
-                      <p className="text-xs text-muted-foreground mt-1 truncate">
-                        {cred.username || cred.email || 'No username'}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
+              {credentialsWithoutFolder.map((cred: any) => renderCredentialCard(cred))}
             </div>
           </div>
         )}
