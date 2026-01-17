@@ -383,7 +383,7 @@ export default function Dashboard() {
   if (activeFolderView && activeFolder) {
     return (
       <AppLayout currentPath="/dashboard">
-        <div className="container py-8">
+        <div className="container py-6">
           <Button variant="ghost" className="mb-6" onClick={() => {
             setActiveFolderView(null);
             // Restore scroll position after React re-renders
@@ -506,7 +506,7 @@ export default function Dashboard() {
   // Main Dashboard View
   return (
     <AppLayout currentPath="/dashboard">
-      <div className="container py-8">
+      <div className="container py-6">
         {/* Renewal Banner */}
         {userPlan?.subscriptionEndDate && userPlan?.name !== "Free" && (
           <RenewalBanner 
@@ -524,12 +524,12 @@ export default function Dashboard() {
           />
         )}
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name || "User"}!</h1>
-          <p className="text-muted-foreground">Manage your passwords and credentials securely</p>
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">Welcome back, {user?.name || "User"}!</h1>
+          <p className="text-sm text-muted-foreground">Manage your passwords and credentials securely</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
           <Card 
             className="p-3 md:p-4 border border-border/20 cursor-pointer hover:border-accent/50 transition-colors" 
             onClick={() => setLocation('/pricing')}
@@ -578,44 +578,23 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <div className="space-y-4 mb-8">
-          {/* All 3 buttons in one row on desktop, stacked on mobile */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button size="lg" className="w-full" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }} disabled={isSubscriptionExpired}>
-              <Plus className="w-4 h-4 mr-2" />Add New Credential
+        <div className="mb-6">
+          {/* Primary Actions */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+            <Button size="lg" className="w-full h-12" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }} disabled={isSubscriptionExpired}>
+              <Plus className="w-4 h-4 mr-2" />Add Credential
             </Button>
-            <Button size="lg" variant="outline" className="w-full" onClick={() => setShowFolderModal(true)} disabled={isSubscriptionExpired}>
-              <Plus className="w-4 h-4 mr-2" />Create Folder
+            <Button size="lg" variant="outline" className="w-full h-12" onClick={() => setShowFolderModal(true)} disabled={isSubscriptionExpired}>
+              <FolderPlus className="w-4 h-4 mr-2" />Create Folder
             </Button>
-            <Button size="lg" variant="outline" className="w-full" onClick={() => setShowPasswordGenerator(true)}>
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-              Generate Password
+            <Button size="lg" variant="outline" className="w-full h-12" onClick={() => setShowPasswordGenerator(true)}>
+              <Lock className="w-4 h-4 mr-2" />Generate Password
             </Button>
-          </div>
-          
-          {/* Export/Import buttons - Only for paid plans */}
-          {userPlan && userPlan.name !== "Free" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {userPlan && userPlan.name !== "Free" && (
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="w-full" 
-                onClick={() => setShowExportModal(true)}
-              >
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Export Credentials
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="w-full" 
+                className="w-full h-12" 
                 onClick={() => setShowImportModal(true)}
               >
                 <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -623,13 +602,29 @@ export default function Dashboard() {
                   <polyline points="17 8 12 3 7 8"/>
                   <line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
-                Import Credentials
+                Import
               </Button>
-            </div>
+            )}
+          </div>
+          
+          {/* Export button - Only for paid plans */}
+          {userPlan && userPlan.name !== "Free" && (
+            <Button 
+              variant="ghost" 
+              className="w-full h-10 border border-border/30" 
+              onClick={() => setShowExportModal(true)}
+            >
+              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Export Credentials
+            </Button>
           )}
         </div>
 
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
@@ -643,7 +638,7 @@ export default function Dashboard() {
         </div>
 
         {searchQuery.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-6">
             <h3 className="text-lg font-bold mb-4">Search Results</h3>
             <div className="space-y-4">
               {filteredFolders.length > 0 && (
@@ -706,51 +701,80 @@ export default function Dashboard() {
         )}
 
         {searchQuery.length === 0 && folders && folders.length > 0 && (
-          <div className="mb-12">
+          <div className="mb-6">
             <h3 className="text-xl font-bold mb-4">Your Folders</h3>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {[...folders].reverse().map((folder: any) => {
                 const folderCreds = credentialsByFolder[folder.id] || [];
                 return (
-                  <Card key={folder.id} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(folder.id)}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-start gap-3">
-                        <Folder className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                        <div className="flex flex-wrap items-baseline gap-2">
-                          <p className="font-semibold">{folder.name}</p>
-                          <p className="text-sm text-muted-foreground whitespace-nowrap">{folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}</p>
-                          {folder.shareCount > 0 && (
-                            <div className="flex items-center gap-1 px-2 py-0.5 bg-accent/10 border border-accent/20 rounded-full">
-                              <Users className="w-3 h-3 text-accent" />
-                              <span className="text-xs text-accent font-medium">{folder.shareCount}</span>
-                            </div>
-                          )}
+                  <Card 
+                    key={folder.id} 
+                    className="group relative p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-all hover:shadow-lg"
+                    onClick={() => openFolderView(folder.id)}
+                  >
+                    {/* Header with Icon and Share Badge */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center">
+                        <Folder className="w-5 h-5 text-accent" />
+                      </div>
+                      {folder.shareCount > 0 && (
+                        <div className="flex items-center gap-1 px-2 py-1 bg-accent/10 border border-accent/20 rounded-full">
+                          <Users className="w-3 h-3 text-accent" />
+                          <span className="text-xs text-accent font-medium">{folder.shareCount}</span>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}>
-                          <Plus className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFolderForEdit(folder); setShowEditFolderModal(true); }}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
-                            setSelectedFolderForShare({ id: folder.id, name: folder.name }); 
-                            setShowShareFolderModal(true); 
-                          }}
-                          title="Share folder"
-                        >
-                          <Users className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}>
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
-                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                      </div>
+                      )}
+                    </div>
+
+                    {/* Folder Name */}
+                    <h4 className="font-semibold text-base mb-1 truncate">{folder.name}</h4>
+                    
+                    {/* Credentials Count */}
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}
+                    </p>
+
+                    {/* Action Buttons - Hidden by default, shown on hover */}
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}
+                        title="Add credential"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={(e) => { e.stopPropagation(); setSelectedFolderForEdit(folder); setShowEditFolderModal(true); }}
+                        title="Edit folder"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          setSelectedFolderForShare({ id: folder.id, name: folder.name }); 
+                          setShowShareFolderModal(true); 
+                        }}
+                        title="Share folder"
+                      >
+                        <Users className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}
+                        title="Delete folder"
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
                     </div>
                   </Card>
                 );
@@ -760,30 +784,40 @@ export default function Dashboard() {
         )}
 
         {searchQuery.length === 0 && sharedFolders && sharedFolders.length > 0 && (
-          <div className="mb-12">
+          <div className="mb-6">
             <h3 className="text-xl font-bold mb-4">Shared with Me</h3>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {sharedFolders.map((sharedFolder: any) => {
                 const credCount = sharedFolder.credentialCount || 0;
                 return (
-                  <Card key={sharedFolder.id} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(sharedFolder.folderId)}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-start gap-3">
-                        <Folder className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                        <div className="flex flex-wrap items-baseline gap-2">
-                          <p className="font-semibold">{sharedFolder.folder.name}</p>
-                          <p className="text-sm text-muted-foreground whitespace-nowrap">{credCount} credential{credCount !== 1 ? 's' : ''}</p>
-                          <div className="flex items-center gap-1 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
-                            <Lock className="w-3 h-3 text-green-500" />
-                            <span className="text-xs text-green-500 font-medium">Shared</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground">by {sharedFolder.owner.name || sharedFolder.owner.email}</p>
-                        </div>
+                  <Card 
+                    key={sharedFolder.id} 
+                    className="group relative p-4 border border-border/20 hover:border-green-500/50 cursor-pointer transition-all hover:shadow-lg"
+                    onClick={() => openFolderView(sharedFolder.folderId)}
+                  >
+                    {/* Header with Icon and Shared Badge */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
+                        <Folder className="w-5 h-5 text-green-500" />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      <div className="flex items-center gap-1 px-2 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
+                        <Lock className="w-3 h-3 text-green-500" />
+                        <span className="text-xs text-green-500 font-medium">Shared</span>
                       </div>
                     </div>
+
+                    {/* Folder Name */}
+                    <h4 className="font-semibold text-base mb-1 truncate">{sharedFolder.folder.name}</h4>
+                    
+                    {/* Credentials Count */}
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {credCount} credential{credCount !== 1 ? 's' : ''}
+                    </p>
+
+                    {/* Owner Info */}
+                    <p className="text-xs text-muted-foreground truncate">
+                      by {sharedFolder.owner.name || sharedFolder.owner.email}
+                    </p>
                   </Card>
                 );
               })}
