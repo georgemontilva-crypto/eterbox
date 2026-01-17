@@ -386,7 +386,7 @@ export default function Dashboard() {
   if (activeFolderView && activeFolder) {
     return (
       <AppLayout currentPath="/dashboard">
-        <div className="container py-6">
+        <div className="container py-6 px-4 md:px-6">
           <Button variant="ghost" className="mb-6" onClick={() => {
             setActiveFolderView(null);
             // Restore scroll position after React re-renders
@@ -503,7 +503,7 @@ export default function Dashboard() {
   // Main Dashboard View
   return (
     <AppLayout currentPath="/dashboard">
-      <div className="container py-6">
+      <div className="container py-6 px-4 md:px-6">
         {/* Renewal Banner */}
         {userPlan?.subscriptionEndDate && userPlan?.name !== "Free" && (
           <RenewalBanner 
@@ -753,7 +753,7 @@ export default function Dashboard() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
                             onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}
                             title="Add credential"
                           >
@@ -762,7 +762,7 @@ export default function Dashboard() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
                             onClick={(e) => { e.stopPropagation(); setSelectedFolderForEdit(folder); setShowEditFolderModal(true); }}
                             title="Edit folder"
                           >
@@ -771,7 +771,7 @@ export default function Dashboard() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
                             onClick={(e) => { 
                               e.stopPropagation(); 
                               setSelectedFolderForShare({ id: folder.id, name: folder.name }); 
@@ -784,7 +784,7 @@ export default function Dashboard() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
+                            className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
                             onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}
                             title="Delete folder"
                           >
