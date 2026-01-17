@@ -11,28 +11,28 @@ interface PlanContactModalProps {
 }
 
 const countryCodes = [
-  { code: "+1", country: "US/CA", flag: "🇺🇸" },
-  { code: "+52", country: "MX", flag: "🇲🇽" },
-  { code: "+34", country: "ES", flag: "🇪🇸" },
-  { code: "+44", country: "UK", flag: "🇬🇧" },
-  { code: "+54", country: "AR", flag: "🇦🇷" },
-  { code: "+55", country: "BR", flag: "🇧🇷" },
-  { code: "+56", country: "CL", flag: "🇨🇱" },
-  { code: "+57", country: "CO", flag: "🇨🇴" },
-  { code: "+58", country: "VE", flag: "🇻🇪" },
-  { code: "+51", country: "PE", flag: "🇵🇪" },
-  { code: "+593", country: "EC", flag: "🇪🇨" },
-  { code: "+591", country: "BO", flag: "🇧🇴" },
-  { code: "+595", country: "PY", flag: "🇵🇾" },
-  { code: "+598", country: "UY", flag: "🇺🇾" },
-  { code: "+506", country: "CR", flag: "🇨🇷" },
-  { code: "+507", country: "PA", flag: "🇵🇦" },
-  { code: "+503", country: "SV", flag: "🇸🇻" },
-  { code: "+502", country: "GT", flag: "🇬🇹" },
-  { code: "+504", country: "HN", flag: "🇭🇳" },
-  { code: "+505", country: "NI", flag: "🇳🇮" },
-  { code: "+509", country: "HT", flag: "🇭🇹" },
-  { code: "+1-809", country: "DO", flag: "🇩🇴" },
+  { code: "+1", country: "US/CA" },
+  { code: "+52", country: "MX" },
+  { code: "+34", country: "ES" },
+  { code: "+44", country: "UK" },
+  { code: "+54", country: "AR" },
+  { code: "+55", country: "BR" },
+  { code: "+56", country: "CL" },
+  { code: "+57", country: "CO" },
+  { code: "+58", country: "VE" },
+  { code: "+51", country: "PE" },
+  { code: "+593", country: "EC" },
+  { code: "+591", country: "BO" },
+  { code: "+595", country: "PY" },
+  { code: "+598", country: "UY" },
+  { code: "+506", country: "CR" },
+  { code: "+507", country: "PA" },
+  { code: "+503", country: "SV" },
+  { code: "+502", country: "GT" },
+  { code: "+504", country: "HN" },
+  { code: "+505", country: "NI" },
+  { code: "+509", country: "HT" },
+  { code: "+1-809", country: "DO" },
 ];
 
 export function PlanContactModal({ isOpen, onClose, planName, planPrice }: PlanContactModalProps) {
@@ -154,7 +154,7 @@ export function PlanContactModal({ isOpen, onClose, planName, planPrice }: PlanC
                   >
                     {countryCodes.map((country) => (
                       <option key={country.code} value={country.code}>
-                        {country.flag} {country.code}
+                        {country.country} {country.code}
                       </option>
                     ))}
                   </select>
