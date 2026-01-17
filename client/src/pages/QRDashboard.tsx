@@ -104,7 +104,12 @@ export default function QRDashboard() {
     const isSharedFolder = sharedFolders.some((sf: any) => sf.folderId === activeFolderId);
     const currentFolder = folders.find(f => f.id === activeFolderId) || 
                          sharedFolders.find((sf: any) => sf.folderId === activeFolderId)?.folder;
-    const folderQRCodes = qrCodesByFolder[activeFolderId] || [];
+    
+    // Use listByFolder query to get QR codes (works for both own and shared folders)
+    const { data: folderQRCodes = [] } = trpc.qrCodes.listByFolder.useQuery(
+      { folderId: activeFolderId },
+      { enabled: activeFolderId !== null }
+    );
 
     return (
       <AppLayout currentPath="/qr-codes">
