@@ -166,12 +166,18 @@ function App() {
   // Inicializar Lenis para scroll suave
   useLenis();
   
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    // Check if splash was already shown in this session
+    const splashShown = sessionStorage.getItem('splashShown');
+    return !splashShown; // Show splash only if not shown yet
+  });
 
   useEffect(() => {
-    // Show splash screen on every app load
-    setShowSplash(true);
-  }, []);
+    // Mark splash as shown for this session
+    if (showSplash) {
+      sessionStorage.setItem('splashShown', 'true');
+    }
+  }, [showSplash]);
 
   const handleSplashFinish = () => {
     setShowSplash(false);
