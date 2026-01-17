@@ -118,6 +118,8 @@ export default function Dashboard() {
       await deleteCredentialMutation.mutateAsync({ id });
       toast.success(t("dashboard.credentialDeleted"));
       utils.credentials.list.invalidate();
+      utils.credentials.listByFolder.invalidate();
+      utils.folders.listWithShareCount.invalidate();
     } catch (error) {
       toast.error(t("dashboard.failedToDelete"));
     }

@@ -54,6 +54,7 @@ export function EditCredentialModal({ open, onOpenChange, credential, folders }:
       onOpenChange(false);
       utils.credentials.list.invalidate();
       utils.credentials.listByFolder.invalidate();
+      utils.folders.listWithShareCount.invalidate();
     } catch (error) {
       toast.error("Failed to update credential");
     }

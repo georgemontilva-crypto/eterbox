@@ -101,7 +101,9 @@ export function CreateCredentialModal({
       });
 
       await utils.credentials.getAll.invalidate();
+      await utils.credentials.listByFolder.invalidate();
       await utils.folders.getAll.invalidate();
+      await utils.folders.listWithShareCount.invalidate();
 
       toast.success("Credential created successfully!");
       onOpenChange(false);

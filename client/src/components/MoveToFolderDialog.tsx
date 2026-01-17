@@ -33,6 +33,8 @@ export function MoveToFolderDialog({
       toast.success("Credential moved successfully!");
       onOpenChange(false);
       utils.credentials.list.invalidate();
+      utils.credentials.listByFolder.invalidate();
+      utils.folders.listWithShareCount.invalidate();
     } catch (error) {
       toast.error("Failed to move credential");
     }
