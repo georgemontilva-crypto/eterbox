@@ -32,7 +32,7 @@ export function CreateCredentialModal({
     email: "",
     password: defaultPassword || "",
     notes: "",
-    selectedFolderId: defaultFolderId || folderId || "",
+    selectedFolderId: defaultFolderId?.toString() || folderId?.toString() || "none",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -90,7 +90,7 @@ export function CreateCredentialModal({
         email: formData.email,
         password: formData.password,
         notes: formData.notes,
-        folderId: formData.selectedFolderId ? Number(formData.selectedFolderId) : null,
+        folderId: formData.selectedFolderId && formData.selectedFolderId !== "none" ? Number(formData.selectedFolderId) : null,
       });
 
       await utils.credentials.getAll.invalidate();
@@ -105,7 +105,7 @@ export function CreateCredentialModal({
         email: "",
         password: "",
         notes: "",
-        selectedFolderId: "",
+        selectedFolderId: "none",
       });
     } catch (error: any) {
       toast.error(error.message || "Failed to create credential");
@@ -232,10 +232,10 @@ export function CreateCredentialModal({
               onValueChange={(value) => setFormData({ ...formData, selectedFolderId: value })}
             >
               <SelectTrigger className="h-11 border-border/50 focus:border-accent">
-                <SelectValue placeholder="No folder" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="border-border/50">
-                <SelectItem value="">No folder</SelectItem>
+                <SelectItem value="none">No folder</SelectItem>
                 {folders && folders.map((folder: any) => (
                   <SelectItem key={folder.id} value={folder.id.toString()}>
                     <div className="flex items-center gap-2">
