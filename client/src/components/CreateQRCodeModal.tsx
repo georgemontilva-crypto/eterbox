@@ -206,7 +206,7 @@ export default function CreateQRCodeModal({
                     Type
                   </Label>
                   <Select value={type} onValueChange={setType}>
-                    <SelectTrigger className="h-11 border-border/50 focus:border-accent transition-all duration-200">
+                    <SelectTrigger className="h-11 border-border/50 focus:border-accent">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="border-border/50">
@@ -261,7 +261,7 @@ export default function CreateQRCodeModal({
                     Folder (Optional)
                   </Label>
                   <Select value={folderId} onValueChange={setFolderId}>
-                    <SelectTrigger className="h-11 border-border/50 focus:border-accent transition-all duration-200">
+                    <SelectTrigger className="h-11 border-border/50 focus:border-accent">
                       <SelectValue placeholder="No folder" />
                     </SelectTrigger>
                     <SelectContent className="border-border/50">
