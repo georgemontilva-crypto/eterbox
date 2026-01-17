@@ -12,6 +12,7 @@ import Shared from "./pages/Shared";
 import Pricing from "./pages/Pricing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
+import Legal from "./pages/Legal";
 import Verify2FA from "./pages/Verify2FA";
 import VerifyEmail from "./pages/VerifyEmail";
 import Login from "./pages/Login";
@@ -147,6 +148,7 @@ function Router() {
       <Route path="/qr-codes" component={() => <ProtectedRoute component={QRDashboard} />} />
       <Route path="/shared" component={() => <ProtectedRoute component={Shared} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
+      <Route path="/legal" component={() => <ProtectedRoute component={Legal} />} />
       <Route path="/change-password" component={() => <ProtectedRoute component={ChangePassword} />} />
       <Route path="/admin" component={() => <ProtectedRoute component={AdminDashboard} />} />
       <Route path="/404" component={NotFound} />

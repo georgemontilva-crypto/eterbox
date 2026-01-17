@@ -11,7 +11,8 @@ import {
   LogOut, 
   Menu, 
   X,
-  ChevronRight
+  ChevronRight,
+  FileText
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -38,6 +39,7 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
 
   const bottomMenuItems = [
     { icon: Settings, label: "Settings", path: "/settings", color: "text-gray-500" },
+    { icon: FileText, label: "Legal", path: "/legal", color: "text-blue-500" },
     ...(adminCheck?.isAdmin ? [{ icon: Shield, label: "Admin", path: "/admin", color: "text-red-500" }] : []),
   ];
 
