@@ -136,59 +136,65 @@ export default function QRDashboard() {
               </p>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
               {folderQRCodes.map((qrCode) => (
                 <Card key={qrCode.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors group">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <img
-                        src={qrCode.qrImage}
-                        alt={qrCode.name}
-                        className="w-8 h-8 rounded border border-border/20"
-                      />
-                      <div className="flex items-center gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleViewQR(qrCode); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 p-0"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 p-0"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleDownloadQR(qrCode); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 p-0"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                        </Button>
+                  <div className="flex items-center gap-4">
+                    {/* QR Code Image - Left */}
+                    <img
+                      src={qrCode.qrImage}
+                      alt={qrCode.name}
+                      className="w-24 h-24 rounded border border-border/20 flex-shrink-0"
+                    />
+                    
+                    {/* Content - Center */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-bold truncate">{qrCode.name}</h3>
+                      {qrCode.description && (
+                        <p className="text-sm text-muted-foreground truncate">{qrCode.description}</p>
+                      )}
+                      <div className="flex items-center gap-3 mt-2">
+                        <p className="text-xs text-muted-foreground uppercase">{qrCode.type}</p>
+                        <p className="text-xs text-muted-foreground">
+                          scans: {qrCode.scans || 0}
+                        </p>
                       </div>
                     </div>
-                    <div>
-                      <p className="font-semibold truncate">{qrCode.name}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{qrCode.type}</p>
-                      {qrCode.scans > 0 && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Scans: {qrCode.scans}
-                        </p>
-                      )}
+                    
+                    {/* Action Buttons - Right */}
+                    <div className="flex items-start gap-1 flex-shrink-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleViewQR(qrCode); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleDownloadQR(qrCode); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
                     </div>
                   </div>
                 </Card>
@@ -390,59 +396,65 @@ export default function QRDashboard() {
               </p>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredQRCodes.map((qrCode) => (
                 <Card key={qrCode.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors group">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <img
-                        src={qrCode.qrImage}
-                        alt={qrCode.name}
-                        className="w-8 h-8 rounded border border-border/20"
-                      />
-                      <div className="flex items-center gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleViewQR(qrCode); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 p-0"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 p-0"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleDownloadQR(qrCode); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 p-0"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                        </Button>
+                  <div className="flex items-center gap-4">
+                    {/* QR Code Image - Left */}
+                    <img
+                      src={qrCode.qrImage}
+                      alt={qrCode.name}
+                      className="w-24 h-24 rounded border border-border/20 flex-shrink-0"
+                    />
+                    
+                    {/* Content - Center */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-bold truncate">{qrCode.name}</h3>
+                      {qrCode.description && (
+                        <p className="text-sm text-muted-foreground truncate">{qrCode.description}</p>
+                      )}
+                      <div className="flex items-center gap-3 mt-2">
+                        <p className="text-xs text-muted-foreground uppercase">{qrCode.type}</p>
+                        <p className="text-xs text-muted-foreground">
+                          scans: {qrCode.scans || 0}
+                        </p>
                       </div>
                     </div>
-                    <div>
-                      <p className="font-semibold truncate">{qrCode.name}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{qrCode.type}</p>
-                      {qrCode.scans > 0 && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Scans: {qrCode.scans}
-                        </p>
-                      )}
+                    
+                    {/* Action Buttons - Right */}
+                    <div className="flex items-start gap-1 flex-shrink-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleViewQR(qrCode); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleDownloadQR(qrCode); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
                     </div>
                   </div>
                 </Card>
