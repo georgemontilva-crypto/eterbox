@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { Lock, LogOut, Shield, Loader2, User, Mail, Bell } from "lucide-react";
+import { Lock, LogOut, Shield, Loader2, User, Mail, Bell, CheckCircle2, XCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { NotificationSettings } from "@/components/NotificationSettings";
+import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ export default function Settings() {
   const [verificationCode, setVerificationCode] = useState("");
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [showBackupCodes, setShowBackupCodes] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
   const { data: twoFactorStatus } = trpc.twoFactor.status.useQuery();
   const setup2FA = trpc.twoFactor.setup.useMutation({
@@ -123,9 +125,19 @@ export default function Settings() {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="font-medium text-sm">Two-Factor Authentication</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {twoFactorStatus?.enabled ? "✅ Enabled" : "❌ Disabled"}
-                  </p>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    {twoFactorStatus?.enabled ? (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                        <p className="text-xs text-green-500">Enabled</p>
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="w-3.5 h-3.5 text-muted-foreground" />
+                        <p className="text-xs text-muted-foreground">Disabled</p>
+                      </>
+                    )}
+                  </div>
                 </div>
                 {twoFactorStatus?.enabled ? (
                   <Button 
@@ -155,10 +167,10 @@ export default function Settings() {
             <Button 
               variant="outline" 
               className="w-full flex items-center justify-center gap-2"
-              onClick={() => setLocation("/change-password")}
+              onClick={() => setShowChangePasswordModal(true)}
             >
               <Lock className="w-4 h-4" />
-              {t("menu.changePassword")}
+              {t("settings.changePassword")}
             </Button>
           </Card>
         </div>
@@ -246,12 +258,6 @@ export default function Settings() {
 
         {/* Notifications - Full Width */}
         <Card className="p-6 border border-border/20 mb-6 bg-gradient-to-br from-card to-card/50">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-accent" />
-            </div>
-            <h3 className="text-xl font-bold">Notifications</h3>
-          </div>
           <NotificationSettings />
         </Card>
 
@@ -266,6 +272,12 @@ export default function Settings() {
           </Button>
         </div>
       </main>
+
+      {/* Change Password Modal */}
+      <ChangePasswordModal 
+        open={showChangePasswordModal} 
+        onOpenChange={setShowChangePasswordModal} 
+      />
     </AppLayout>
   );
 }
