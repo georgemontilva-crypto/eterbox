@@ -12,11 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 export default function Home() {
@@ -101,15 +97,39 @@ export default function Home() {
           {/* Mobile Navigation */}
           {/* Mobile Menu */}
           <div className="flex md:hidden items-center gap-2">
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Menu className="w-5 h-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-0 flex flex-col" hideClose={true}>
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-border/20">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-9 w-9"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Overlay for mobile */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-lg z-40 md:hidden animate-in fade-in duration-300"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar */}
+      <aside
+        className={`
+          fixed top-0 left-0 h-screen bg-card border-r border-border/20 z-50 shadow-2xl
+          transition-transform duration-[400ms] ease-[cubic-bezier(0.4,0.0,0.2,1)]
+          ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:hidden
+          w-64 flex flex-col
+          overflow-hidden
+        `}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-border/20 flex-shrink-0">
                   <div className="flex items-center gap-3">
                     <img 
                       src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"} 
@@ -128,8 +148,8 @@ export default function Home() {
                   </Button>
                 </div>
 
-                {/* Menu Items */}
-                <div className="flex-1 p-6">
+        {/* Menu Items */}
+        <div className="flex-1 p-6 overflow-y-auto">
                   <div className="bg-card/50 backdrop-blur-sm rounded-[20px] border border-border/20 p-2 space-y-1">
                     <Button 
                       variant="ghost" 
@@ -174,8 +194,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Bottom Section */}
-                <div className="p-6 space-y-4 border-t border-border/20">
+        {/* Bottom Section */}
+        <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-4 border-t border-border/20 flex-shrink-0">
                   {/* Theme Toggle */}
                   <div className="bg-card/50 backdrop-blur-sm rounded-[20px] border border-border/20 p-4 flex items-center justify-between">
                     <span className="text-base font-medium">{t("settings.theme") || "Theme"}</span>
@@ -237,13 +257,9 @@ export default function Home() {
                     >
                       {t("home.nav.login")}
                     </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
           </div>
         </div>
-      </nav>
+      </aside>
 
       {/* Hero Section */}
       <section className="container py-12 sm:py-20 md:py-32 px-4">
