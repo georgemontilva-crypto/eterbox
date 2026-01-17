@@ -352,7 +352,7 @@ export default function QRDashboard() {
                               e.stopPropagation();
                               handleShareFolder(folder);
                             }}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
                             title="Share folder"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
@@ -364,7 +364,7 @@ export default function QRDashboard() {
                               e.stopPropagation();
                               handleDeleteFolder(folder.id);
                             }}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
+                            className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
                           >
                             <Trash2 className="w-3.5 h-3.5 text-destructive" />
                           </Button>
