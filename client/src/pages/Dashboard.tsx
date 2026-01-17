@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { CreateCredentialModal } from "@/components/CreateCredentialModal";
 import { EditCredentialModal } from "@/components/EditCredentialModal";
 import { CreateFolderModal } from "@/components/CreateFolderModal";
@@ -13,7 +14,7 @@ import { ImportCredentialsModal } from "@/components/ImportCredentialsModal";
 import { ShareFolderModal } from "@/components/ShareFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit, Users } from "lucide-react";
+import { Lock, Plus, Eye, EyeOff, Copy, Trash2, Settings, LogOut, Folder, Search, ChevronRight, ChevronDown, ArrowLeft, FolderPlus, Shield, Edit, Users, Download, Upload, MoreVertical } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { RenewalBanner } from "@/components/RenewalBanner";
 import { SubscriptionExpiredModal } from "@/components/SubscriptionExpiredModal";
@@ -580,7 +581,7 @@ export default function Dashboard() {
 
         <div className="mb-6">
           {/* Primary Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <Button size="lg" className="w-full h-12" onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }} disabled={isSubscriptionExpired}>
               <Plus className="w-4 h-4 mr-2" />Add Credential
             </Button>
@@ -591,41 +592,29 @@ export default function Dashboard() {
               <Lock className="w-4 h-4 mr-2" />Generate Password
             </Button>
             {userPlan && userPlan.name !== "Free" && (
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="w-full h-12" 
-                onClick={() => setShowImportModal(true)}
-              >
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                Import
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="lg" variant="outline" className="w-full h-12">
+                    <MoreVertical className="w-4 h-4 mr-2" />More Actions
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => setShowImportModal(true)}>
+                    <Upload className="w-4 h-4 mr-2" />
+                    Import Credentials
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowExportModal(true)}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Export Credentials
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
-          
-          {/* Export button - Only for paid plans */}
-          {userPlan && userPlan.name !== "Free" && (
-            <Button 
-              variant="ghost" 
-              className="w-full h-10 border border-border/30" 
-              onClick={() => setShowExportModal(true)}
-            >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Export Credentials
-            </Button>
-          )}
         </div>
 
         <div className="mb-6">
-          <div className="relative">
+          <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
@@ -709,72 +698,69 @@ export default function Dashboard() {
                 return (
                   <Card 
                     key={folder.id} 
-                    className="group relative p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-all hover:shadow-lg"
+                    className="group relative p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors"
                     onClick={() => openFolderView(folder.id)}
                   >
-                    {/* Header with Icon and Share Badge */}
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center">
-                        <Folder className="w-5 h-5 text-accent" />
-                      </div>
-                      {folder.shareCount > 0 && (
-                        <div className="flex items-center gap-1 px-2 py-1 bg-accent/10 border border-accent/20 rounded-full">
-                          <Users className="w-3 h-3 text-accent" />
-                          <span className="text-xs text-accent font-medium">{folder.shareCount}</span>
+                    <div className="flex flex-col gap-3">
+                      {/* Header with Icon and Share Badge */}
+                      <div className="flex items-center justify-between">
+                        <Folder className="w-6 h-6 text-accent" />
+                        <div className="flex items-center gap-1">
+                          {folder.shareCount > 0 && (
+                            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-accent/10 border border-accent/20 rounded-full">
+                              <Users className="w-3 h-3 text-accent" />
+                              <span className="text-xs text-accent font-medium">{folder.shareCount}</span>
+                            </div>
+                          )}
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}
+                            title="Add credential"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            onClick={(e) => { e.stopPropagation(); setSelectedFolderForEdit(folder); setShowEditFolderModal(true); }}
+                            title="Edit folder"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              setSelectedFolderForShare({ id: folder.id, name: folder.name }); 
+                              setShowShareFolderModal(true); 
+                            }}
+                            title="Share folder"
+                          >
+                            <Users className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
+                            onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}
+                            title="Delete folder"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                          </Button>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Folder Name */}
-                    <h4 className="font-semibold text-base mb-1 truncate">{folder.name}</h4>
-                    
-                    {/* Credentials Count */}
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}
-                    </p>
-
-                    {/* Action Buttons - Hidden by default, shown on hover */}
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 w-8 p-0"
-                        onClick={(e) => { e.stopPropagation(); setSelectedFolderId(folder.id); setShowCredentialModal(true); }}
-                        title="Add credential"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 w-8 p-0"
-                        onClick={(e) => { e.stopPropagation(); setSelectedFolderForEdit(folder); setShowEditFolderModal(true); }}
-                        title="Edit folder"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 w-8 p-0"
-                        onClick={(e) => { 
-                          e.stopPropagation(); 
-                          setSelectedFolderForShare({ id: folder.id, name: folder.name }); 
-                          setShowShareFolderModal(true); 
-                        }}
-                        title="Share folder"
-                      >
-                        <Users className="w-4 h-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 w-8 p-0"
-                        onClick={(e) => { e.stopPropagation(); openDeleteFolderDialog(folder); }}
-                        title="Delete folder"
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
+                      </div>
+                      {/* Folder Info */}
+                      <div>
+                        <p className="font-semibold truncate">{folder.name}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {folderCreds.length} credential{folderCreds.length !== 1 ? 's' : ''}
+                        </p>
+                      </div>
                     </div>
                   </Card>
                 );
@@ -825,18 +811,69 @@ export default function Dashboard() {
           </div>
         )}
 
-        {searchQuery.length === 0 && (
+        {searchQuery.length === 0 && credentialsWithoutFolder && credentialsWithoutFolder.length > 0 && (
           <div>
             <h3 className="text-xl font-bold mb-4">Your Credentials</h3>
-            {credentialsWithoutFolder && credentialsWithoutFolder.length > 0 ? (
-              <div className="space-y-3">{credentialsWithoutFolder.map((cred: any) => renderCredentialCard(cred))}</div>
-            ) : credentials && credentials.length === 0 ? (
-              <Card className="p-12 border border-border/20 text-center">
-                <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <p className="text-muted-foreground">No credentials yet. Create your first one!</p>
-              </Card>
-            ) : null}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {credentialsWithoutFolder.map((cred: any) => (
+                <Card 
+                  key={cred.id} 
+                  className="group relative p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors"
+                  onClick={() => toggleCredentialExpansion(cred.id)}
+                >
+                  <div className="flex flex-col gap-3">
+                    {/* Header with Icon and Actions */}
+                    <div className="flex items-center justify-between">
+                      <Lock className="w-6 h-6 text-accent" />
+                      <div className="flex items-center gap-1">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                          onClick={(e) => { e.stopPropagation(); copyToClipboard(cred.encryptedPassword); }}
+                          title="Copy password"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-accent/50 h-7 w-7 p-0"
+                          onClick={(e) => { e.stopPropagation(); setSelectedCredentialForEdit(cred); setShowEditCredentialModal(true); }}
+                          title="Edit credential"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-7 w-7 p-0"
+                          onClick={(e) => { e.stopPropagation(); openDeleteCredentialDialog(cred); }}
+                          title="Delete credential"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                    {/* Credential Info */}
+                    <div>
+                      <p className="font-semibold truncate">{cred.platformName}</p>
+                      <p className="text-xs text-muted-foreground mt-1 truncate">
+                        {cred.username || cred.email || 'No username'}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
+        )}
+        
+        {searchQuery.length === 0 && credentials && credentials.length === 0 && (
+          <Card className="p-12 border border-border/20 text-center">
+            <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+            <p className="text-muted-foreground">No credentials yet. Create your first one!</p>
+          </Card>
         )}
       </div>
 

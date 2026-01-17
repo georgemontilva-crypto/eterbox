@@ -12,7 +12,9 @@ import {
   Menu, 
   X,
   ChevronRight,
-  FileText
+  FileText,
+  Sun,
+  Moon
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -27,8 +29,21 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
   const { logout, user } = useAuth();
   const { data: adminCheck } = trpc.admin.isAdmin.useQuery();
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    }
+    return 'dark';
+  });
 
   const planName = userPlan?.name || "Free";
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', newTheme);
+  };
 
   const menuItems = [
     { icon: Lock, label: "Passwords", path: "/dashboard", color: "text-blue-500" },
@@ -151,6 +166,30 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
               </button>
             );
           })}
+
+          {/* Theme Toggle */}
+          <div className="mb-3">
+            <button
+              onClick={toggleTheme}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                {theme === 'dark' ? (
+                  <Moon className="w-5 h-5 text-blue-500" />
+                ) : (
+                  <Sun className="w-5 h-5 text-yellow-500" />
+                )}
+                <span className="text-sm font-medium">Theme</span>
+              </div>
+              <div className="relative w-11 h-6 bg-accent/20 rounded-full transition-colors">
+                <div
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-accent rounded-full transition-transform duration-200 ${
+                    theme === 'dark' ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </div>
+            </button>
+          </div>
 
           {/* User Info & Logout */}
           <div className="pt-4 border-t border-border/20">

@@ -290,7 +290,7 @@ export default function QRDashboard() {
 
         {/* Search */}
         <div className="mb-8">
-          <div className="relative">
+          <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
