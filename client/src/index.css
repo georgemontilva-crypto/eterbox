@@ -327,12 +327,12 @@ button:not([data-sidebar]), a:not([data-sidebar]), input, select, textarea {
 }
 
 /* Smooth accordion/collapse animations */
-/* Excluimos Sheet para que use sus propias animaciones horizontales */
-[data-state="open"]:not([data-slot="sheet-content"]) {
+/* Excluimos Sheet y Dialog para que usen sus propias animaciones */
+[data-state="open"]:not([data-slot="sheet-content"]):not([data-slot="dialog-overlay"]):not([data-slot="dialog-content"]) {
   animation: slideDown 0.3s ease-out;
 }
 
-[data-state="closed"]:not([data-slot="sheet-content"]) {
+[data-state="closed"]:not([data-slot="sheet-content"]):not([data-slot="dialog-overlay"]):not([data-slot="dialog-content"]) {
   animation: slideUp 0.3s ease-out;
 }
 
