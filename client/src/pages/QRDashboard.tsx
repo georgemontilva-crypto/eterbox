@@ -162,30 +162,32 @@ export default function QRDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
               {folderQRCodes.map((qrCode) => (
                 <Card key={qrCode.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors group">
-                  <div className="flex items-center gap-4">
-                    {/* QR Code Image - Left */}
-                    <img
-                      src={qrCode.qrImage}
-                      alt={qrCode.name}
-                      className="w-24 h-24 rounded border border-border/20 flex-shrink-0"
-                    />
-                    
-                    {/* Content - Center */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold line-clamp-2 break-words">{qrCode.name}</h3>
-                      {qrCode.description && (
-                        <p className="text-sm text-muted-foreground truncate">{qrCode.description}</p>
-                      )}
-                      <div className="flex items-center gap-3 mt-2">
-                        <p className="text-xs text-muted-foreground uppercase">{qrCode.type}</p>
-                        <p className="text-xs text-muted-foreground">
-                          scans: {qrCode.scans || 0}
-                        </p>
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                    <div className="flex items-start gap-4 w-full md:w-auto">
+                      {/* QR Code Image - Left */}
+                      <img
+                        src={qrCode.qrImage}
+                        alt={qrCode.name}
+                        className="w-20 h-20 md:w-24 md:h-24 rounded border border-border/20 flex-shrink-0"
+                      />
+                      
+                      {/* Content - Center */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base md:text-lg font-bold line-clamp-2 break-words">{qrCode.name}</h3>
+                        {qrCode.description && (
+                          <p className="text-sm text-muted-foreground line-clamp-2 break-words">{qrCode.description}</p>
+                        )}
+                        <div className="flex items-center gap-3 mt-2 flex-wrap">
+                          <p className="text-xs text-muted-foreground uppercase">{qrCode.type}</p>
+                          <p className="text-xs text-muted-foreground">
+                            scans: {qrCode.scans || 0}
+                          </p>
+                        </div>
                       </div>
                     </div>
                     
                     {/* Action Buttons - Right */}
-                    <div className="flex items-start gap-1 flex-shrink-0">
+                    <div className="flex items-center gap-1 flex-shrink-0 w-full md:w-auto justify-end md:justify-start">
                       <Button 
                         variant="ghost" 
                         size="sm" 
@@ -469,30 +471,32 @@ export default function QRDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredQRCodes.map((qrCode) => (
                 <Card key={qrCode.id} className="p-4 border border-border/20 hover:border-accent/50 transition-colors group">
-                  <div className="flex items-center gap-4">
-                    {/* QR Code Image - Left */}
-                    <img
-                      src={qrCode.qrImage}
-                      alt={qrCode.name}
-                      className="w-24 h-24 rounded border border-border/20 flex-shrink-0"
-                    />
-                    
-                    {/* Content - Center */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold line-clamp-2 break-words">{qrCode.name}</h3>
-                      {qrCode.description && (
-                        <p className="text-sm text-muted-foreground truncate">{qrCode.description}</p>
-                      )}
-                      <div className="flex items-center gap-3 mt-2">
-                        <p className="text-xs text-muted-foreground uppercase">{qrCode.type}</p>
-                        <p className="text-xs text-muted-foreground">
-                          scans: {qrCode.scans || 0}
-                        </p>
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                    <div className="flex items-start gap-4 w-full md:w-auto">
+                      {/* QR Code Image - Left */}
+                      <img
+                        src={qrCode.qrImage}
+                        alt={qrCode.name}
+                        className="w-20 h-20 md:w-24 md:h-24 rounded border border-border/20 flex-shrink-0"
+                      />
+                      
+                      {/* Content - Center */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base md:text-lg font-bold line-clamp-2 break-words">{qrCode.name}</h3>
+                        {qrCode.description && (
+                          <p className="text-sm text-muted-foreground line-clamp-2 break-words">{qrCode.description}</p>
+                        )}
+                        <div className="flex items-center gap-3 mt-2 flex-wrap">
+                          <p className="text-xs text-muted-foreground uppercase">{qrCode.type}</p>
+                          <p className="text-xs text-muted-foreground">
+                            scans: {qrCode.scans || 0}
+                          </p>
+                        </div>
                       </div>
                     </div>
                     
                     {/* Action Buttons - Right */}
-                    <div className="flex items-start gap-1 flex-shrink-0">
+                    <div className="flex items-center gap-1 flex-shrink-0 w-full md:w-auto justify-end md:justify-start">
                       <Button 
                         variant="ghost" 
                         size="sm" 
