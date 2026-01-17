@@ -779,23 +779,23 @@ export default function Dashboard() {
                     className="group relative p-4 border border-border/20 hover:border-green-500/50 cursor-pointer transition-all hover:shadow-lg"
                     onClick={() => openFolderView(sharedFolder.folderId)}
                   >
-                    {/* Header with Icon and Shared Badge */}
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
-                        <Folder className="w-5 h-5 text-green-500" />
+                    <div className="flex flex-col gap-3">
+                      {/* Header with Icon and Share Badge */}
+                      <div className="flex items-center justify-between">
+                        <Folder className="w-6 h-6 text-green-500" />
+                        <div className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-500 text-xs font-medium">
+                          Shared
+                        </div>
                       </div>
-                      <div className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-500 text-xs font-medium">
-                        Shared
+
+                      {/* Folder Name and Credentials Count */}
+                      <div>
+                        <p className="font-semibold truncate">{sharedFolder.folder.name}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {credCount} credential{credCount !== 1 ? 's' : ''}
+                        </p>
                       </div>
                     </div>
-
-                    {/* Folder Name */}
-                    <h4 className="font-semibold text-sm mb-1 truncate">{sharedFolder.folder.name}</h4>
-                    
-                    {/* Credentials Count */}
-                    <p className="text-xs text-muted-foreground">
-                      {credCount} credential{credCount !== 1 ? 's' : ''}
-                    </p>
                   </Card>
                 );
               })}
