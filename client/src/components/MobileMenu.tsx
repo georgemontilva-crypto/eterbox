@@ -368,6 +368,36 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
     setViewHistory([]);
   };
 
+  // Handle browser back button / swipe back gesture
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      
+      // If we're in a subview, go back to previous view instead of closing
+      if (activeView !== null) {
+        handleBack();
+        // Push state again to keep the menu open
+        window.history.pushState({ menuOpen: true, view: viewHistory[viewHistory.length - 1] || 'main' }, '');
+      } else {
+        // If we're in main menu, allow closing
+        setOpen(false);
+        setActiveView(null);
+        setViewHistory([]);
+      }
+    };
+
+    // Push a state when sheet opens or view changes
+    window.history.pushState({ menuOpen: true, view: activeView || 'main' }, '');
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [open, activeView, viewHistory]);
+
   // Handle Sheet open/close with subview awareness
   const handleSheetOpenChange = (newOpen: boolean) => {
     // If trying to close the sheet
@@ -1179,7 +1209,7 @@ export function MobileMenu({ planName, onLogout, twoFactorEnabled = false, onAdd
         <span className="text-sm font-bold hidden sm:inline">EterBox</span>
       </Button>
       
-      <Sheet open={open} onOpenChange={handleSheetOpenChange}>
+      <Sheet open={open} onOpenChange={handleSheetOpenChange} modal={false}>
         <SheetContent 
           side="left" 
           className="w-full sm:w-[400px] sm:max-w-[400px] bg-background border-r border-border/20 p-0"
