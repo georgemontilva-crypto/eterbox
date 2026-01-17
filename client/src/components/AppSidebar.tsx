@@ -126,7 +126,7 @@ export function AppSidebar({ currentPath }: AppSidebarProps) {
         </nav>
 
         {/* Bottom Section - Fixed */}
-        <div className="p-4 border-t border-border/20 space-y-2 flex-shrink-0">
+        <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-border/20 space-y-2 flex-shrink-0">
           {bottomMenuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
