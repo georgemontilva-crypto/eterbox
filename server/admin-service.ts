@@ -167,11 +167,13 @@ export async function addAdmin(
 
     console.log('[Admin] addAdmin - userResult:', userResult);
 
-    if (!userResult || userResult.length === 0) {
+    // db.execute() returns [rows, fields], we need the rows array
+    const rows = userResult[0];
+    if (!Array.isArray(rows) || rows.length === 0) {
       return { success: false, message: 'Usuario no encontrado' };
     }
 
-    const userId = userResult[0]?.id;
+    const userId = rows[0]?.id;
     console.log('[Admin] addAdmin - userId:', userId, 'type:', typeof userId);
 
     if (!userId) {
