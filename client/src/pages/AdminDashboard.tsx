@@ -942,10 +942,21 @@ function AdminsTab({ permissions }: any) {
       return;
     }
 
+    // Convert array of permission IDs to permission object
+    const permissionsObject = {
+      can_view_users: selectedPermissions.includes('manage_users'),
+      can_edit_users: selectedPermissions.includes('manage_users'),
+      can_delete_users: selectedPermissions.includes('manage_users'),
+      can_view_analytics: selectedPermissions.includes('view_analytics'),
+      can_send_bulk_emails: selectedPermissions.includes('send_emails'),
+      can_view_revenue: selectedPermissions.includes('manage_plans'),
+      can_manage_admins: selectedPermissions.includes('manage_admins'),
+    };
+
     try {
       await addAdminMutation.mutateAsync({
         email,
-        permissions: selectedPermissions,
+        permissions: permissionsObject,
       });
       await utils.admin.listAdmins.invalidate();
       toast.success('Administrador agregado correctamente');

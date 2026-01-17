@@ -458,7 +458,8 @@ export async function sendBulkMarketingEmail(params: {
       title,
       body,
       actionUrl,
-      actionText
+      actionText,
+      isTest: true  // Ignore user preferences for admin bulk emails
     });
 
     if (sendResult.success) {
