@@ -202,7 +202,7 @@ export async function getQrFoldersSharedWithUser(userId: number): Promise<Shared
         u.id as ownerId,
         u.name as ownerName,
         u.email as ownerEmail,
-        (SELECT COUNT(*) FROM qr_codes qr WHERE qr.folderId = f.id) as qrCodeCount
+        (SELECT COUNT(*) FROM qr_codes qr WHERE qr.folder_id = f.id) as qrCodeCount
       FROM qr_folder_shares fs
       INNER JOIN qr_folders f ON fs.folder_id = f.id
       INNER JOIN users u ON fs.owner_id = u.id
