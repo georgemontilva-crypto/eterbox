@@ -29,6 +29,7 @@ export default function QRDashboard() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<any>(null);
 
+  const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   const { data: qrCodes = [], refetch: refetchQRCodes } = trpc.qrCodes.list.useQuery();
   const { data: folders = [], refetch: refetchFolders } = trpc.qrCodes.folders.list.useQuery();
   const { data: sharedFolders = [] } = trpc.qrCodes.folders.getSharedWithMe.useQuery(undefined, {
@@ -559,10 +560,11 @@ export default function QRDashboard() {
       />
 
       <ShareQRFolderModal
-        isOpen={showShareModal}
+        open={showShareModal}
         onClose={() => setShowShareModal(false)}
         folderId={selectedFolder?.id || 0}
         folderName={selectedFolder?.name || ""}
+        userPlan={userPlan?.name || "Free"}
       />
 
       {/* QR Detail Modal */}
