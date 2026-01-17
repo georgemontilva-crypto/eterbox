@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import QRCode from "qrcode";
-import { Loader2 } from "lucide-react";
+import { Loader2, Zap } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 interface EditQRCodeModalProps {
@@ -258,9 +258,10 @@ export default function EditQRCodeModal({
                       {content !== qrCode.content ? "Updated Preview" : "Current QR Code"}
                     </p>
                     {qrCode.isDynamic && (
-                      <div className="p-2 bg-accent/10 rounded-lg">
-                        <p className="text-xs text-accent font-medium">
-                          🔄 Dynamic QR
+                      <div className="p-2 bg-accent/10 rounded-lg border border-accent/20">
+                        <p className="text-xs text-accent font-medium flex items-center justify-center gap-1.5">
+                          <Zap className="w-3.5 h-3.5" />
+                          Dynamic QR
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           The QR pattern stays the same, only the destination changes
