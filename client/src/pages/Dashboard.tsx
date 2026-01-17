@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CreateCredentialModal } from "@/components/CreateCredentialModal";
 import { EditCredentialModal } from "@/components/EditCredentialModal";
 import { CreateFolderModal } from "@/components/CreateFolderModal";
@@ -54,6 +55,7 @@ export default function Dashboard() {
   const [showShareFolderModal, setShowShareFolderModal] = useState(false);
   const [selectedFolderForShare, setSelectedFolderForShare] = useState<{ id: number; name: string } | null>(null);
   const [savedScrollPosition, setSavedScrollPosition] = useState<number>(0);
+  const [showActionsModal, setShowActionsModal] = useState(false);
 
   const { data: userPlan } = trpc.plans.getUserPlan.useQuery();
   
@@ -577,41 +579,83 @@ export default function Dashboard() {
 
         <div className="mb-6">
           {/* Primary Actions */}
-          {/* Mobile: Single Dropdown */}
+          {/* Mobile: Modal Popup */}
           <div className="md:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="lg" className="w-full h-12">
-                  <Plus className="w-4 h-4 mr-2" />Actions
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-[calc(100vw-2rem)]">
-                <DropdownMenuItem onClick={() => { setSelectedFolderId(undefined); setShowCredentialModal(true); }} disabled={isSubscriptionExpired}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Credential
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setShowFolderModal(true)} disabled={isSubscriptionExpired}>
-                  <FolderPlus className="w-4 h-4 mr-2" />
-                  Create Folder
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setShowPasswordGenerator(true)}>
-                  <Lock className="w-4 h-4 mr-2" />
-                  Generate Password
-                </DropdownMenuItem>
-                {userPlan && userPlan.name !== "Free" && (
-                  <>
-                    <DropdownMenuItem onClick={() => setShowImportModal(true)}>
-                      <Upload className="w-4 h-4 mr-2" />
-                      Import Credentials
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setShowExportModal(true)}>
-                      <Download className="w-4 h-4 mr-2" />
-                      Export Credentials
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button size="lg" className="w-full h-12" onClick={() => setShowActionsModal(true)}>
+              <Plus className="w-4 h-4 mr-2" />Actions
+            </Button>
+            
+            <Dialog open={showActionsModal} onOpenChange={setShowActionsModal}>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-bold">Actions</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-3 py-4">
+                  <Button
+                    variant="outline"
+                    className="w-full h-14 justify-start text-left"
+                    onClick={() => {
+                      setSelectedFolderId(undefined);
+                      setShowCredentialModal(true);
+                      setShowActionsModal(false);
+                    }}
+                    disabled={isSubscriptionExpired}
+                  >
+                    <Plus className="w-5 h-5 mr-3" />
+                    <span className="text-base">Add Credential</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full h-14 justify-start text-left"
+                    onClick={() => {
+                      setShowFolderModal(true);
+                      setShowActionsModal(false);
+                    }}
+                    disabled={isSubscriptionExpired}
+                  >
+                    <FolderPlus className="w-5 h-5 mr-3" />
+                    <span className="text-base">Create Folder</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full h-14 justify-start text-left"
+                    onClick={() => {
+                      setShowPasswordGenerator(true);
+                      setShowActionsModal(false);
+                    }}
+                  >
+                    <Lock className="w-5 h-5 mr-3" />
+                    <span className="text-base">Generate Password</span>
+                  </Button>
+                  {userPlan && userPlan.name !== "Free" && (
+                    <>
+                      <Button
+                        variant="outline"
+                        className="w-full h-14 justify-start text-left"
+                        onClick={() => {
+                          setShowImportModal(true);
+                          setShowActionsModal(false);
+                        }}
+                      >
+                        <Upload className="w-5 h-5 mr-3" />
+                        <span className="text-base">Import Credentials</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full h-14 justify-start text-left"
+                        onClick={() => {
+                          setShowExportModal(true);
+                          setShowActionsModal(false);
+                        }}
+                      >
+                        <Download className="w-5 h-5 mr-3" />
+                        <span className="text-base">Export Credentials</span>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Desktop: Grid of Buttons */}
