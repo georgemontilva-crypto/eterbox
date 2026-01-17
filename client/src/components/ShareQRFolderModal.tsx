@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
-import { X, Users, Mail, Trash2, Shield, AlertCircle } from "lucide-react";
+import { X, Users, Mail, Trash2, Shield, AlertCircle, Edit, Eye } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ShareQRFolderModalProps {
@@ -15,6 +15,7 @@ interface ShareQRFolderModalProps {
 export function ShareQRFolderModal({ open, onClose, folderId, folderName, userPlan }: ShareQRFolderModalProps) {
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
+  const [permission, setPermission] = useState<'read' | 'edit'>('edit');
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -42,11 +43,12 @@ export function ShareQRFolderModal({ open, onClose, folderId, folderName, userPl
       await shareMutation.mutateAsync({
         folderId,
         userEmail: email.trim(),
-        permission: 'read', // QR folders are read-only by default
+        permission, // Use selected permission
       });
 
       setSuccess("QR folder shared successfully!");
       setEmail("");
+      setPermission('edit');
       
       // Refresh shares list
       utils.qrCodes.folders.getShares.invalidate({ folderId });
@@ -156,8 +158,46 @@ export function ShareQRFolderModal({ open, onClose, folderId, folderName, userPl
                     {shareMutation.isPending ? "Sharing..." : "Share"}
                   </Button>
                 </div>
+              </div>
+              
+              {/* Permission selector */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  <Shield className="w-4 h-4 inline mr-2" />
+                  Permission Level
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPermission('edit')}
+                    disabled={shareMutation.isPending}
+                    className={`h-12 px-4 rounded-[15px] border transition-all ${
+                      permission === 'edit'
+                        ? 'bg-accent text-accent-foreground border-accent'
+                        : 'bg-background border-border/20 hover:border-accent/50'
+                    }`}
+                  >
+                    <Edit className="w-4 h-4 inline mr-2" />
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPermission('read')}
+                    disabled={shareMutation.isPending}
+                    className={`h-12 px-4 rounded-[15px] border transition-all ${
+                      permission === 'read'
+                        ? 'bg-accent text-accent-foreground border-accent'
+                        : 'bg-background border-border/20 hover:border-accent/50'
+                    }`}
+                  >
+                    <Eye className="w-4 h-4 inline mr-2" />
+                    View Only
+                  </button>
+                </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  They will be able to view and download QR codes in this folder
+                  {permission === 'edit'
+                    ? 'Can view, create, edit, and delete QR codes'
+                    : 'Can only view and download QR codes'}
                 </p>
               </div>
             </form>
@@ -190,8 +230,16 @@ export function ShareQRFolderModal({ open, onClose, folderId, folderName, userPl
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs px-3 py-1 bg-muted/50 rounded-full">
-                        Read Only
+                      <span className={`text-xs px-3 py-1 rounded-full flex items-center gap-1 ${
+                        share.permission === 'edit'
+                          ? 'bg-accent/10 text-accent'
+                          : 'bg-muted/50 text-muted-foreground'
+                      }`}>
+                        {share.permission === 'edit' ? (
+                          <><Edit className="w-3 h-3" /> Can Edit</>
+                        ) : (
+                          <><Eye className="w-3 h-3" /> View Only</>
+                        )}
                       </span>
                       <button
                         onClick={() => handleUnshare(share.sharedWithUserId)}

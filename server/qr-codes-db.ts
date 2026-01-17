@@ -46,6 +46,17 @@ export async function updateQrCode(id: number, userId: number, data: Partial<Ins
     .where(and(eq(qrCodes.id, id), eq(qrCodes.userId, userId)));
 }
 
+// Update QR code without user check (for shared folders)
+export async function updateQrCodeShared(id: number, data: Partial<InsertQrCode>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db
+    .update(qrCodes)
+    .set(data)
+    .where(eq(qrCodes.id, id));
+}
+
 export async function deleteQrCode(id: number, userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -53,6 +64,16 @@ export async function deleteQrCode(id: number, userId: number) {
   return await db
     .delete(qrCodes)
     .where(and(eq(qrCodes.id, id), eq(qrCodes.userId, userId)));
+}
+
+// Delete QR code without user check (for shared folders)
+export async function deleteQrCodeShared(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db
+    .delete(qrCodes)
+    .where(eq(qrCodes.id, id));
 }
 
 export async function incrementQrScans(id: number, userId: number) {
@@ -168,5 +189,17 @@ export async function getQrCodesByFolderId(folderId: number, userId: number) {
     .select()
     .from(qrCodes)
     .where(and(eq(qrCodes.folderId, folderId), eq(qrCodes.userId, userId)))
+    .orderBy(desc(qrCodes.createdAt));
+}
+
+// Get QR codes by folder ID (for shared folders - no user check)
+export async function getQrCodesByFolderIdShared(folderId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db
+    .select()
+    .from(qrCodes)
+    .where(eq(qrCodes.folderId, folderId))
     .orderBy(desc(qrCodes.createdAt));
 }

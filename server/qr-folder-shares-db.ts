@@ -325,3 +325,39 @@ export async function getUserQrFolderPermission(folderId: number, userId: number
     return null;
   }
 }
+
+/**
+ * Check if user can edit a QR code (owner or has edit permission on folder)
+ */
+export async function canUserEditQrCode(qrCodeId: number, userId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    const result = await db.execute(sql`
+      SELECT 
+        qr.userId as ownerId,
+        qr.folderId,
+        fs.permission
+      FROM qr_codes qr
+      LEFT JOIN qr_folder_shares fs ON qr.folderId = fs.folder_id AND fs.shared_with_user_id = ${userId}
+      WHERE qr.id = ${qrCodeId}
+    `);
+
+    const rows = (result as any)[0] || [];
+    if (rows.length === 0) return false;
+
+    const row = rows[0];
+    
+    // User is the owner
+    if (row.ownerId === userId) return true;
+    
+    // User has edit permission on the folder
+    if (row.folderId && row.permission === 'edit') return true;
+    
+    return false;
+  } catch (error) {
+    console.error("[DB] Error checking QR code edit permission:", error);
+    return false;
+  }
+}

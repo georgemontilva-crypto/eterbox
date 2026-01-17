@@ -364,7 +364,13 @@ export default function QRDashboard() {
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center justify-between">
                         <Folder className="w-6 h-6 text-accent" />
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-2">
+                          {folder.shareCount > 0 && (
+                            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-xs font-medium">
+                              <Users className="w-3 h-3" />
+                              {folder.shareCount}
+                            </div>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"

@@ -18,7 +18,18 @@ export const qrCodesRouter = router({
     .input(z.object({ folderId: z.number() }))
     .query(async ({ ctx, input }) => {
       const userId = ctx.user.id;
-      const qrCodes = await qrCodesDb.getQrCodesByFolderId(input.folderId, userId);
+      
+      // Check if user has access to this folder (owner or shared with)
+      const hasAccess = await qrFolderSharesDb.userHasQrFolderAccess(input.folderId, userId);
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You don't have access to this folder",
+        });
+      }
+      
+      // Get QR codes from the folder (regardless of ownership)
+      const qrCodes = await qrCodesDb.getQrCodesByFolderIdShared(input.folderId);
       return qrCodes;
     }),
 
@@ -91,16 +102,17 @@ export const qrCodesRouter = router({
       const userId = ctx.user.id;
       const { id, ...updateData } = input;
       
-      // Verify ownership
-      const existing = await qrCodesDb.getQrCodeById(id, userId);
-      if (!existing) {
+      // Check if user can edit this QR code (owner or has edit permission on folder)
+      const canEdit = await qrFolderSharesDb.canUserEditQrCode(id, userId);
+      if (!canEdit) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "QR code not found",
+          code: "FORBIDDEN",
+          message: "You don't have permission to edit this QR code",
         });
       }
       
-      await qrCodesDb.updateQrCode(id, userId, updateData);
+      // Update without user check (already verified above)
+      await qrCodesDb.updateQrCodeShared(id, updateData);
       return { success: true };
     }),
 
@@ -110,16 +122,17 @@ export const qrCodesRouter = router({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.user.id;
       
-      // Verify ownership
-      const existing = await qrCodesDb.getQrCodeById(input.id, userId);
-      if (!existing) {
+      // Check if user can edit this QR code (owner or has edit permission on folder)
+      const canEdit = await qrFolderSharesDb.canUserEditQrCode(input.id, userId);
+      if (!canEdit) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "QR code not found",
+          code: "FORBIDDEN",
+          message: "You don't have permission to delete this QR code",
         });
       }
       
-      await qrCodesDb.deleteQrCode(input.id, userId);
+      // Delete without user check (already verified above)
+      await qrCodesDb.deleteQrCodeShared(input.id);
       return { success: true };
     }),
 
@@ -135,11 +148,23 @@ export const qrCodesRouter = router({
   // ============ QR FOLDERS ============
   
   folders: router({
-    // Get all folders
+    // Get all folders with share count
     list: protectedProcedure.query(async ({ ctx }) => {
       const userId = ctx.user.id;
       const folders = await qrCodesDb.getQrFoldersByUserId(userId);
-      return folders;
+      
+      // Add share count to each folder
+      const foldersWithShareCount = await Promise.all(
+        folders.map(async (folder) => {
+          const shareCount = await qrFolderSharesDb.getQrFolderShareCount(folder.id);
+          return {
+            ...folder,
+            shareCount,
+          };
+        })
+      );
+      
+      return foldersWithShareCount;
     }),
 
     // Create a folder
