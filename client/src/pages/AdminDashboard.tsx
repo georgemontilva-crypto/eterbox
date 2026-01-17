@@ -17,7 +17,7 @@ type Period = 'day' | 'week' | 'month' | 'year';
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [period, setPeriod] = useState<Period>('month');
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'revenue' | 'emails' | 'admins'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'revenue' | 'admins'>('overview');
 
   // Check if user is admin
   const { data: adminCheck, isLoading: checkingAdmin } = trpc.admin.isAdmin.useQuery();
@@ -122,7 +122,6 @@ export default function AdminDashboard() {
               { id: 'overview', label: 'Resumen', icon: Activity },
               { id: 'users', label: 'Usuarios', icon: Users },
               { id: 'revenue', label: 'Ingresos', icon: DollarSign },
-              { id: 'emails', label: 'Emails', icon: Mail },
               { id: 'admins', label: 'Admins', icon: Shield },
             ].map((tab) => (
               <button
@@ -158,8 +157,6 @@ export default function AdminDashboard() {
           <UsersTab />
         ) : activeTab === 'revenue' ? (
           <RevenueTab period={period} colors={COLORS} />
-        ) : activeTab === 'emails' ? (
-          <EmailsTab />
         ) : (
           <AdminsTab permissions={adminCheck.permissions} />
         )}
@@ -481,6 +478,21 @@ function UsersTab() {
             </select>
           </div>
         </div>
+        
+        {/* Export Button */}
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={handleExportEmails}
+            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:shadow-lg hover:shadow-green-500/30 transition-all font-semibold"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Exportar Emails ({users?.length || 0})
+          </button>
+        </div>
       </div>
 
       {/* Premium Users Table */}
@@ -781,139 +793,6 @@ function RevenueTab({ period, colors }: any) {
   );
 }
 
-// Emails Tab and Admins Tab remain the same but with premium styling
-function EmailsTab() {
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
-  const [targetAudience, setTargetAudience] = useState<'all' | 'free' | 'premium'>('all');
-
-  const sendEmailMutation = trpc.admin.sendBulkEmail.useMutation();
-  const { data: emailHistory } = trpc.admin.getEmailHistory.useQuery();
-
-  const handleSendEmail = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!subject || !message) {
-      toast.error('Por favor completa todos los campos');
-      return;
-    }
-
-    try {
-      await sendEmailMutation.mutateAsync({
-        subject,
-        title: subject, // Use subject as title
-        body: message,
-        targetUsers: targetAudience,
-      });
-      toast.success('Email enviado correctamente');
-      setSubject('');
-      setMessage('');
-    } catch (error) {
-      toast.error('Error al enviar el email');
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Premium Email Form */}
-      <div className="bg-card/50 backdrop-blur-sm border border-border/20 rounded-2xl p-5 sm:p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg ring-2 ring-blue-500/20">
-            <Mail className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold">Enviar Email Masivo</h3>
-            <p className="text-sm text-muted-foreground">Envía emails a todos los usuarios</p>
-          </div>
-        </div>
-
-        <form onSubmit={handleSendEmail} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold mb-2">Audiencia</label>
-            <select
-              value={targetAudience}
-              onChange={(e) => setTargetAudience(e.target.value as any)}
-              className="w-full px-4 py-2.5 bg-background/50 border border-border/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent transition-all"
-            >
-              <option value="all">Todos los usuarios</option>
-              <option value="free">Solo usuarios Free</option>
-              <option value="premium">Solo usuarios Premium</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-2">Asunto</label>
-            <input
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder="Asunto del email..."
-              className="w-full px-4 py-2.5 bg-background/50 border border-border/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent transition-all"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-2">Mensaje</label>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Escribe tu mensaje aquí..."
-              rows={8}
-              className="w-full px-4 py-2.5 bg-background/50 border border-border/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent transition-all resize-none"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={sendEmailMutation.isPending}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-accent/90 text-white rounded-xl hover:shadow-lg hover:shadow-accent/30 transition-all font-semibold disabled:opacity-50"
-          >
-            <Send className="w-5 h-5" />
-            {sendEmailMutation.isPending ? 'Enviando...' : 'Enviar Email'}
-          </button>
-        </form>
-      </div>
-
-      {/* Premium Email History */}
-      <div className="bg-card/50 backdrop-blur-sm border border-border/20 rounded-2xl overflow-hidden">
-        <div className="p-5 sm:p-6 border-b border-border/20">
-          <h3 className="text-lg font-bold">Historial de Emails</h3>
-          <p className="text-sm text-muted-foreground">Emails enviados recientemente</p>
-        </div>
-        <div className="divide-y divide-border/10">
-          {emailHistory?.map((email: any) => (
-            <div key={email.id} className="p-5 sm:p-6 hover:bg-muted/20 transition-colors">
-              <div className="flex items-start justify-between mb-2">
-                <h4 className="font-semibold">{email.subject}</h4>
-                <span className="text-xs text-muted-foreground">
-                  {new Date(email.sent_at).toLocaleDateString('es-ES')}
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground mb-2">{email.message}</p>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-accent/10 text-accent rounded-lg text-xs font-semibold ring-1 ring-accent/20">
-                  <Users className="w-3 h-3" />
-                  {email.recipients_count} destinatarios
-                </span>
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-500 rounded-lg text-xs font-semibold ring-1 ring-green-500/20">
-                  <CheckCircle className="w-3 h-3" />
-                  Enviado
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-        {emailHistory?.length === 0 && (
-          <div className="text-center py-16">
-            <Mail className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-            <p className="text-muted-foreground font-medium">No hay emails enviados</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function AdminsTab({ permissions }: any) {
   const [email, setEmail] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
@@ -930,7 +809,6 @@ function AdminsTab({ permissions }: any) {
     { id: 'manage_users', label: 'Gestionar Usuarios', description: 'Crear, editar y eliminar usuarios' },
     { id: 'manage_plans', label: 'Gestionar Planes', description: 'Modificar planes y precios' },
     { id: 'view_analytics', label: 'Ver Analíticas', description: 'Acceso a estadísticas y reportes' },
-    { id: 'send_emails', label: 'Enviar Emails', description: 'Enviar emails masivos' },
     { id: 'manage_admins', label: 'Gestionar Admins', description: 'Agregar y remover administradores' },
   ];
 
