@@ -122,8 +122,7 @@ export async function createSuperAdmin(userId: number, createdBy?: number): Prom
       VALUES (
         ${userId}, true, true, true, true, true, true, true, true, ${createdBy || null}
       )
-      ON CONFLICT (user_id)
-      DO UPDATE SET
+      ON DUPLICATE KEY UPDATE
         is_super_admin = true,
         can_view_users = true,
         can_edit_users = true,
@@ -132,7 +131,7 @@ export async function createSuperAdmin(userId: number, createdBy?: number): Prom
         can_view_revenue = true,
         can_manage_admins = true,
         can_view_analytics = true,
-        updatedAt = NOW()
+        updated_at = NOW()
     `);
 
     return true;
@@ -198,17 +197,16 @@ export async function addAdmin(
         ${permissions.can_view_analytics !== undefined ? permissions.can_view_analytics : true},
         ${createdBy}
       )
-      ON CONFLICT (user_id)
-      DO UPDATE SET
-        is_super_admin = EXCLUDED.is_super_admin,
-        can_view_users = EXCLUDED.can_view_users,
-        can_edit_users = EXCLUDED.can_edit_users,
-        can_delete_users = EXCLUDED.can_delete_users,
-        can_send_bulk_emails = EXCLUDED.can_send_bulk_emails,
-        can_view_revenue = EXCLUDED.can_view_revenue,
-        can_manage_admins = EXCLUDED.can_manage_admins,
-        can_view_analytics = EXCLUDED.can_view_analytics,
-        updatedAt = NOW()
+      ON DUPLICATE KEY UPDATE
+        is_super_admin = VALUES(is_super_admin),
+        can_view_users = VALUES(can_view_users),
+        can_edit_users = VALUES(can_edit_users),
+        can_delete_users = VALUES(can_delete_users),
+        can_send_bulk_emails = VALUES(can_send_bulk_emails),
+        can_view_revenue = VALUES(can_view_revenue),
+        can_manage_admins = VALUES(can_manage_admins),
+        can_view_analytics = VALUES(can_view_analytics),
+        updated_at = NOW()
     `);
 
     return { success: true };
