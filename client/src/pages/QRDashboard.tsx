@@ -99,6 +99,7 @@ export default function QRDashboard() {
 
   const openFolderView = (folderId: number) => {
     setActiveFolderId(folderId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleShareFolder = (folder: any) => {
@@ -171,7 +172,7 @@ export default function QRDashboard() {
                     
                     {/* Content - Center */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold truncate">{qrCode.name}</h3>
+                      <h3 className="text-lg font-bold line-clamp-2 break-words">{qrCode.name}</h3>
                       {qrCode.description && (
                         <p className="text-sm text-muted-foreground truncate">{qrCode.description}</p>
                       )}
@@ -478,7 +479,7 @@ export default function QRDashboard() {
                     
                     {/* Content - Center */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold truncate">{qrCode.name}</h3>
+                      <h3 className="text-lg font-bold line-clamp-2 break-words">{qrCode.name}</h3>
                       {qrCode.description && (
                         <p className="text-sm text-muted-foreground truncate">{qrCode.description}</p>
                       )}
