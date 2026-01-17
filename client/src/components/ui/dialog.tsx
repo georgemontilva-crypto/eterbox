@@ -80,8 +80,8 @@ function DialogOverlay({
       data-slot="dialog-overlay"
       className={cn(
         "fixed inset-0 z-50 bg-black/40 backdrop-blur-lg",
-        "transition-opacity duration-200 ease-out",
-        "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
+        "data-[state=open]:animate-[dialogFadeIn_200ms_ease-out]",
+        "data-[state=closed]:animate-[dialogFadeOut_200ms_ease-out]",
         className
       )}
       {...props}
@@ -127,8 +127,8 @@ function DialogContent({
         data-slot="dialog-content"
         className={cn(
           "bg-background fixed inset-x-4 top-[5%] z-50 grid w-auto max-h-[90vh] overflow-y-auto gap-4 rounded-2xl border p-6 shadow-2xl",
-          "transition-opacity duration-200 ease-out",
-          "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
+          "data-[state=open]:animate-[dialogFadeIn_200ms_ease-out]",
+          "data-[state=closed]:animate-[dialogFadeOut_200ms_ease-out]",
           "sm:inset-x-auto sm:left-[50%] sm:top-[50%] sm:w-[800px] sm:translate-x-[-50%] sm:translate-y-[-50%]",
           className
         )}

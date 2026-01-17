@@ -386,6 +386,25 @@ button:not([data-sidebar]), a:not([data-sidebar]), input, select, textarea {
   }
 }
 
+/* Dialog fade animations - Pure fade without vertical movement */
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialogFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /* Custom Sheet/Menu slide animations - Left to Right */
 @keyframes slide-in-from-left {
   from {
