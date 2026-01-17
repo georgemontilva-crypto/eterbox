@@ -48,6 +48,35 @@ export async function runAutoMigrations() {
       console.log("[Migration] Dynamic QR fields already exist, skipping");
     }
 
+    // Check if qr_folder_shares table exists
+    const [tables] = await connection.query(
+      "SHOW TABLES LIKE 'qr_folder_shares'"
+    );
+
+    if (Array.isArray(tables) && tables.length === 0) {
+      console.log("[Migration] Creating qr_folder_shares table...");
+      
+      await connection.query(`
+        CREATE TABLE qr_folder_shares (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          folder_id INT NOT NULL,
+          owner_id INT NOT NULL,
+          shared_with_user_id INT NOT NULL,
+          permission ENUM('read', 'edit') DEFAULT 'edit',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          FOREIGN KEY (folder_id) REFERENCES qr_folders(id) ON DELETE CASCADE,
+          FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (shared_with_user_id) REFERENCES users(id) ON DELETE CASCADE,
+          UNIQUE KEY unique_share (folder_id, shared_with_user_id)
+        )
+      `);
+      
+      console.log("[Migration] ✅ qr_folder_shares table created successfully");
+    } else {
+      console.log("[Migration] qr_folder_shares table already exists, skipping");
+    }
+
   } catch (error: any) {
     // Ignore duplicate column errors
     if (error.code === 'ER_DUP_FIELDNAME') {
