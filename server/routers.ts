@@ -375,7 +375,7 @@ export const appRouter = router({
         username: z.string().max(255).optional(),
         email: z.string().email().optional(),
         password: z.string().min(1),
-        folderId: z.number().optional(),
+        folderId: z.number().nullable().optional(),
         url: z.string().url().optional(),
         notes: z.string().max(1000).optional(),
       }))
@@ -427,7 +427,7 @@ export const appRouter = router({
         username: z.string().max(255).optional(),
         email: z.string().email().optional(),
         password: z.string().min(1).optional(),
-        folderId: z.number().optional(),
+        folderId: z.number().nullable().optional(),
         url: z.string().url().optional(),
         notes: z.string().max(1000).optional(),
       }))

@@ -44,6 +44,13 @@ export function CreateCredentialModal({
     }
   }, [defaultPassword]);
 
+  // Update selectedFolderId when defaultFolderId changes
+  React.useEffect(() => {
+    if (defaultFolderId !== undefined) {
+      setFormData(prev => ({ ...prev, selectedFolderId: defaultFolderId.toString() }));
+    }
+  }, [defaultFolderId]);
+
   const createMutation = trpc.credentials.create.useMutation();
   const utils = trpc.useUtils();
 
