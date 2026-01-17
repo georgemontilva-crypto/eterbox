@@ -422,7 +422,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mb-6">
-            <div className="relative">
+            <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
@@ -444,18 +444,12 @@ export default function Dashboard() {
               <p className="text-muted-foreground">No credentials match your filter</p>
             </Card>
           ) : (
-            <Card className="p-12 border border-border/20 text-center">
-              <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+            <Card className="p-8 text-center border-dashed border-2 border-border/30">
+              <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
               <p className="text-muted-foreground">
                 {isSharedFolder ? "This shared folder is empty" : "No credentials in this folder yet"}
               </p>
-              {!isSharedFolder && (
-                <Button className="mt-4" onClick={() => { setSelectedFolderId(activeFolderView); setShowCredentialModal(true); }}>
-                  <Plus className="w-4 h-4 mr-2" />Add First Credential
-                </Button>
-              )}
-            </Card>
-          )}
+            </Card>       )}
 
         {showAddExistingModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -598,7 +592,7 @@ export default function Dashboard() {
                     <MoreVertical className="w-4 h-4 mr-2" />More Actions
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-[var(--radix-dropdown-menu-trigger-width)]">
                   <DropdownMenuItem onClick={() => setShowImportModal(true)}>
                     <Upload className="w-4 h-4 mr-2" />
                     Import Credentials
@@ -632,20 +626,22 @@ export default function Dashboard() {
             <div className="space-y-4">
               {filteredFolders.length > 0 && (
                 <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">Folders</p>
-                  <div className="space-y-2">
+                  <p className="text-sm font-semibold text-muted-foreground mb-3">Folders</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {[...filteredFolders].reverse().map((folder: any) => (
-                      <Card key={`folder-${folder.id}`} className="p-4 border border-border/20 hover:border-accent/50 cursor-pointer transition-colors" onClick={() => openFolderView(folder.id)}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
+                      <Card key={`folder-${folder.id}`} className="group relative p-4 border border-border/20 hover:border-accent/50 hover:shadow-lg cursor-pointer transition-all" onClick={() => openFolderView(folder.id)}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center">
                             <Folder className="w-5 h-5 text-accent" />
-                            <div>
-                              <p className="font-medium">{folder.name}</p>
-                              <p className="text-xs text-muted-foreground">{credentialsByFolder[folder.id]?.length || 0} credentials</p>
-                            </div>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                          {folder.isShared && (
+                            <div className="px-2 py-0.5 rounded-full bg-accent/20 text-accent text-xs font-medium">
+                              Shared
+                            </div>
+                          )}
                         </div>
+                        <h4 className="font-semibold text-sm mb-1 truncate">{folder.name}</h4>
+                        <p className="text-xs text-muted-foreground">{credentialsByFolder[folder.id]?.length || 0} credentials</p>
                       </Card>
                     ))}
                   </div>
@@ -654,8 +650,10 @@ export default function Dashboard() {
 
               {filteredCredentials.length > 0 && !isSubscriptionExpired && (
                 <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">Credentials</p>
-                  <div className="space-y-2">{filteredCredentials.map((cred: any) => renderCredentialCard(cred))}</div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-3">Credentials</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {filteredCredentials.map((cred: any) => renderCredentialCard(cred))}
+                  </div>
                 </div>
               )}
               
