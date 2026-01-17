@@ -253,7 +253,7 @@ export async function getAllAdmins() {
       SELECT u.id, u.name, u.email, u.createdAt,
              ap.is_super_admin, ap.can_view_users, ap.can_edit_users, ap.can_delete_users,
              ap.can_send_bulk_emails, ap.can_view_revenue, ap.can_manage_admins, ap.can_view_analytics,
-             ap.createdAt as admin_since
+             ap.created_at as admin_since
       FROM users u
       INNER JOIN admin_permissions ap ON u.id = ap.user_id
       ORDER BY ap.is_super_admin DESC, u.createdAt ASC
