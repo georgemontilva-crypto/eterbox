@@ -781,26 +781,20 @@ export default function Dashboard() {
                   >
                     {/* Header with Icon and Shared Badge */}
                     <div className="flex items-start justify-between mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
                         <Folder className="w-5 h-5 text-green-500" />
                       </div>
-                      <div className="flex items-center gap-1 px-2 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
-                        <Lock className="w-3 h-3 text-green-500" />
-                        <span className="text-xs text-green-500 font-medium">Shared</span>
+                      <div className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-500 text-xs font-medium">
+                        Shared
                       </div>
                     </div>
 
                     {/* Folder Name */}
-                    <h4 className="font-semibold text-base mb-1 truncate">{sharedFolder.folder.name}</h4>
+                    <h4 className="font-semibold text-sm mb-1 truncate">{sharedFolder.folder.name}</h4>
                     
                     {/* Credentials Count */}
-                    <p className="text-sm text-muted-foreground mb-1">
+                    <p className="text-xs text-muted-foreground">
                       {credCount} credential{credCount !== 1 ? 's' : ''}
-                    </p>
-
-                    {/* Owner Info */}
-                    <p className="text-xs text-muted-foreground truncate">
-                      by {sharedFolder.owner.name || sharedFolder.owner.email}
                     </p>
                   </Card>
                 );
