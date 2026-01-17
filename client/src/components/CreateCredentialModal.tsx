@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +36,31 @@ export function CreateCredentialModal({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Auto-scroll to focused input when keyboard opens
+  useEffect(() => {
+    const handleFocus = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        // Wait for keyboard to open
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+    };
+
+    const form = formRef.current;
+    if (form) {
+      form.addEventListener('focusin', handleFocus as EventListener);
+    }
+
+    return () => {
+      if (form) {
+        form.removeEventListener('focusin', handleFocus as EventListener);
+      }
+    };
+  }, []);
 
   // Update password when defaultPassword changes
   React.useEffect(() => {
@@ -123,7 +148,7 @@ export function CreateCredentialModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">
         <DialogHeader className="pb-4 border-b border-border/30 bg-gradient-to-br from-accent/5 to-transparent">
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Key className="w-5 h-5 text-accent" />
@@ -131,7 +156,7 @@ export function CreateCredentialModal({
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-5 pt-2 pb-safe">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-5 pt-2 pb-32">
           {/* Platform */}
           <div className="space-y-2">
             <Label htmlFor="platform" className="text-sm font-medium flex items-center gap-2">
