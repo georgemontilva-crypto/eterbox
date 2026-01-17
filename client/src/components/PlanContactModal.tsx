@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, Phone, Mail, User, Check } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
+import { trpc } from "../lib/trpc";
 
 interface PlanContactModalProps {
   isOpen: boolean;
@@ -43,9 +44,23 @@ export function PlanContactModal({ isOpen, onClose, planName, planPrice }: PlanC
     phone: "",
     agreeToContact: false,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const contactMutation = trpc.sales.contactForPlan.useMutation({
+    onSuccess: () => {
+      setIsSuccess(true);
+      setTimeout(() => {
+        onClose();
+        setIsSuccess(false);
+        setFormData({ name: "", email: "", countryCode: "+1", phone: "", agreeToContact: false });
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error('Error submitting contact form:', error);
+      setError(t("planContact.submitError"));
+    },
+  });
 
   if (!isOpen) return null;
 
@@ -58,42 +73,21 @@ export function PlanContactModal({ isOpen, onClose, planName, planPrice }: PlanC
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch("/api/trpc/sales.contactForPlan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: `${formData.countryCode} ${formData.phone}`,
-          planName,
-          planPrice,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to send contact request");
-
-      setIsSuccess(true);
-      setTimeout(() => {
-        onClose();
-        setIsSuccess(false);
-        setFormData({ name: "", email: "", countryCode: "+1", phone: "", agreeToContact: false });
-      }, 2000);
-    } catch (err) {
-      setError(t("planContact.submitError"));
-    } finally {
-      setIsSubmitting(false);
-    }
+    contactMutation.mutate({
+      name: formData.name,
+      email: formData.email,
+      phone: `${formData.countryCode} ${formData.phone}`,
+      planName,
+      planPrice,
+    });
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card border border-border rounded-lg max-w-md w-full p-6 relative">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-card border border-border rounded-lg max-w-md w-full p-6 relative shadow-xl">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -196,10 +190,10 @@ export function PlanContactModal({ isOpen, onClose, planName, planPrice }: PlanC
 
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={contactMutation.isPending}
+                className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {isSubmitting ? t("planContact.submitting") : t("planContact.submit")}
+                {contactMutation.isPending ? t("planContact.submitting") : t("planContact.submit")}
               </button>
             </form>
           </>

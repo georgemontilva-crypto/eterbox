@@ -146,11 +146,6 @@ export default function Pricing() {
   };
 
   const handleSelectPlan = (plan: any) => {
-    if (plan.id === 1) {
-      toast.info(t("pricing.alreadyFree"));
-      return;
-    }
-
     setSelectedPlan(plan);
     setShowCheckout(true);
   };
