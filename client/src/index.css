@@ -154,6 +154,9 @@ html {
     min-height: 100vh;
     /* Extend background to cover safe areas */
     padding-bottom: env(safe-area-inset-bottom);
+    /* Disable pull-to-refresh overscroll */
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
   }
   body {
     overflow-x: hidden;
@@ -163,6 +166,9 @@ html {
     font-family: 'Montserrat', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Disable pull-to-refresh overscroll */
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
