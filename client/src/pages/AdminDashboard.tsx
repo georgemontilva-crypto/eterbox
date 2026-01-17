@@ -917,8 +917,8 @@ function AdminsTab({ permissions }: any) {
   const [email, setEmail] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   
-  // Ensure permissions is always an array
-  const userPermissions = Array.isArray(permissions) ? permissions : [];
+  // Check if user can manage admins (either super admin or has can_manage_admins permission)
+  const canManageAdmins = permissions?.is_super_admin || permissions?.can_manage_admins || false;
 
   const { data: admins } = trpc.admin.listAdmins.useQuery();
   const addAdminMutation = trpc.admin.addAdmin.useMutation();
@@ -978,7 +978,7 @@ function AdminsTab({ permissions }: any) {
   return (
     <div className="space-y-6">
       {/* Premium Add Admin Form */}
-      {userPermissions.includes('manage_admins') && (
+      {canManageAdmins && (
         <div className="bg-card/50 backdrop-blur-sm border border-border/20 rounded-2xl p-5 sm:p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg ring-2 ring-purple-500/20">
@@ -1075,7 +1075,7 @@ function AdminsTab({ permissions }: any) {
                     ))}
                   </div>
                 </div>
-                {userPermissions.includes('manage_admins') && (
+                {canManageAdmins && (
                   <button
                     onClick={() => handleRemoveAdmin(admin.id)}
                     disabled={removeAdminMutation.isPending}
