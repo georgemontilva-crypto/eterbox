@@ -94,7 +94,7 @@ export const adminRouter = router({
           u.subscriptionPeriod as subscription_period,
           DATEDIFF(u.subscriptionEndDate, NOW()) as days_remaining,
           p.name as plan_name,
-          0 as is_restricted
+          u.is_restricted
         FROM users u
         LEFT JOIN plans p ON u.planId = p.id
         ORDER BY u.createdAt DESC

@@ -362,7 +362,7 @@ function UsersTab() {
   const [filterPlan, setFilterPlan] = useState('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'restricted'>('all');
 
-  const { data: users, isLoading } = trpc.admin.getAllUsers.useQuery();
+  const { data: users, isLoading } = trpc.admin.listUsers.useQuery();
   const { data: plans } = trpc.plans.list.useQuery();
   const updateUserMutation = trpc.admin.updateUser.useMutation();
   const deleteUserMutation = trpc.admin.deleteUser.useMutation();
@@ -371,7 +371,7 @@ function UsersTab() {
   const handleChangePlan = async (userId: number, planId: number) => {
     try {
       await updateUserMutation.mutateAsync({ userId, planId });
-      await utils.admin.getAllUsers.invalidate();
+      await utils.admin.listUsers.invalidate();
       toast.success('Plan actualizado correctamente');
     } catch (error) {
       toast.error('Error al actualizar el plan');
@@ -381,7 +381,7 @@ function UsersTab() {
   const handleRestrictUser = async (userId: number) => {
     try {
       await updateUserMutation.mutateAsync({ userId, isRestricted: true });
-      await utils.admin.getAllUsers.invalidate();
+      await utils.admin.listUsers.invalidate();
       toast.success('Usuario restringido correctamente');
     } catch (error) {
       toast.error('Error al restringir usuario');
@@ -391,7 +391,7 @@ function UsersTab() {
   const handleApproveUser = async (userId: number) => {
     try {
       await updateUserMutation.mutateAsync({ userId, isRestricted: false });
-      await utils.admin.getAllUsers.invalidate();
+      await utils.admin.listUsers.invalidate();
       toast.success('Usuario aprobado correctamente');
     } catch (error) {
       toast.error('Error al aprobar usuario');
@@ -403,7 +403,7 @@ function UsersTab() {
     
     try {
       await deleteUserMutation.mutateAsync({ userId });
-      await utils.admin.getAllUsers.invalidate();
+      await utils.admin.listUsers.invalidate();
       toast.success('Usuario eliminado correctamente');
     } catch (error) {
       toast.error('Error al eliminar usuario');
@@ -423,7 +423,7 @@ function UsersTab() {
       const email = user.email || '';
       const plan = user.plan_name || 'Free';
       const status = user.is_restricted ? 'Restricted' : 'Active';
-      const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleDateString('es-ES') : '';
+      const createdAt = user.created_at ? new Date(user.created_at).toLocaleDateString('es-ES') : '';
       return `${name},${email},${plan},${status},${createdAt}`;
     }).join('\n');
     
