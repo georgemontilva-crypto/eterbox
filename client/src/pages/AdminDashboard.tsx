@@ -787,7 +787,7 @@ function EmailsTab() {
   const [message, setMessage] = useState('');
   const [targetAudience, setTargetAudience] = useState<'all' | 'free' | 'premium'>('all');
 
-  const sendEmailMutation = trpc.admin.sendMassEmail.useMutation();
+  const sendEmailMutation = trpc.admin.sendBulkEmail.useMutation();
   const { data: emailHistory } = trpc.admin.getEmailHistory.useQuery();
 
   const handleSendEmail = async (e: React.FormEvent) => {
@@ -801,8 +801,9 @@ function EmailsTab() {
     try {
       await sendEmailMutation.mutateAsync({
         subject,
-        message,
-        targetAudience,
+        title: subject, // Use subject as title
+        body: message,
+        targetUsers: targetAudience,
       });
       toast.success('Email enviado correctamente');
       setSubject('');
