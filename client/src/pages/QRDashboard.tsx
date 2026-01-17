@@ -9,7 +9,7 @@ import { ShareQRFolderModal } from "@/components/ShareQRFolderModal";
 import { CreateQRFolderModal } from "@/components/CreateQRFolderModal";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Plus, Search, Folder, QrCode, Download, Trash2, Eye, FolderPlus, ArrowLeft } from "lucide-react";
+import { Plus, Search, Folder, QrCode, Download, Trash2, Eye, FolderPlus, ArrowLeft, Lock, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { AppLayout } from "@/components/AppLayout";
@@ -31,6 +31,9 @@ export default function QRDashboard() {
 
   const { data: qrCodes = [], refetch: refetchQRCodes } = trpc.qrCodes.list.useQuery();
   const { data: folders = [], refetch: refetchFolders } = trpc.qrCodes.folders.list.useQuery();
+  const { data: sharedFolders = [] } = trpc.qrCodes.folders.getSharedWithMe.useQuery(undefined, {
+    refetchInterval: 5000, // Refetch every 5 seconds to catch new shares
+  });
   const deleteQRMutation = trpc.qrCodes.delete.useMutation();
   const deleteFolderMutation = trpc.qrCodes.folders.delete.useMutation();
   const utils = trpc.useUtils();
@@ -97,7 +100,9 @@ export default function QRDashboard() {
 
   // Folder View
   if (activeFolderId !== null) {
-    const currentFolder = folders.find(f => f.id === activeFolderId);
+    const isSharedFolder = sharedFolders.some((sf: any) => sf.folderId === activeFolderId);
+    const currentFolder = folders.find(f => f.id === activeFolderId) || 
+                         sharedFolders.find((sf: any) => sf.folderId === activeFolderId)?.folder;
     const folderQRCodes = qrCodesByFolder[activeFolderId] || [];
 
     return (
@@ -113,19 +118,29 @@ export default function QRDashboard() {
             Back to All Folders
           </Button>
 
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">{currentFolder?.name}</h1>
-            {currentFolder?.description && (
-              <p className="text-muted-foreground">{currentFolder.description}</p>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{currentFolder?.name}</h1>
+              {currentFolder?.description && (
+                <p className="text-muted-foreground">{currentFolder.description}</p>
+              )}
+            </div>
+            {isSharedFolder && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
+                <Lock className="w-4 h-4 text-green-500" />
+                <span className="text-sm text-green-500 font-medium">Read Only</span>
+              </div>
             )}
           </div>
 
-          <div className="mb-6">
-            <Button onClick={() => setShowCreateModal(true)} size="lg" className="w-full md:w-auto">
-              <Plus className="w-4 h-4 mr-2" />
-              Add QR Code to Folder
-            </Button>
-          </div>
+          {!isSharedFolder && (
+            <div className="mb-6">
+              <Button onClick={() => setShowCreateModal(true)} size="lg" className="w-full md:w-auto">
+                <Plus className="w-4 h-4 mr-2" />
+                Add QR Code to Folder
+              </Button>
+            </div>
+          )}
 
           {folderQRCodes.length === 0 ? (
             <Card className="p-12 border border-border/20 text-center">
@@ -171,14 +186,16 @@ export default function QRDashboard() {
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
-                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                      </Button>
+                      {!isSharedFolder && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={(e) => { e.stopPropagation(); handleEditQR(qrCode); }}
+                          className="md:opacity-0 md:group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                        </Button>
+                      )}
                       <Button 
                         variant="ghost" 
                         size="sm" 
@@ -187,14 +204,16 @@ export default function QRDashboard() {
                       >
                         <Download className="w-4 h-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
-                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
+                      {!isSharedFolder && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={(e) => { e.stopPropagation(); handleDeleteQR(qrCode.id); }}
+                          className="md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:border hover:border-destructive/50 h-8 w-8 p-0"
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -374,6 +393,43 @@ export default function QRDashboard() {
                         <p className="font-semibold truncate">{folder.name}</p>
                         <p className="text-xs text-muted-foreground mt-1">
                           {folderQRs.length} QR code{folderQRs.length !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Shared Folders */}
+        {sharedFolders && sharedFolders.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-xl font-bold mb-4">Shared with Me</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {sharedFolders.map((sharedFolder: any) => {
+                const folderQRs = qrCodesByFolder[sharedFolder.folderId] || [];
+                return (
+                  <Card
+                    key={sharedFolder.id}
+                    className="p-4 border border-border/20 hover:border-green-500/50 cursor-pointer transition-colors group"
+                    onClick={() => openFolderView(sharedFolder.folderId)}
+                  >
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <Folder className="w-6 h-6 text-green-500" />
+                        <div className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-500 text-xs font-medium">
+                          Shared
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold truncate">{sharedFolder.folder.name}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {folderQRs.length} QR code{folderQRs.length !== 1 ? 's' : ''}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {sharedFolder.permission === 'edit' ? 'Can edit' : 'View only'}
                         </p>
                       </div>
                     </div>
