@@ -35,6 +35,13 @@ export default function QRDashboard() {
   const { data: sharedFolders = [] } = trpc.qrCodes.folders.getSharedWithMe.useQuery(undefined, {
     refetchInterval: 5000, // Refetch every 5 seconds to catch new shares
   });
+  
+  // Query for folder QR codes (enabled only when a folder is active)
+  const { data: folderQRCodes = [] } = trpc.qrCodes.listByFolder.useQuery(
+    { folderId: activeFolderId! },
+    { enabled: activeFolderId !== null }
+  );
+  
   const deleteQRMutation = trpc.qrCodes.delete.useMutation();
   const deleteFolderMutation = trpc.qrCodes.folders.delete.useMutation();
   const utils = trpc.useUtils();
@@ -104,12 +111,6 @@ export default function QRDashboard() {
     const isSharedFolder = sharedFolders.some((sf: any) => sf.folderId === activeFolderId);
     const currentFolder = folders.find(f => f.id === activeFolderId) || 
                          sharedFolders.find((sf: any) => sf.folderId === activeFolderId)?.folder;
-    
-    // Use listByFolder query to get QR codes (works for both own and shared folders)
-    const { data: folderQRCodes = [] } = trpc.qrCodes.listByFolder.useQuery(
-      { folderId: activeFolderId },
-      { enabled: activeFolderId !== null }
-    );
 
     return (
       <AppLayout currentPath="/qr-codes">
