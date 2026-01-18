@@ -115,7 +115,7 @@ export default function QRDashboard() {
 
     return (
       <AppLayout currentPath="/qr-codes">
-        <div className="container py-8">
+        <div className="container pt-24 md:pt-8 pb-8">
           <Button
             variant="ghost"
             size="sm"
